@@ -1,0 +1,367 @@
+<?xml version="1.0"?>
+<bidi:Schema xmlns:bidi="http://schemas.microsoft.com/windows/2005/03/printing/bidi">
+
+
+  <!-- Note: Refresh interval set to 6 hours (21600 sec). Restart spooler, or reboot, to update on demmand. -->
+  
+
+  <Property name="Printer">
+
+    <Property name="Finishing">
+
+      <Converter name="CollationSupported" oid="1.3.6.1.4.1.253.8.55.6.50" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+        <Conversion mibValue="1" bidiValue="false"/>
+        <Conversion mibValue="3" bidiValue="true"/>
+        <Conversion mibValue="4" bidiValue="false"/>
+        <Conversion mibValue="5" bidiValue="false"/>
+      </Converter>
+
+      <Property name="Staple">
+        <!-- StaplerInstalled -->
+        <Converter name="Installed" oid="1.3.6.1.4.1.253.8.55.6.1" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="false"/>
+          <Conversion mibValue="3" bidiValue="true"/>
+          <Conversion mibValue="4" bidiValue="false"/>
+          <Conversion mibValue="5" bidiValue="false"/>
+        </Converter>
+      </Property>
+
+    </Property>  <!--Finishing-->
+  
+    <Property name="Configuration">
+
+      <!-- Xerox CPSS Extension-->
+      <Property name="InstallableOptionsActualCol">
+
+        <!-- InstallableAsciiJobTicketActual -->
+        <Value name="RawInstallableAsciiJobTicketActual" oid="1.3.6.1.4.1.253.8.55.6.51" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableAsciiJobTicketActual" oid="1.3.6.1.4.1.253.8.55.6.51" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="2" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="AsciiJobTicketRequired"/>
+          <Conversion mibValue="4" bidiValue="AsciiJobTicketAllowed"/>
+        </Converter>
+
+        <!-- InstallableAuthenticationModuleActual -->
+        <Value name="RawInstallableAuthenticationModuleActual" oid="1.3.6.1.4.1.253.8.55.6.52" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableAuthenticationModuleActual" oid="1.3.6.1.4.1.253.8.55.6.52" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="other"/>
+          <Conversion mibValue="2" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="CommonAccessCardPiv"/>
+          <Conversion mibValue="4" bidiValue="S3"/>
+          <Conversion mibValue="5" bidiValue="PIN"/>
+          <Conversion mibValue="6" bidiValue="Password"/>
+          <Conversion mibValue="7" bidiValue="SmartCard"/>
+        </Converter>
+
+        <!-- InstallableBookletModuleActual -->
+        <Value name="RawInstallableBookletModuleActual" oid="1.3.6.1.4.1.253.8.55.6.3" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableBookletModuleActual" oid="1.3.6.1.4.1.253.8.55.6.3" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableCoilPunchUnitActual -->
+        <Value name="RawInstallableCoilPunchUnitActual" oid="1.3.6.1.4.1.253.8.55.6.5" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableCoilPunchUnitActual" oid="1.3.6.1.4.1.253.8.55.6.5" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableDuplexUnitActual -->
+        <Value name="RawInstallableDuplexUnitActual" oid="1.3.6.1.4.1.253.8.55.6.2" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableDuplexUnitActual" oid="1.3.6.1.4.1.253.8.55.6.2" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableEnhancedImageQualityActual -->
+        <Value name="RawInstallableEnhancedImageQualityActual" oid="1.3.6.1.4.1.253.8.55.6.54" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableEnhancedImageQualityActual" oid="1.3.6.1.4.1.253.8.55.6.54" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableEnvelopeTrayActual -->
+        <Value name="RawInstallableEnvelopeTrayActual" oid="1.3.6.1.4.1.253.8.55.6.4" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableEnvelopeTrayActual" oid="1.3.6.1.4.1.253.8.55.6.4" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableFaxEmailNotificationActual -->
+        <Value name="RawInstallableFaxEmailNotificationActual" oid="1.3.6.1.4.1.253.8.55.6.22" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableFaxEmailNotificationActual" oid="1.3.6.1.4.1.253.8.55.6.22" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+		
+		<!-- InstallableFaxOutActual -->
+        <Value name="RawInstallableFaxOutActual" oid="1.3.6.1.4.1.253.8.55.6.14" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableFaxOutActual" oid="1.3.6.1.4.1.253.8.55.6.14" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableFinisherDfaActual -->
+        <Value name="RawInstallableFinisherDfaActual" oid="1.3.6.1.4.1.253.8.55.6.6" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableFinisherDfaActual" oid="1.3.6.1.4.1.253.8.55.6.6" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableHighCapacityFeederActual -->
+        <Value name="RawInstallableHighCapacityFeederActual" oid="1.3.6.1.4.1.253.8.55.6.7" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableHighCapacityFeederActual" oid="1.3.6.1.4.1.253.8.55.6.7" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="other"/>
+          <Conversion mibValue="2" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="HCF"/>
+          <Conversion mibValue="4" bidiValue="HcfOversized"/>
+          <Conversion mibValue="5" bidiValue="HcfOversized2Trays"/>
+        </Converter>
+
+        <!-- InstallableHardDriveActual -->
+        <Value name="RawInstallableHardDriveActual" oid="1.3.6.1.4.1.253.8.55.6.9" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableHardDriveActual" oid="1.3.6.1.4.1.253.8.55.6.9" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableHoldForAuthenticationActual -->
+        <Value name="RawInstallableHoldForAuthenticationActual" oid="1.3.6.1.4.1.253.8.55.6.53" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableHoldForAuthenticationActual" oid="1.3.6.1.4.1.253.8.55.6.53" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="2" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="PIN"/>
+          <Conversion mibValue="4" bidiValue="UserId"/>
+        </Converter>
+
+        <!-- InstallableHolePunchUnitActual -->
+        <Value name="RawInstallableHolePunchUnitActual" oid="1.3.6.1.4.1.253.8.55.6.10" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableHolePunchUnitActual" oid="1.3.6.1.4.1.253.8.55.6.10" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="PunchUnknown"/>
+          <Conversion mibValue="2" bidiValue="NotInstalled"/>
+          <Conversion mibValue="12" bidiValue="Punch_2HoleStack"/>
+          <Conversion mibValue="15" bidiValue="Punch_3HoleStack"/>
+          <Conversion mibValue="17" bidiValue="Punch_4HoleStack"/>
+          <Conversion mibValue="22" bidiValue="Punch_2And_3HoleStack"/>
+          <Conversion mibValue="23" bidiValue="Punch_2And_4HoleStack"/>
+        </Converter>
+
+        <!-- InstallableInputPaperTraysActual -->
+        <Value name="RawInstallableInputPaperTraysActual" oid="1.3.6.1.4.1.253.8.55.6.11" type="BIDI_STRING" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableInputPaperTraysActual" oid="1.3.6.1.4.1.253.8.55.6.11" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="notInstalled" bidiValue="NotInstalled"/>
+          <Conversion mibValue="traysInstalled" bidiValue="traysInstalled"/>
+          <Conversion mibValue="1Tray" bidiValue="1Tray"/>
+          <Conversion mibValue="2Trays" bidiValue="2Trays"/>
+          <Conversion mibValue="3Trays" bidiValue="3Trays"/>
+          <Conversion mibValue="3TraysHighCapacity" bidiValue="3TraysHighCapacity"/>
+          <Conversion mibValue="4Trays" bidiValue="4Trays"/>
+          <Conversion mibValue="4TraysHighCapacityTandemTray" bidiValue="4TraysHighCapacityTandemTray"/>
+          <Conversion mibValue="5Trays" bidiValue="5Trays"/>
+          <Conversion mibValue="6Trays" bidiValue="6Trays"/>
+          <Conversion mibValue="extraTraysNotInstalled" bidiValue="extraTraysNotInstalled"/>
+          <Conversion mibValue="1ExtraTray" bidiValue="1ExtraTray"/>
+          <Conversion mibValue="2ExtraTrays" bidiValue="2ExtraTrays"/>
+          <Conversion mibValue="3ExtraTrays" bidiValue="3ExtraTrays"/>
+          <Conversion mibValue="4ExtraTrays" bidiValue="4ExtraTrays"/>
+          <Conversion mibValue="5TraysHighCapacityTandemTray" bidiValue="5TraysHighCapacityTandemTray"/>
+          <Conversion mibValue="6TraysHighCapacity" bidiValue="6TraysHighCapacity"/>
+          <Conversion mibValue="6TraysHighCapacityTandemTray" bidiValue="6TraysHighCapacityTandemTray"/>
+        </Converter>
+
+        <!-- InstallableInserterUnitActual -->
+        <Value name="RawInstallableInserterUnitActual" oid="1.3.6.1.4.1.253.8.55.6.12" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableInserterUnitActual" oid="1.3.6.1.4.1.253.8.55.6.12" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableJobAccountingFdiOptionActual -->
+        <Value name="RawInstallableJobAccountingFdiOptionActual" oid="1.3.6.1.4.1.253.8.55.6.13" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableJobAccountingFdiOptionActual" oid="1.3.6.1.4.1.253.8.55.6.13" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableJobAccountingSystemActual -->
+        <Value name="RawInstallableJobAccountingSystemActual" oid="1.3.6.1.4.1.253.8.55.6.57" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableJobAccountingSystemActual" oid="1.3.6.1.4.1.253.8.55.6.57" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="2" bidiValue="NotPresent"/>
+          <Conversion mibValue="3" bidiValue="Standard"/>
+          <Conversion mibValue="4" bidiValue="Network"/>
+          <Conversion mibValue="5" bidiValue="AccountingGreenUserOnly"/>
+          <Conversion mibValue="6" bidiValue="AccountingGreenAccountOnly"/>
+          <Conversion mibValue="7" bidiValue="AccountingGreenBillingOnly"/>
+          <Conversion mibValue="8" bidiValue="AccountingGreenUserAndAccount"/>
+          <Conversion mibValue="9" bidiValue="AccountingGreenAll"/>
+        </Converter>
+
+        <!-- InstallableJobStorageActual -->
+        <Value name="RawInstallableJobStorageActual" oid="1.3.6.1.4.1.253.8.55.6.56" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableJobStorageActual" oid="1.3.6.1.4.1.253.8.55.6.56" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableMemoryActual (MB) -->
+        <Value name="InstallableMemoryActual" oid="1.3.6.1.4.1.253.8.55.6.15" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+
+        <!-- InstallableOutputBinSideActual -->
+        <Value name="RawInstallableOutputBinSideActual" oid="1.3.6.1.4.1.253.8.55.6.16" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableOutputBinSideActual" oid="1.3.6.1.4.1.253.8.55.6.16" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableOutputBinCenterActual -->
+        <Value name="RawInstallableOutputBinCenterActual" oid="1.3.6.1.4.1.253.8.55.6.17" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableOutputBinCenterActual" oid="1.3.6.1.4.1.253.8.55.6.17" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableOutputDeliveryUnitActual -->
+        <Value name="RawInstallableOutputDeliveryUnitActual" oid="1.3.6.1.4.1.253.8.55.6.8" type="BIDI_STRING" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableOutputDeliveryUnitActual" oid="1.3.6.1.4.1.253.8.55.6.8" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="NotInstalled" bidiValue="NotInstalled"/>
+          <Conversion mibValue="AdvancedOfficeFinisher" bidiValue="AdvancedOfficeFinisher"/>
+          <Conversion mibValue="ATypeFinisher"    bidiValue="ATypeFinisher"/>
+          <Conversion mibValue="BasicOffceFinisher"    bidiValue="BasicOffceFinisher"/>
+          <Conversion mibValue="Css"    bidiValue="Css"/>
+          <Conversion mibValue="CTypeFinisher"    bidiValue="CTypeFinisher"/>
+          <Conversion mibValue="CTypeFinisherBookletMaker"    bidiValue="CTypeFinisherBookletMaker"/>
+          <Conversion mibValue="DBookletMaker"    bidiValue="DBookletMaker"/>
+          <Conversion mibValue="Hvf"    bidiValue="Hvf"/>
+          <Conversion mibValue="HvfBm"    bidiValue="HvfBm"/>
+          <Conversion mibValue="OfficeFinisher"    bidiValue="OfficeFinisher"/>
+          <Conversion mibValue="OfficeFinisherBookletMaker"    bidiValue="OfficeFinisherBookletMaker"/>
+          <Conversion mibValue="OffsetCatchTray"    bidiValue="OffsetCatchTray"/>
+          <Conversion mibValue="OutputBin_500Sheet"    bidiValue="OutputBin_500Sheet"/>
+          <Conversion mibValue="StandardFinisher"    bidiValue="StandardFinisher"/>
+        </Converter>
+
+        <!-- InstallablePhaserModuleActual -->
+        <Value name="RawInstallablePhaserModuleActual" oid="1.3.6.1.4.1.253.8.55.6.18" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallablePhaserModuleActual" oid="1.3.6.1.4.1.253.8.55.6.18" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="2" bidiValue="NotSpecified"/>
+          <Conversion mibValue="3" bidiValue="B"/>
+          <Conversion mibValue="4" bidiValue="N"/>
+          <Conversion mibValue="5" bidiValue="DN"/>
+          <Conversion mibValue="6" bidiValue="DT"/>
+          <Conversion mibValue="7" bidiValue="DX"/>
+          <Conversion mibValue="8" bidiValue="GX"/>
+          <Conversion mibValue="9" bidiValue="DP"/>
+          <Conversion mibValue="10" bidiValue="DXF"/>
+        </Converter>
+
+        <!-- InstallablePrintEngineActual -->
+        <Value name="RawInstallablePrintEngineActual" oid="1.3.6.1.4.1.253.8.55.6.19" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallablePrintEngineActual" oid="1.3.6.1.4.1.253.8.55.6.19" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="2" bidiValue="Single"/>
+          <Conversion mibValue="3" bidiValue="Dual"/>
+        </Converter>
+
+        <!-- InstallableProductivityPackActual -->
+        <Value name="RawInstallableProductivityPackActual" oid="1.3.6.1.4.1.253.8.55.6.55" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableProductivityPackActual" oid="1.3.6.1.4.1.253.8.55.6.55" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableSquareFoldTrimmerActual -->
+        <Value name="RawInstallableSquareFoldTrimmerActual" oid="1.3.6.1.4.1.253.8.55.6.20" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableSquareFoldTrimmerActual" oid="1.3.6.1.4.1.253.8.55.6.20" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- InstallableTriFoldActual -->
+        <Value name="RawInstallableTriFoldActual" oid="1.3.6.1.4.1.253.8.55.6.21" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="InstallableTriFoldActual" oid="1.3.6.1.4.1.253.8.55.6.21" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="Other"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- CollationSupported -->
+        <Value name="RawCollationSupported" oid="1.3.6.1.4.1.253.8.55.6.50" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="CollationSupported" oid="1.3.6.1.4.1.253.8.55.6.50" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+        <!-- StaplerInstalled -->
+        <Value name="RawStaplerInstalled" oid="1.3.6.1.4.1.253.8.55.6.1" type="BIDI_INT" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true" />
+        <Converter name="StaplerInstalled" oid="1.3.6.1.4.1.253.8.55.6.1" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Conversion mibValue="1" bidiValue="NotInstalled"/>
+          <Conversion mibValue="3" bidiValue="Installed"/>
+          <Conversion mibValue="4" bidiValue="NotInstalled"/>
+          <Conversion mibValue="5" bidiValue="NotInstalled"/>
+        </Converter>
+
+      </Property>  <!-- InstallableOptionsActualCol -->
+
+      <!-- A3 or A4 -->
+      <Property name="A3Device">
+        <Installed name="Installed" oid="1.3.6.1.2.1.43.13.4.1.6.1" deviceIndex="false" refreshInterval="21600" drvPrinterEvent="true">
+          <Lookup value="117000"/>
+          <Lookup value="297000"/>
+          <Lookup value="305000"/>
+          <Lookup value="320000"/>
+          <Lookup value="330000"/>
+          <Lookup value="330200"/>
+        </Installed>
+      </Property>
+
+    </Property>    <!-- Configuration -->
+
+    <IndexedProperty name="Table">
+      <Value name="PrinterIndex" oid="1.3.6.1.4.1.2699.1.2.1.2.1.1.1" type="BIDI_INT" deviceIndex="false"/>
+      <Value name="FriendlyName" oid="1.3.6.1.4.1.2699.1.2.1.2.1.1.2" type="BIDI_STRING" deviceIndex="false"/>
+      <Value name="1284DeviceID" oid="1.3.6.1.4.1.2699.1.2.1.2.1.1.3" type="BIDI_STRING" deviceIndex="false"/>
+    </IndexedProperty>
+
+  </Property>   <!-- Printer -->
+</bidi:Schema>
+
+

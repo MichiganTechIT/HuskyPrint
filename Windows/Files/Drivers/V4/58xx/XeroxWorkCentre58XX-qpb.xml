@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Properties xmlns= "http://schemas.microsoft.com/windows/2011/08/printing/queueproperties"> 
+  <Property Name="XeroxQueueProperties"> 
+    <String>
+      <![CDATA[
+<?xml version="1.0" encoding="utf-8" ?>
+<XeroxQueueProperties>
+</XeroxQueueProperties>
+ ]]>
+ </String>
+  </Property> 
+</Properties> 
+
+

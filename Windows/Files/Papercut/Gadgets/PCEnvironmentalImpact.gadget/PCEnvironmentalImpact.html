@@ -1,0 +1,191 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Environmental Impact Of Printing</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 8px;
+        width: 130px;
+        height: 203px;
+        font-family: Arial,Helvetica,sans-serif;
+        color: #FFF;
+        vertical-align: middle;
+        background-image: url('images/background.png');
+        background-repeat: no-repeat;
+        }
+      a {
+        text-decoration: none;
+        color: #FFF;
+      }
+      table {
+        width: 114px;
+        height: 187px;
+        }
+        table td {
+          vertical-align: middle;
+          }
+      #heading {
+        text-align: center;
+        font-weight: bold;
+        font-size: 11pt;
+        color: #FFF;
+        }
+      #pages-icon, #trees-icon, #grams-co2-icon, #bulb-hours-icon {
+        width: 24px;
+        }
+        #pages-icon img, #trees-icon img, #grams-co2-icon img, #bulb-hours-icon img {
+          width: 24px;
+          height: 24px;
+          border: none;
+          }
+      #pages, #trees, #grams-co2, #bulb-hours {
+        text-align: left;
+        font-size: 9pt;
+        }
+      #since {
+        text-align: center;
+        vertical-align: bottom;
+        font-size: 8pt;
+        }
+    </style>
+    <script type="text/javascript" src="conf/client-config.js"></script>
+    <script type="text/javascript">
+      // ---------------------------------------------------------------------------------------------------------------
+      // Called when the gadget loads (body#onload) to set things up.
+      // ---------------------------------------------------------------------------------------------------------------
+      function init() {
+        System.Gadget.settingsUI = 'settings.html';
+        System.Gadget.Flyout.file = 'flyout.html';
+
+        loadStoredSettings();
+
+        // load statistics on startup
+        refreshStats();
+
+        // refresh balance periodically
+        var refreshSecs = 5 * 60;
+        window.setInterval(refreshStats, refreshSecs * 1000);
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Checks stored gadget settings.  If settings are not found in the gadget settings store they are loaded from the
+      // 'config.properties' file.
+      // ---------------------------------------------------------------------------------------------------------------
+      function loadStoredSettings() {
+        if (System.Gadget.Settings.read('server.hostName') == '') {
+          System.Gadget.Settings.write('server.hostName', pcClientConfig.serverName);
+        }
+        if (System.Gadget.Settings.read('server.port') == '') {
+          System.Gadget.Settings.write('server.port', pcClientConfig.serverPort);
+        }
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Fires a GET request to "http://<server.hostName>:<server.port>/rpc/api/web/user/<username>/details.json" to
+      // retrieve the user's current balance.  On successful response setBalance is called with the result.
+      // ---------------------------------------------------------------------------------------------------------------
+      function refreshStats() {
+        var serverHostName = System.Gadget.Settings.readString('server.hostName');
+        var serverPort = System.Gadget.Settings.readString('server.port');
+        var userName = System.Environment.getEnvironmentVariable('USERNAME');
+        var url = 'http://' + serverHostName + ':' + serverPort + '/rpc/api/web/user/' + userName + '/details.json';
+        var request = new XMLHttpRequest();
+
+        request.onreadystatechange = function() {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              var data = eval('(' + request.responseText + ')');
+                
+              var pages, treesFormatted, gramsCO2Formatted, bulbHoursFormatted, sinceDate;
+
+              if (data.printStats != null) {
+                pages = data.printStats.pages;
+              }
+              if (data.environmentalImpact != null) {
+                treesFormatted = data.environmentalImpact.treesFormatted;
+                gramsCO2Formatted = data.environmentalImpact.gramsCO2Formatted;
+                bulbHoursFormatted = data.environmentalImpact.bulbHoursFormatted;
+                sinceDate = data.environmentalImpact.sinceDate;
+              }
+
+              setStats(pages, treesFormatted, gramsCO2Formatted, bulbHoursFormatted, sinceDate);
+            }
+          }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Updates the balance displayed on the page with the given formatted balance.
+      // Parameters:
+      // formattedBalance - the formatted user balance, e.g. "$1.23".
+      // ---------------------------------------------------------------------------------------------------------------
+      function setStats(pages, treesFormatted, gramsCO2Formatted, bulbHoursFormatted, sinceDate) {
+        if (pages != null) {
+          document.getElementById('pages').innerHTML = pages + ' pages';
+        }
+        if (treesFormatted != null) {
+          document.getElementById('trees').innerHTML = treesFormatted;
+        }
+        if (gramsCO2Formatted != null) {
+          document.getElementById('grams-co2').innerHTML = gramsCO2Formatted + ' of CO<sub>2</sub>';
+        }
+        if (bulbHoursFormatted != null) {
+          document.getElementById('bulb-hours').innerHTML = bulbHoursFormatted;
+        }
+        if (sinceDate != null) {
+          var d = Date.parse(sinceDate);
+          document.getElementById('since').innerHTML = 'since ' + sinceDate;
+        }
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // 
+      // ---------------------------------------------------------------------------------------------------------------
+      function showFlyout() {
+        System.Gadget.Flyout.show = true;
+      }
+    </script>
+  </head>
+
+  <body onload="init()">
+    <table>
+      <tbody>
+        <tr>
+          <td colspan="2"><a id="heading" href="javascript:void(0);" onclick="refreshStats()"
+               title="Click to refresh">Printing Impact</a></td>
+        </tr>
+        <tr onclick="showFlyout()" title="Click for information">
+          <td id="pages-icon">
+            <a href="javascript:void(0);"><img src="images/printer.png" alt="" /></a>
+          </td>
+          <td><a href="javascript:void(0);"><span id="pages"></span></a></td>
+        </tr>
+        <tr onclick="showFlyout()" title="Click for information"> 
+          <td id="trees-icon">
+            <a href="javascript:void(0);"><img src="images/tree.png" alt="" /></a>
+          </td>
+          <td><a href="javascript:void(0);"><span id="trees"></span></a></td>
+        </tr>
+        <tr onclick="showFlyout()" title="Click for information">
+          <td id="grams-co2-icon">
+            <a href="javascript:void(0);"><img src="images/data.png" alt="" /></a>
+          </td>
+          <td><a href="javascript:void(0);"><span id="grams-co2"></span></a></td>
+        </tr>
+        <tr onclick="showFlyout()" title="Click for information">
+          <td id="bulb-hours-icon">
+            <a href="javascript:void(0);"><img src="images/lightbulb_on.png" alt="" /></a>
+          </td>
+          <td><a href="javascript:void(0);"><span id="bulb-hours"></span></a></td>
+        </tr>
+        <tr>
+          <td id="since" colspan="2"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
