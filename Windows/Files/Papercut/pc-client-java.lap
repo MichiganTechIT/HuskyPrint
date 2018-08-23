@@ -1,8 +1,0 @@
-janel.main.class=biz.papercut.pcng.client.uit.UserClient
-janel.classpath.jars.dir=${SELF_HOME}\lib
-janel.min.java.version=1.5
-janel.error.default.text=Error occurred starting user client. Please contact support for assistance.
-janel.error.show.detail=false
-#janel.debug.file=${SELF_HOME}\pc-client.log
--Dclient.home=${SELF_HOME}
--Dsun.java2d.d3d=false
