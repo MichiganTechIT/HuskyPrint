@@ -134,7 +134,7 @@ Try {
 		"<h3>Software Installations</h3>" | Out-File @outFileParams
 
 		$checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
-		
+
 		if ($null -ne $checkPaperCutInstalledVersion -and ($checkPaperCutInstalledVersion.DisplayVersion -notcontains "$PaperCutVersion" -or ($checkPaperCutInstalledVersion | measure-object).count -gt 1)) {
 			Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
 			Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(,,@('DisplayVersion', $PaperCutVersion, 'Contains'))
@@ -176,75 +176,124 @@ Try {
 			Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
 			Remove-Folder -Path $extractLocation
 		}
-		<#
+		
 		#region Drivers
-		"<h3>Drivers</h3>" | Out-File -Append -FilePath $UserReportLog
+		"<h3>Drivers</h3>" | Out-File @outFileParams
 		switch -wildcard ($envOSVersion) {
 			'6.1*' {  
 				#Windows 7
 				$drivers = @(
 					@{
-						Name = "Xerox WorkCentre 5865 PCL6"
-						Source = "$dirFiles\Drivers\V3\58xx\x2DLUMX.inf"
+						Name = "Xerox AltaLink B8065 PCL6" # husky-bw
+						Source = "$dirFiles\Drivers\ALB80XX_5.528.10.0_PCL6_x64.zip"
 					},@{
-						Name = "Xerox WorkCentre 7855 PCL6"
-						Source = "$dirFiles\Drivers\V3\78xx\x2DSPYX.inf"
+						Name = "Xerox AltaLink C8055 PCL6" # husky-color
+						Source = "$dirFiles\Drivers\ALC80XX_5.528.10.0_PCL6_x64.zip"
 					}
 				)
 			}
 			default {
 				$drivers = @(
 					@{
-						Name = "Xerox WorkCentre 5865 V4 PCL6"
-						Version = "6.159.10.0"
-						Source = "$dirFiles\Drivers\V4\58xx\XeroxWorkCentre58XX_PCL6.inf"
+						Name = "Xerox AltaLink B8065 V4 PCL6" # husky-bw
+						Version = "6.250.0.0"
+						Source = "$dirFiles\Drivers\XeroxAltaLinkB80xx_6.250.0.0_PCL6_x64.zip"
 					},@{
-						Name = "Xerox WorkCentre 7855 V4 PCL6"
-						Version = "6.159.10.0"
-						Source = "$dirFiles\Drivers\V4\78xx\XeroxWorkCentre78XX_PCL6.inf"
+						Name = "Xerox AltaLink C8055 V4 PCL6" # huksy-color
+						Version = "6.250.0.0"
+						Source = "$dirFiles\Drivers\XeroxAltaLinkC80xx_6.250.0.0_PCL6_x64.zip"
 					}
 				)
 			}	
 		}	
 		
 		Show-InstallationProgress -StatusMessage "Adding printer drivers..."
-		foreach ($driver in $drivers){
+		foreach ($driver in $drivers) {
 			switch -wildcard ($envOSVersion) {
 				'6.1*' {  
 					#Windows 7
-					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prndrvr.vbs" -a -m "$($driver.name)" -i $driver.Source
-					"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
+					Show-InstallationProgress -StatusMessage ("Extracting driver {0}" -f $driver.Name)
+					$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
+					New-Folder -Path $extractLocation
+					
+					if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
+						Expand-Archive -Path $driver.source -DestinationPath $extractLocation -Force
+					} else {
+						Add-Type -assembly "system.io.compression.filesystem"
+						[io.compression.zipfile]::ExtractToDirectory($driver.source, $extractLocation)
+					} # End unzip
+
+					$driverInf = (Get-childItem -Path $extractLocation -File *.inf).FullName
+
+					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prndrvr.vbs" -a -m "$($driver.name)" -i $driverInf
+					"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File @outFileParams
+					
+					Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
+					Remove-Folder -Path $extractLocation
 				}
 				default {
+					$installDriver = $true
 					$InstalledPrintDriver = Get-PrinterDriver -Name $driver.name
 					if($InstalledPrintDriver){
 						$installedDriver = Get-WindowsDriver -Online -Verbose:$false -Driver $InstalledPrintDriver.InfPath
 						if($installedDriver.Version -ne $driver.version){
-							C:\Windows\system32\pnputil.exe /a $driver.source
-							"<Br />$($driver.name) - <install style='color:green'>Staged</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />Driver {0} version does not match - <install style='color:red'>Current: {1}, Desired: {2}</install>" -f $driver.name,$installedDriver.version,$driver.version| Out-File @outFileParams
+							$installDriver = $true
 						} else {
-							"<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File @outFileParams
+							$installDriver = $false
 							continue
 						}
-					} else {
-						C:\Windows\system32\pnputil.exe /a $driver.source
-						"<Br />$($driver.name) - <install style='color:green'>Staged</install>" | Out-File -Append -FilePath $UserReportLog
 					}
-					
-					$stagedDrivers = Get-WindowsDriver -Online -Verbose:$false | Where-Object {$_.ClassName -eq "Printer" -and $_.Version -eq "$($driver.version)"}
-					foreach ($stagedDriver in $stagedDrivers){
-						$DriverExists = Get-WindowsDriver -Online -Driver $stagedDriver.OriginalFileName -Verbose:$false | Where-Object {$_.HardwareDescription -eq $driver.name}
-						if($driverExists){
-							Add-PrinterDriver -InfPath $stagedDriver.OriginalFileName -Name $driver.name
-							"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
+
+					if ($installDriver) {
+						Show-InstallationProgress -StatusMessage ("Extracting driver {0}" -f $driver.Name)
+						$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
+						New-Folder -Path $extractLocation
+						
+						if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
+							Expand-Archive -Path $driver.source -DestinationPath $extractLocation -Force
+						} else {
+							Add-Type -assembly "system.io.compression.filesystem"
+							[io.compression.zipfile]::ExtractToDirectory($driver.source, $extractLocation)
+						} # End unzip
+
+						$driverInf = (Get-childItem -Path $extractLocation -File *.inf).FullName
+
+						Show-InstallationProgress -StatusMessage ("Staging driver {0}" -f $driver.Name)
+
+						$output = Invoke-Command -ScriptBlock {
+                            param(
+                                [Parameter()]$Driver
+                            )
+                            & "C:\Windows\System32\pnputil.exe" -a "$Driver"
+						} -ArgumentList ($driverInf)
+						
+						[regex]$driverAdded = '(?i)Published Name\s?:\s*(?<Driver>oem\d+\.inf)'
+                		$successDriverAdd = $driverAdded.Match($output)
+						if ($successDriverAdd.Success) {
+							"<Br />{0} - <install style='color:green'>Staged</install>" -f $driver.Name | Out-File @outFileParams
+							$driverSource = (Get-WindowsDriver -Driver $successDriverAdd.Groups['Driver'].Value -Online).OriginalFileName[0]
+						} else {						
+							"<Br />{0} - <install style='color:red'>Failed to Stage</install>" -f $driver.Name | Out-File @outFileParams
+							continue
+						} # End driver add check
+
+						try {
+							Add-PrinterDriver -InfPath $driverSource  -Name $driver.name -ErrorAction Stop
+						} catch {
+							"<Br />{0} - <install style='color:red'>Failed to Install</install>" -f $driver.Name | Out-File @outFileParams
 							break
 						}
-					}
-				}
-			}
-		}
+						"<Br />{0} - <install style='color:green'>Installed</install>" -f $driver.Name | Out-File @outFileParams
+						Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
+						Remove-Folder -Path $extractLocation
+					} # End install driver block
+				} # End default
+			} # End switch
+		} # End foreach driver
 		#endregion Drivers
-		
+<#
 		#region Printers
 		Show-InstallationProgress -StatusMessage "Adding Printers..."
 		"<h3>Printers</h3>" | Out-File -Append -FilePath $UserReportLog
