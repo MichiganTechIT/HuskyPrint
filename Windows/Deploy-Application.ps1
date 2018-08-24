@@ -57,13 +57,14 @@ Try {
 	##*===============================================
 	## Variables: Application
 	[string]$appVendor = ''
-	[string]$appName = 'Off-Domain Printer Setup'
-	[string]$appVersion = '1.0'
+	[string]$appName = 'HuskyPrint'
+	[string]$appVersion = '1.1.0.0'
+	[string]$PaperCutVersion = '18.2.2'
 	[string]$appArch = ''
 	[string]$appLang = 'EN'
 	[string]$appRevision = '01'
 	[string]$appScriptVersion = '1.0.0'
-	[string]$appScriptDate = '07/31/2017'
+	[string]$appScriptDate = '08/23/2018'
 	[string]$appScriptAuthor = 'Eric Boersma'
 	##*===============================================
 	## Variables: Install Titles (Only set here to override defaults set by the toolkit)
@@ -107,6 +108,11 @@ Try {
 
     # Installation elapsed start time collection
 	$start = (Get-Date)
+	$UserReportLog = "$configToolkitLogDir\PrinterSetup$((Get-Date -Format o) -replace ":", ".").html"
+	$outFileParams = @{
+		Append = $true
+		FilePath = $UserReportLog
+	}
 
 	If ($deploymentType -ine 'Uninstall') {
 		##*===============================================
@@ -114,52 +120,63 @@ Try {
 		##*===============================================
 		[string]$installPhase = 'Pre-Installation'
 		
-		## Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt
+		## Show Welcome Message, and close the PaperCut agent
 		Show-InstallationWelcome -CloseApps 'pc-client' -PersistPrompt
 		
 		## Show Progress Message (with the default message)
 		Show-InstallationProgress
-		$UserReportLog = "$configToolkitLogDir\PrinterSetup$((Get-Date -Format o) -replace ":", ".").html"
 		
 		#Lets create the log file with our initial header
-	
-		"<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File -FilePath $UserReportLog
-
-		# Show estimated time balloon in minutes
-        # <Update this based on the elasped installation time found in the logs>
-		#$EstimatedTime = 2
-		#Show-BalloonTip -BalloonTipText "$EstimatedTime minutes" -BalloonTipTitle 'Estimated Installation Time' -BalloonTipTime '10000'
+		"<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File @outFileParams
 		
 		## <Perform Pre-Installation tasks here>
 		#region SoftwareInstall
-		"<h3>Software Installations</h3>" | Out-File -Append -FilePath $UserReportLog
-		if(Get-InstalledApplication -Name 'PaperCut NG'){
-			Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
-			Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(,,@('DisplayVersion', '17.2.2', 'Exact'))
-			if(Test-Path "$envProgramFilesX86\PaperCut NG Client\unins000.exe"){
-				# Need to remove the application by calling .exe due end users installing softare using .exe instead of .msi
-				Execute-Process -Path "$envProgramFilesX86\PaperCut NG Client\unins000.exe" -Parameters '/VERYSILENT'
-			}
-			"<Br />Previous PaperCut Agent - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
-		}
+		"<h3>Software Installations</h3>" | Out-File @outFileParams
+
+		$checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
 		
-		if(Get-InstalledApplication -ProductCode '{7456F58F-679A-11E7-BD5A-FB13F55133A3}'){
-			"<Br />PaperCut MF 17.2.2 - <install style='color:green'>Already Installed</install>" | Out-File -Append -FilePath $UserReportLog
+		if ($null -ne $checkPaperCutInstalledVersion -and ($checkPaperCutInstalledVersion.DisplayVersion -notcontains "$PaperCutVersion" -or ($checkPaperCutInstalledVersion | measure-object).count -gt 1)) {
+			Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
+			Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(,,@('DisplayVersion', $PaperCutVersion, 'Contains'))
+			if (Test-Path "$envCommonStartUp\PaperCut MF Client.lnk") {
+				Remove-File -Path "$envCommonStartUp\PaperCut MF Client.lnk"
+				"<Br />PaperCut AutoStart link - <install style='color:red'>Removed</install>" | Out-File @outFileParams
+			} # End test-path AutoStart
+			("<Br />PaperCut Agent {0} - <install style='color:red'>Removed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFileParams
+		} # End previous version check/uninstall
+
+		$checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
+
+		if ($checkPaperCutInstalledVersion.DisplayVersion -like "$PaperCutVersion*") {
+			("<Br />PaperCut MF {0} - <install style='color:green'>Already Installed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFileParams
 		} else {
+			Show-InstallationProgress -StatusMessage "Extracting PaperCut Agent..."
+			# Need to extract PaperCut install files
+			$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
+			New-Folder -Path $extractLocation
+
+			if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
+				Expand-Archive -Path "$dirFiles\Papercut.$PaperCutVersion.zip" -DestinationPath $extractLocation -Force
+			} else {
+				Add-Type -assembly "system.io.compression.filesystem"
+				[io.compression.zipfile]::ExtractToDirectory("$dirFiles\Papercut.$PaperCutVersion.zip", $extractLocation)
+			} # End unzip
+
 			Show-InstallationProgress -StatusMessage "Installing PaperCut Agent..."
-			Execute-MSI -Action 'Install' -Path "$dirFiles\papercut\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
-			"<Br />PaperCut MF 17.2.2 - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
+			Execute-MSI -Action 'Install' -Path "$extractLocation\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
+			"<Br />PaperCut MF $PaperCutVersion - <install style='color:green'>Installed</install>" | Out-File @outFileParams
+
 			$StartupShortcut = Show-InstallationPrompt -Title 'Papercut AutoRun' -Message "Would you like PaperCut to run on startup?`nOtherwise you'll have to manually start it when you want to print." -ButtonRightText 'Yes' -ButtonLeftText 'No' -Icon Exclamation -PersistPrompt 
 			
 			if($StartupShortcut -eq 'yes') {
 				New-Shortcut -Path "$envCommonStartUp\PaperCut MF Client.lnk" -TargetPath "$envProgramFilesX86\PaperCut MF Client\pc-client.exe" -IconLocation "$envProgramFilesX86\PaperCut MF Client\pc-client.exe" -Description 'PaperCut MF Client' -WorkingDirectory "$envProgramFilesX86\PaperCut MF Client"
-				"<Br />PaperCut MF 17.2.2 AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File -Append -FilePath $UserReportLog
-			}
+				"<Br />PaperCut MF $PaperCutVersion AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File @outFileParams
+			} # End if Autostart
+
+			Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
+			Remove-Folder -Path $extractLocation
 		}
-
-
-		#endregion SoftwareInstall
-
+		<#
 		#region Drivers
 		"<h3>Drivers</h3>" | Out-File -Append -FilePath $UserReportLog
 		switch -wildcard ($envOSVersion) {
@@ -428,6 +445,7 @@ Try {
 				}
 			}
 		}
+		#>
 		#endregion PrinterConversion
 		##*===============================================
 		##* INSTALLATION 
