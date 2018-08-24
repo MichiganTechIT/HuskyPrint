@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Properties xmlns="http://schemas.microsoft.com/windows/2011/08/printing/devmodemap">
+  <Property Name="JobSimpleSecurePrint">
+    <String Length="32"></String>
+  </Property>  
+  <Property Name="JobXeroxCompleteDocSettings">
+    <String Length="4000"></String>
+  </Property>  
+  <Property Name="JobXeroxPublicDocSettings">
+    <String Length="10240"></String>
+  </Property>  
+</Properties>

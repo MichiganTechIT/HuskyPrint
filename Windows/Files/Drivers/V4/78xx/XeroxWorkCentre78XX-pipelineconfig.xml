@@ -1,0 +1,135 @@
+<!-- 
+  Copyright (c) 2015 Xerox Corporation
+  All rights reserved. 
+-->
+
+
+<Filters>
+
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0000}"
+		name			= "xr-AnnotationFilter.dll,{7F37E860-4E07-4A74-955F-18FE3CC4A926},CONTENTADDITION.10000">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0001}"
+		name			= "xr-TransformFilter.dll,{4CCF15CC-9B66-4c14-BE23-7FF60D6C47B6},IMPOSITION.10000">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0002}"
+		name			= "xr-AnnotationFilter.dll,{A8CCBB07-F34F-4500-A7FF-32DA967D17BE},OPTIMIZATION.10000">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0003}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0004}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0005}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0006}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0007}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BAA0008}"
+		name			= "">
+		<Input	guid	= "{b8cf8530-5562-47c4-ab67-b1f69ecf961e}" comment="IID_IXpsDocumentProvider"/>
+		<Output	guid	= "{4368d8a2-4181-4a9f-b295-3d9a38bb9ba0}" comment="IID_IXpsDocumentConsumer"/>
+	</Filter>
+
+
+	
+
+
+
+
+
+				<Filter 
+			dll				= "xr-VFilter.dll"
+			clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BBB0100}"
+			name			= "MSxpsPCL6.dll,{3821E518-33AF-4d17-92B3-28EB410D46B6},STREAMCONVERSION.10000">
+			<Input guid		= "{4d47a67c-66cc-4430-850e-daf466fe5bc4}" comment="IID_IPrintReadStream" />
+			<Output guid	= "{65bb7f1b-371e-4571-8ac7-912f510c1a38}" comment="IID_IPrintWriteStream" />
+		</Filter>
+
+	 
+	<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BBB0101}"
+		name			= "xr-PDLStreamFilter.dll,{9023A912-CDAE-4549-B6E2-0D634B4D24EB},STREAMPOSTPROCESSING.10000">
+		<Input guid		= "{4d47a67c-66cc-4430-850e-daf466fe5bc4}" comment="IID_IPrintReadStream" />
+		<Output guid	= "{65bb7f1b-371e-4571-8ac7-912f510c1a38}" comment="IID_IPrintWriteStream" />
+	</Filter>
+
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BBB0102}"
+		name			= "">
+		<Input guid		= "{4d47a67c-66cc-4430-850e-daf466fe5bc4}" comment="IID_IPrintReadStream" />
+		<Output guid	= "{65bb7f1b-371e-4571-8ac7-912f510c1a38}" comment="IID_IPrintWriteStream" />
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BBB0103}"
+		name			= "">
+		<Input guid		= "{4d47a67c-66cc-4430-850e-daf466fe5bc4}" comment="IID_IPrintReadStream" />
+		<Output guid	= "{65bb7f1b-371e-4571-8ac7-912f510c1a38}" comment="IID_IPrintWriteStream" />
+	</Filter>
+
+		<Filter 
+		dll				= "xr-VFilter.dll"
+		clsid			= "{FEBECEBD-FCB4-41AC-99E2-E5C27BBB0104}"
+		name			= "">
+		<Input guid		= "{4d47a67c-66cc-4430-850e-daf466fe5bc4}" comment="IID_IPrintReadStream" />
+		<Output guid	= "{65bb7f1b-371e-4571-8ac7-912f510c1a38}" comment="IID_IPrintWriteStream" />
+	</Filter>
+
+
+	 
+	<FilterServiceProvider dll = "PrintConfig.dll"/>
+	
+</Filters>
