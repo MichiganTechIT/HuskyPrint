@@ -293,20 +293,20 @@ Try {
 			} # End switch
 		} # End foreach driver
 		#endregion Drivers
-<#
+
 		#region Printers
 		Show-InstallationProgress -StatusMessage "Adding Printers..."
-		"<h3>Printers</h3>" | Out-File -Append -FilePath $UserReportLog
+		"<h3>Printers</h3>" | Out-File @outFileParams
 		switch -wildcard ($envOSVersion) {
 			'6.1*' {  
 				$Printers = @(
 					@{
 						Name = "husky-bw"
-						Driver = "Xerox WorkCentre 5865 PCL6"
+						Driver = "Xerox AltaLink B8065 PCL6"
 						Address = "print.mtu.edu"
 					},@{
 						Name = "husky-color"
-						Driver = "Xerox WorkCentre 7855 PCL6"
+						Driver = "Xerox AltaLink C8055 PCL6"
 						Address = "print.mtu.edu"
 					}
 				)
@@ -315,7 +315,7 @@ Try {
 				$Printers = @(
 					@{
 						Name = "husky-bw"
-						Driver = "Xerox WorkCentre 5865 V4 PCL6"
+						Driver = "Xerox AltaLink B8065 V4 PCL6"
 						Address = "print.mtu.edu"
 						InstalledFeatures = @{
 							"Config:InstallableHolePunchUnitActual"="PunchUnknown" # Hole punch
@@ -324,7 +324,7 @@ Try {
 						}
 					},@{
 						Name = "husky-color"
-						Driver = "Xerox WorkCentre 7855 V4 PCL6"
+						Driver = "Xerox AltaLink C8055 V4 PCL6"
 						Address = "print.mtu.edu"
 						InstalledFeatures = @{
 							"Config:InstallableHolePunchUnitActual"="Punch_2And_3HoleStack" # hole punch
@@ -341,78 +341,103 @@ Try {
 			switch -wildcard ($envOSVersion) {
 				'6.1*' {  
 					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\Prnport.vbs" -a -r $printer.name -h $printer.Address -o lpr -q $printer.name
-					"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
+					"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
 					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prnmngr.vbs" -a -p "$($printer.name)" -m "$($printer.Driver)" -r "$($printer.name)"
-					"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
+					"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
 				}
 				default {
 					#Lets check if the printer already exists.
-					$existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction SilentlyContinue
-					if(!$existingPort){
+					try {
+						$existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction Stop
+					}
+					catch {
+						$existingPort = $null
+					}
+				
+					if($null -eq $existingPort){
+						# The port does not exist, a new port is needed
+						$newPortParams = @{
+							Name = $printer.name
+							LprHostAddress = $printer.Address
+							LprQueueName = $printer.name
+							LprByteCounting = $true
+							ErrorAction = 'Stop'
+						}
 						try {
-							Add-PrinterPort -Name $Printer.Name -LprHostAddress $Printer.Address -LprQueueName $Printer.Name -LprByteCounting:$true
+							Add-PrinterPort @newPortParams
 						} catch {
-							"<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFileParams
 							continue
 						}
-						"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
+						"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
 					} else {
-						#printer portname is already used. Need to validate the settings are in a desired state. 
+						$newPrinterPortParamaters =@{
+                            Name = $printer.Name
+                        } # End newPrinterPortParamaters
+						# printer portname is already used. Need to validate the settings are in a desired state. 
 						Show-InstallationProgress -StatusMessage "Validating pre-existing port settings for $($printer.name)..."
-						if($existingPort.PrinterHostAddress -ne $printer.Address){
-							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
-							$wmiPrinterQuery.HostAddress=$printer.Address
-							$wmiPrinterQuery.put() | Out-Null
-							"<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File -Append -FilePath $UserReportLog
+						$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
+						if ($existingPort.PrinterHostAddress -ne $printer.Address){
+							$newPrinterPortParamaters.PrinterHostAddress=$printer.Address
+							"<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFileParams
 						}
-						if($existingPort.LprQueueName -ne $printer.name){
-							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
-							if($wmiPrinterQuery.Protocol -ne 2){
-								$wmiPrinterQuery.Protocol=2
-								"<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File -Append -FilePath $UserReportLog
+						if ($existingPort.LprQueueName -ne $printer.name){
+							if ($wmiPrinterQuery.Protocol -ne 2){
+								$newPrinterPortParamaters.Protocol=2
+								"<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File @outFileParams
 							}
-							$wmiPrinterQuery.Queue="$($Printer.Name)"
-							$wmiPrinterQuery.put() | Out-Null
-							"<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File -Append -FilePath $UserReportLog
+							$newPrinterPortParamaters.lprQueueName = $printer.name
+							"<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File @outFileParams
 						}
+						if ($newPrinterPortParamaters.count -gt 1) {
+                            Get-WmiObject -Query ("Select * FROM Win32_TCPIpPrinterPort WHERE Name = '{0}'" -f $printer.name ) | Set-WmiInstance -Arguments $newPrinterPortParamaters -PutType UpdateOnly | Out-Null
+                        } # End If newPrinterPortParamaters.Count
 					}
-					$existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction SilentlyContinue
-					if(!$existingPrinter){
+					try {
+						$existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction 'Stop'
+					}
+					catch {
+						$existingPrinter = $null
+					}
+
+					if($null -eq $existingPrinter){
 						try {
 							Add-Printer -Name $printer.Name -PortName $Printer.Name -DriverName $Printer.Driver -Shared:$false
 						} catch {
-							"<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFileParams
 							continue
 						}
 						
-						"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
+						"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
 					} else {
 						#Printer already exists. Need to verify the settings are in a desired state. 
 						Show-InstallationProgress -StatusMessage "Validating $($printer.name) settings..."
 						if($existingPrinter.Shared){
 							Set-Printer -Name $Printer.Name -Shared:$false
-							"<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File @outFileParams
 						}
 						if($existingPrinter.DriverName -ne $printer.Driver){
-							Set-Printer -Name $$existingPrinter.Name -DriverName $printer.Driver
-							"<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File -Append -FilePath $UserReportLog
+							Set-Printer -Name $existingPrinter.Name -DriverName $printer.Driver
+							"<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File @outFileParams
 						}
 						if($existingPrinter.PortName -ne $printer.name){
 							Get-PrintJob -PrinterName $Printer.Name | Remove-PrintJob
 							Set-Printer -Name $Printer.Name -PortName $Printer.Name
-							"<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($exisistingPrinter.PortName)</install>" | Out-File -Append -FilePath $UserReportLog
+							"<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($exisistingPrinter.PortName)</install>" | Out-File @outFileParams
 						}
-						"<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File -Append -FilePath $UserReportLog
 					}
 					if($printer.InstalledFeatures){
 						foreach ($feature in ($printer.InstalledFeatures).GetEnumerator()){
 							$currentFeatureValue = Get-PrinterProperty -PrinterName $printer.name -PropertyName $feature.name
 							if($currentFeatureValue.value -ne $feature.Value){
 								Set-PrinterProperty -PrinterName $printer.name -PropertyName $feature.Name -Value $feature.Value
-								"<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File -Append -FilePath $UserReportLog
+								"<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File @outFileParams
 							}
 						}
 					}
+
+					"<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File @outFileParams
+					
 				}
 			}
 		}
@@ -421,81 +446,6 @@ Try {
 		}
 		#endregion Printers
 
-		#region PrinterConversion
-		#Lets look at the existing printers that are configured to use IPP printing and convert them to use the new servers and use the new protocol.
-		Show-InstallationProgress -StatusMessage "Converting exising printers..."
-		"<h3>Printer Conversion</h3>" | Out-File -Append -FilePath $UserReportLog
-		switch -wildcard ($envOSVersion) {
-			'6.1*' {  
-				$convertPrinters = Get-WmiObject -Class Win32_Printer -Filter {Name like "%printing.it.mtu.edu%"}
-				if(!$convertPrinters){ 
-					break
-				}
-				foreach($convertPrinter in $convertPrinters){
-					$NewQueueName = (($convertPrinter.Name).Split("\"))[-1]
-					if($NewQueueName -eq "husky-bw" -or $NewQueueName -eq "husky-color"){
-						$convertPrinter.CancelAllJobs()
-						cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prnmngr.vbs" -d -p "$($convertPrinter.Name)"
-						"<Br />Printer: $($convertPrinter.Name) - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
-					}else{
-						cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\Prnport.vbs" -a -r $NewQueueName -h "print.mtu.edu" -o lpr -q $NewQueueName
-						"<Br />Port: $NewQueueName - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
-						$convertPrinter.CancelAllJobs()
-						$convertPrinter.RenamePrinter("$NewQueueName")
-						"<Br />Printer: $NewQueueName - <install style='color:green'>Renamed from $($convertPrinter.Name)</install>" | Out-File -Append -FilePath $UserReportLog
-						Stop-Service -Name Spooler -Force
-						# Need to do this hackish method due to how Internet Printers can't change the ports in a standard fashion. Adjusting it though WMI failed so had to hack the registry.
-						Set-RegistryKey -Key "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Printers\$NewQueueName" -Name 'Port' -Value $NewQueueName -Type String
-						"<Br />Printer: $NewQueueName - <install style='color:green'>Changed port</install>" | Out-File -Append -FilePath $UserReportLog
-						Start-Service -Name Spooler
-					}
-				}
-			}
-			default {
-				$convertPrinters = Get-Printer
-				foreach($convertPrinter in $convertPrinters){
-					if($convertPrinter.Name -like "*printing.it*" -or $convertPrinter.PortName -like "*printing.it*"){
-						Show-InstallationProgress -StatusMessage "Converting $($convertPrinter.Name)..."
-						#Lets parse out the queue name
-						$NewQueueName = (($convertPrinter.Name).Split("\"))[-1]
-						if($NewQueueName -eq "husky-bw" -or $NewQueueName -eq "husky-color"){
-							Get-PrintJob -PrinterName $convertPrinter.Name | Remove-PrintJob
-							Remove-Printer -Name $convertPrinter.Name
-							"<Br />Printer: $($convertPrinter.Name) - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
-							continue
-						}
-						if(Get-PrinterPort -Name $NewQueueName -ErrorAction SilentlyContinue){
-							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$NewQueueName'"
-							if($wmiPrinterQuery.Protocol -ne 2){
-								$wmiPrinterQuery.Protocol=2
-								"<Br />Port: $NewQueueName - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File -Append -FilePath $UserReportLog
-							}
-							$wmiPrinterQuery.HostAddress="print.mtu.edu"
-							"<Br />Port: $NewQueueName - <install style='color:green'>Updated Address</install>" | Out-File -Append -FilePath $UserReportLog
-							$wmiPrinterQuery.Queue="$NewQueueName"
-							"<Br />Port: $NewQueueName - <install style='color:green'>Updated QueueName</install>" | Out-File -Append -FilePath $UserReportLog
-							$wmiPrinterQuery.put() | Out-Null
-						}else {
-							Add-PrinterPort -Name $NewQueueName -LprHostAddress "print.mtu.edu" -LprQueueName $NewQueueName -LprByteCounting:$true
-							"<Br />Port: $NewQueueName - <install style='color:green'>Created New Port</install>" | Out-File -Append -FilePath $UserReportLog
-						}
-							
-						Get-PrintJob -PrinterName $convertPrinter.Name | Remove-PrintJob
-						Rename-Printer -Name $convertPrinter.Name -NewName $NewQueueName
-						"<Br />Printer: $NewQueueName - <install style='color:green'>Renamed from $($convertPrinter.Name)</install>" | Out-File -Append -FilePath $UserReportLog
-						Stop-Service -Name Spooler -Force
-						# Need to do this hackish method due to how Internet Printers can't change the ports in a standard fashion. Adjusting it though WMI failed so had to hack the registry.
-						Set-RegistryKey -Key "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Printers\$NewQueueName" -Name 'Port' -Value $NewQueueName -Type String
-						"<Br />Printer: $NewQueueName - <install style='color:green'>Changed port</install>" | Out-File -Append -FilePath $UserReportLog
-						Start-Service -Name Spooler
-						Remove-PrinterPort -Name $convertPrinter.PortName
-						
-					}
-				}
-			}
-		}
-		#>
-		#endregion PrinterConversion
 		##*===============================================
 		##* INSTALLATION 
 		##*===============================================
