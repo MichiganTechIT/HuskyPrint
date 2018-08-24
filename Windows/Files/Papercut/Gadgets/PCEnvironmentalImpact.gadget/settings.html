@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PCEnvironmentalImpact Settings</title>
+    <style type="text/css">
+      body {
+        width: 250px;
+        height: 120px;
+        }
+      input {
+        margin: 0.4em;
+        }
+    </style>
+    <script type="text/javascript">
+      function init() {
+        System.Gadget.onSettingsClosing = settingsClosing;
+        loadSettings();
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Load stored gadget settings and populate the fields of the settings form.
+      // ---------------------------------------------------------------------------------------------------------------
+      function loadSettings() {
+        var serverHostName = System.Gadget.Settings.readString('server.hostName');
+        document.getElementById('server-host-name').value = serverHostName;
+        var serverPort = System.Gadget.Settings.readString('server.port');
+        document.getElementById('server-port').value = serverPort;
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Handle the Settings dialog closing event.
+      // Parameters:
+      // event - event arguments.
+      // ---------------------------------------------------------------------------------------------------------------
+      function settingsClosing(event) {
+        // save settings if user clicked OK
+        if (event.closeAction == event.Action.commit) {
+          var serverHostName = document.getElementById('server-host-name').value;
+          System.Gadget.Settings.write('server.hostName', serverHostName);
+          var serverPort = document.getElementById('server-port').value;
+          System.Gadget.Settings.write('server.port', serverPort);
+        }
+
+        // allow Settings dialog to close
+        event.cancel = false;
+      }
+    </script>
+  </head>
+
+  <body onload="init()">
+    <dl>
+      <dt>Server Host Name / IP</dt>
+      <dd>
+        <input type="text" id="server-host-name" />
+      </dd>
+      <dt>Server Port</dt>
+      <dd>
+        <input type="text" id="server-port" />
+      </dd>
+    </dl>
+  </body>
+</html>

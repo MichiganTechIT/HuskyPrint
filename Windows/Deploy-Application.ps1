@@ -57,14 +57,13 @@ Try {
 	##*===============================================
 	## Variables: Application
 	[string]$appVendor = ''
-	[string]$appName = 'HuskyPrint'
-	[string]$appVersion = '1.1.0.0'
-	[string]$PaperCutVersion = '18.2.2'
+	[string]$appName = 'Off-Domain Printer Setup'
+	[string]$appVersion = '1.0'
 	[string]$appArch = ''
 	[string]$appLang = 'EN'
 	[string]$appRevision = '01'
 	[string]$appScriptVersion = '1.0.0'
-	[string]$appScriptDate = '08/23/2018'
+	[string]$appScriptDate = '07/31/2017'
 	[string]$appScriptAuthor = 'Eric Boersma'
 	##*===============================================
 	## Variables: Install Titles (Only set here to override defaults set by the toolkit)
@@ -108,11 +107,6 @@ Try {
 
     # Installation elapsed start time collection
 	$start = (Get-Date)
-	$UserReportLog = "$configToolkitLogDir\PrinterSetup$((Get-Date -Format o) -replace ":", ".").html"
-	$outFileParams = @{
-		Append = $true
-		FilePath = $UserReportLog
-	}
 
 	If ($deploymentType -ine 'Uninstall') {
 		##*===============================================
@@ -120,193 +114,133 @@ Try {
 		##*===============================================
 		[string]$installPhase = 'Pre-Installation'
 		
-		## Show Welcome Message, and close the PaperCut agent
+		## Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt
 		Show-InstallationWelcome -CloseApps 'pc-client' -PersistPrompt
 		
 		## Show Progress Message (with the default message)
 		Show-InstallationProgress
+		$UserReportLog = "$configToolkitLogDir\PrinterSetup$((Get-Date -Format o) -replace ":", ".").html"
 		
 		#Lets create the log file with our initial header
-		"<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File @outFileParams
+	
+		"<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File -FilePath $UserReportLog
+
+		# Show estimated time balloon in minutes
+        # <Update this based on the elasped installation time found in the logs>
+		#$EstimatedTime = 2
+		#Show-BalloonTip -BalloonTipText "$EstimatedTime minutes" -BalloonTipTitle 'Estimated Installation Time' -BalloonTipTime '10000'
 		
 		## <Perform Pre-Installation tasks here>
 		#region SoftwareInstall
-		"<h3>Software Installations</h3>" | Out-File @outFileParams
-
-		$checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
-
-		if ($null -ne $checkPaperCutInstalledVersion -and ($checkPaperCutInstalledVersion.DisplayVersion -notcontains "$PaperCutVersion" -or ($checkPaperCutInstalledVersion | measure-object).count -gt 1)) {
+		"<h3>Software Installations</h3>" | Out-File -Append -FilePath $UserReportLog
+		if(Get-InstalledApplication -Name 'PaperCut NG'){
 			Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
-			Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(,,@('DisplayVersion', $PaperCutVersion, 'Contains'))
-			if (Test-Path "$envCommonStartUp\PaperCut MF Client.lnk") {
-				Remove-File -Path "$envCommonStartUp\PaperCut MF Client.lnk"
-				"<Br />PaperCut AutoStart link - <install style='color:red'>Removed</install>" | Out-File @outFileParams
-			} # End test-path AutoStart
-			("<Br />PaperCut Agent {0} - <install style='color:red'>Removed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFileParams
-		} # End previous version check/uninstall
-
-		$checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
-
-		if ($checkPaperCutInstalledVersion.DisplayVersion -like "$PaperCutVersion*") {
-			("<Br />PaperCut MF {0} - <install style='color:green'>Already Installed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFileParams
+			Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(,,@('DisplayVersion', '17.2.2', 'Exact'))
+			if(Test-Path "$envProgramFilesX86\PaperCut NG Client\unins000.exe"){
+				# Need to remove the application by calling .exe due end users installing softare using .exe instead of .msi
+				Execute-Process -Path "$envProgramFilesX86\PaperCut NG Client\unins000.exe" -Parameters '/VERYSILENT'
+			}
+			"<Br />Previous PaperCut Agent - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
+		}
+		
+		if(Get-InstalledApplication -ProductCode '{7456F58F-679A-11E7-BD5A-FB13F55133A3}'){
+			"<Br />PaperCut MF 17.2.2 - <install style='color:green'>Already Installed</install>" | Out-File -Append -FilePath $UserReportLog
 		} else {
-			Show-InstallationProgress -StatusMessage "Extracting PaperCut Agent..."
-			# Need to extract PaperCut install files
-			$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
-			New-Folder -Path $extractLocation
-
-			if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
-				Expand-Archive -Path "$dirFiles\Papercut.$PaperCutVersion.zip" -DestinationPath $extractLocation -Force
-			} else {
-				Add-Type -assembly "system.io.compression.filesystem"
-				[io.compression.zipfile]::ExtractToDirectory("$dirFiles\Papercut.$PaperCutVersion.zip", $extractLocation)
-			} # End unzip
-
 			Show-InstallationProgress -StatusMessage "Installing PaperCut Agent..."
-			Execute-MSI -Action 'Install' -Path "$extractLocation\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
-			"<Br />PaperCut MF $PaperCutVersion - <install style='color:green'>Installed</install>" | Out-File @outFileParams
-
+			Execute-MSI -Action 'Install' -Path "$dirFiles\papercut\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
+			"<Br />PaperCut MF 17.2.2 - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
 			$StartupShortcut = Show-InstallationPrompt -Title 'Papercut AutoRun' -Message "Would you like PaperCut to run on startup?`nOtherwise you'll have to manually start it when you want to print." -ButtonRightText 'Yes' -ButtonLeftText 'No' -Icon Exclamation -PersistPrompt 
 			
 			if($StartupShortcut -eq 'yes') {
 				New-Shortcut -Path "$envCommonStartUp\PaperCut MF Client.lnk" -TargetPath "$envProgramFilesX86\PaperCut MF Client\pc-client.exe" -IconLocation "$envProgramFilesX86\PaperCut MF Client\pc-client.exe" -Description 'PaperCut MF Client' -WorkingDirectory "$envProgramFilesX86\PaperCut MF Client"
-				"<Br />PaperCut MF $PaperCutVersion AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File @outFileParams
-			} # End if Autostart
-
-			Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
-			Remove-Folder -Path $extractLocation
+				"<Br />PaperCut MF 17.2.2 AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File -Append -FilePath $UserReportLog
+			}
 		}
-		
+
+
+		#endregion SoftwareInstall
+
 		#region Drivers
-		"<h3>Drivers</h3>" | Out-File @outFileParams
+		"<h3>Drivers</h3>" | Out-File -Append -FilePath $UserReportLog
 		switch -wildcard ($envOSVersion) {
 			'6.1*' {  
 				#Windows 7
 				$drivers = @(
 					@{
-						Name = "Xerox AltaLink B8065 PCL6" # husky-bw
-						Source = "$dirFiles\Drivers\ALB80XX_5.528.10.0_PCL6_x64.zip"
+						Name = "Xerox WorkCentre 5865 PCL6"
+						Source = "$dirFiles\Drivers\V3\58xx\x2DLUMX.inf"
 					},@{
-						Name = "Xerox AltaLink C8055 PCL6" # husky-color
-						Source = "$dirFiles\Drivers\ALC80XX_5.528.10.0_PCL6_x64.zip"
+						Name = "Xerox WorkCentre 7855 PCL6"
+						Source = "$dirFiles\Drivers\V3\78xx\x2DSPYX.inf"
 					}
 				)
 			}
 			default {
 				$drivers = @(
 					@{
-						Name = "Xerox AltaLink B8065 V4 PCL6" # husky-bw
-						Version = "6.250.0.0"
-						Source = "$dirFiles\Drivers\XeroxAltaLinkB80xx_6.250.0.0_PCL6_x64.zip"
+						Name = "Xerox WorkCentre 5865 V4 PCL6"
+						Version = "6.159.10.0"
+						Source = "$dirFiles\Drivers\V4\58xx\XeroxWorkCentre58XX_PCL6.inf"
 					},@{
-						Name = "Xerox AltaLink C8055 V4 PCL6" # huksy-color
-						Version = "6.250.0.0"
-						Source = "$dirFiles\Drivers\XeroxAltaLinkC80xx_6.250.0.0_PCL6_x64.zip"
+						Name = "Xerox WorkCentre 7855 V4 PCL6"
+						Version = "6.159.10.0"
+						Source = "$dirFiles\Drivers\V4\78xx\XeroxWorkCentre78XX_PCL6.inf"
 					}
 				)
 			}	
 		}	
 		
 		Show-InstallationProgress -StatusMessage "Adding printer drivers..."
-		foreach ($driver in $drivers) {
+		foreach ($driver in $drivers){
 			switch -wildcard ($envOSVersion) {
 				'6.1*' {  
 					#Windows 7
-					Show-InstallationProgress -StatusMessage ("Extracting driver {0}" -f $driver.Name)
-					$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
-					New-Folder -Path $extractLocation
-					
-					if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
-						Expand-Archive -Path $driver.source -DestinationPath $extractLocation -Force
-					} else {
-						Add-Type -assembly "system.io.compression.filesystem"
-						[io.compression.zipfile]::ExtractToDirectory($driver.source, $extractLocation)
-					} # End unzip
-
-					$driverInf = (Get-childItem -Path $extractLocation -File *.inf).FullName
-
-					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prndrvr.vbs" -a -m "$($driver.name)" -i $driverInf
-					"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File @outFileParams
-					
-					Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
-					Remove-Folder -Path $extractLocation
+					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prndrvr.vbs" -a -m "$($driver.name)" -i $driver.Source
+					"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
 				}
 				default {
-					$installDriver = $true
 					$InstalledPrintDriver = Get-PrinterDriver -Name $driver.name
 					if($InstalledPrintDriver){
 						$installedDriver = Get-WindowsDriver -Online -Verbose:$false -Driver $InstalledPrintDriver.InfPath
 						if($installedDriver.Version -ne $driver.version){
-							"<Br />Driver {0} version does not match - <install style='color:red'>Current: {1}, Desired: {2}</install>" -f $driver.name,$installedDriver.version,$driver.version| Out-File @outFileParams
-							$installDriver = $true
+							C:\Windows\system32\pnputil.exe /a $driver.source
+							"<Br />$($driver.name) - <install style='color:green'>Staged</install>" | Out-File -Append -FilePath $UserReportLog
 						} else {
-							"<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File @outFileParams
-							$installDriver = $false
+							"<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File -Append -FilePath $UserReportLog
 							continue
 						}
+					} else {
+						C:\Windows\system32\pnputil.exe /a $driver.source
+						"<Br />$($driver.name) - <install style='color:green'>Staged</install>" | Out-File -Append -FilePath $UserReportLog
 					}
-
-					if ($installDriver) {
-						Show-InstallationProgress -StatusMessage ("Extracting driver {0}" -f $driver.Name)
-						$extractLocation = "{0}\{1}" -f $envTemp,[guid]::NewGuid()
-						New-Folder -Path $extractLocation
-						
-						if (get-command -Name Expand-Archive -ErrorAction SilentlyContinue) {
-							Expand-Archive -Path $driver.source -DestinationPath $extractLocation -Force
-						} else {
-							Add-Type -assembly "system.io.compression.filesystem"
-							[io.compression.zipfile]::ExtractToDirectory($driver.source, $extractLocation)
-						} # End unzip
-
-						$driverInf = (Get-childItem -Path $extractLocation -File *.inf).FullName
-
-						Show-InstallationProgress -StatusMessage ("Staging driver {0}" -f $driver.Name)
-
-						$output = Invoke-Command -ScriptBlock {
-                            param(
-                                [Parameter()]$Driver
-                            )
-                            & "C:\Windows\System32\pnputil.exe" -a "$Driver"
-						} -ArgumentList ($driverInf)
-						
-						[regex]$driverAdded = '(?i)Published Name\s?:\s*(?<Driver>oem\d+\.inf)'
-                		$successDriverAdd = $driverAdded.Match($output)
-						if ($successDriverAdd.Success) {
-							"<Br />{0} - <install style='color:green'>Staged</install>" -f $driver.Name | Out-File @outFileParams
-							$driverSource = (Get-WindowsDriver -Driver $successDriverAdd.Groups['Driver'].Value -Online).OriginalFileName[0]
-						} else {						
-							"<Br />{0} - <install style='color:red'>Failed to Stage</install>" -f $driver.Name | Out-File @outFileParams
-							continue
-						} # End driver add check
-
-						try {
-							Add-PrinterDriver -InfPath $driverSource  -Name $driver.name -ErrorAction Stop
-						} catch {
-							"<Br />{0} - <install style='color:red'>Failed to Install</install>" -f $driver.Name | Out-File @outFileParams
+					
+					$stagedDrivers = Get-WindowsDriver -Online -Verbose:$false | Where-Object {$_.ClassName -eq "Printer" -and $_.Version -eq "$($driver.version)"}
+					foreach ($stagedDriver in $stagedDrivers){
+						$DriverExists = Get-WindowsDriver -Online -Driver $stagedDriver.OriginalFileName -Verbose:$false | Where-Object {$_.HardwareDescription -eq $driver.name}
+						if($driverExists){
+							Add-PrinterDriver -InfPath $stagedDriver.OriginalFileName -Name $driver.name
+							"<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File -Append -FilePath $UserReportLog
 							break
 						}
-						"<Br />{0} - <install style='color:green'>Installed</install>" -f $driver.Name | Out-File @outFileParams
-						Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
-						Remove-Folder -Path $extractLocation
-					} # End install driver block
-				} # End default
-			} # End switch
-		} # End foreach driver
+					}
+				}
+			}
+		}
 		#endregion Drivers
-
+		
 		#region Printers
 		Show-InstallationProgress -StatusMessage "Adding Printers..."
-		"<h3>Printers</h3>" | Out-File @outFileParams
+		"<h3>Printers</h3>" | Out-File -Append -FilePath $UserReportLog
 		switch -wildcard ($envOSVersion) {
 			'6.1*' {  
 				$Printers = @(
 					@{
 						Name = "husky-bw"
-						Driver = "Xerox AltaLink B8065 PCL6"
+						Driver = "Xerox WorkCentre 5865 PCL6"
 						Address = "print.mtu.edu"
 					},@{
 						Name = "husky-color"
-						Driver = "Xerox AltaLink C8055 PCL6"
+						Driver = "Xerox WorkCentre 7855 PCL6"
 						Address = "print.mtu.edu"
 					}
 				)
@@ -315,7 +249,7 @@ Try {
 				$Printers = @(
 					@{
 						Name = "husky-bw"
-						Driver = "Xerox AltaLink B8065 V4 PCL6"
+						Driver = "Xerox WorkCentre 5865 V4 PCL6"
 						Address = "print.mtu.edu"
 						InstalledFeatures = @{
 							"Config:InstallableHolePunchUnitActual"="PunchUnknown" # Hole punch
@@ -324,7 +258,7 @@ Try {
 						}
 					},@{
 						Name = "husky-color"
-						Driver = "Xerox AltaLink C8055 V4 PCL6"
+						Driver = "Xerox WorkCentre 7855 V4 PCL6"
 						Address = "print.mtu.edu"
 						InstalledFeatures = @{
 							"Config:InstallableHolePunchUnitActual"="Punch_2And_3HoleStack" # hole punch
@@ -341,103 +275,78 @@ Try {
 			switch -wildcard ($envOSVersion) {
 				'6.1*' {  
 					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\Prnport.vbs" -a -r $printer.name -h $printer.Address -o lpr -q $printer.name
-					"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
+					"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
 					cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prnmngr.vbs" -a -p "$($printer.name)" -m "$($printer.Driver)" -r "$($printer.name)"
-					"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
+					"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
 				}
 				default {
 					#Lets check if the printer already exists.
-					try {
-						$existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction Stop
-					}
-					catch {
-						$existingPort = $null
-					}
-				
-					if($null -eq $existingPort){
-						# The port does not exist, a new port is needed
-						$newPortParams = @{
-							Name = $printer.name
-							LprHostAddress = $printer.Address
-							LprQueueName = $printer.name
-							LprByteCounting = $true
-							ErrorAction = 'Stop'
-						}
+					$existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction SilentlyContinue
+					if(!$existingPort){
 						try {
-							Add-PrinterPort @newPortParams
+							Add-PrinterPort -Name $Printer.Name -LprHostAddress $Printer.Address -LprQueueName $Printer.Name -LprByteCounting:$true
 						} catch {
-							"<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFileParams
+							"<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File -Append -FilePath $UserReportLog
 							continue
 						}
-						"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
+						"<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
 					} else {
-						$newPrinterPortParamaters =@{
-                            Name = $printer.Name
-                        } # End newPrinterPortParamaters
-						# printer portname is already used. Need to validate the settings are in a desired state. 
+						#printer portname is already used. Need to validate the settings are in a desired state. 
 						Show-InstallationProgress -StatusMessage "Validating pre-existing port settings for $($printer.name)..."
-						$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
-						if ($existingPort.PrinterHostAddress -ne $printer.Address){
-							$newPrinterPortParamaters.PrinterHostAddress=$printer.Address
-							"<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFileParams
+						if($existingPort.PrinterHostAddress -ne $printer.Address){
+							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
+							$wmiPrinterQuery.HostAddress=$printer.Address
+							$wmiPrinterQuery.put() | Out-Null
+							"<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File -Append -FilePath $UserReportLog
 						}
-						if ($existingPort.LprQueueName -ne $printer.name){
-							if ($wmiPrinterQuery.Protocol -ne 2){
-								$newPrinterPortParamaters.Protocol=2
-								"<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File @outFileParams
+						if($existingPort.LprQueueName -ne $printer.name){
+							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
+							if($wmiPrinterQuery.Protocol -ne 2){
+								$wmiPrinterQuery.Protocol=2
+								"<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File -Append -FilePath $UserReportLog
 							}
-							$newPrinterPortParamaters.lprQueueName = $printer.name
-							"<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File @outFileParams
+							$wmiPrinterQuery.Queue="$($Printer.Name)"
+							$wmiPrinterQuery.put() | Out-Null
+							"<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File -Append -FilePath $UserReportLog
 						}
-						if ($newPrinterPortParamaters.count -gt 1) {
-                            Get-WmiObject -Query ("Select * FROM Win32_TCPIpPrinterPort WHERE Name = '{0}'" -f $printer.name ) | Set-WmiInstance -Arguments $newPrinterPortParamaters -PutType UpdateOnly | Out-Null
-                        } # End If newPrinterPortParamaters.Count
 					}
-					try {
-						$existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction 'Stop'
-					}
-					catch {
-						$existingPrinter = $null
-					}
-
-					if($null -eq $existingPrinter){
+					$existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction SilentlyContinue
+					if(!$existingPrinter){
 						try {
 							Add-Printer -Name $printer.Name -PortName $Printer.Name -DriverName $Printer.Driver -Shared:$false
 						} catch {
-							"<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFileParams
+							"<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File -Append -FilePath $UserReportLog
 							continue
 						}
 						
-						"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFileParams
+						"<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
 					} else {
 						#Printer already exists. Need to verify the settings are in a desired state. 
 						Show-InstallationProgress -StatusMessage "Validating $($printer.name) settings..."
 						if($existingPrinter.Shared){
 							Set-Printer -Name $Printer.Name -Shared:$false
-							"<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File @outFileParams
+							"<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File -Append -FilePath $UserReportLog
 						}
 						if($existingPrinter.DriverName -ne $printer.Driver){
-							Set-Printer -Name $existingPrinter.Name -DriverName $printer.Driver
-							"<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File @outFileParams
+							Set-Printer -Name $$existingPrinter.Name -DriverName $printer.Driver
+							"<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File -Append -FilePath $UserReportLog
 						}
 						if($existingPrinter.PortName -ne $printer.name){
 							Get-PrintJob -PrinterName $Printer.Name | Remove-PrintJob
 							Set-Printer -Name $Printer.Name -PortName $Printer.Name
-							"<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($exisistingPrinter.PortName)</install>" | Out-File @outFileParams
+							"<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($exisistingPrinter.PortName)</install>" | Out-File -Append -FilePath $UserReportLog
 						}
+						"<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File -Append -FilePath $UserReportLog
 					}
 					if($printer.InstalledFeatures){
 						foreach ($feature in ($printer.InstalledFeatures).GetEnumerator()){
 							$currentFeatureValue = Get-PrinterProperty -PrinterName $printer.name -PropertyName $feature.name
 							if($currentFeatureValue.value -ne $feature.Value){
 								Set-PrinterProperty -PrinterName $printer.name -PropertyName $feature.Name -Value $feature.Value
-								"<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File @outFileParams
+								"<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File -Append -FilePath $UserReportLog
 							}
 						}
 					}
-
-					"<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File @outFileParams
-					
 				}
 			}
 		}
@@ -446,6 +355,80 @@ Try {
 		}
 		#endregion Printers
 
+		#region PrinterConversion
+		#Lets look at the existing printers that are configured to use IPP printing and convert them to use the new servers and use the new protocol.
+		Show-InstallationProgress -StatusMessage "Converting exising printers..."
+		"<h3>Printer Conversion</h3>" | Out-File -Append -FilePath $UserReportLog
+		switch -wildcard ($envOSVersion) {
+			'6.1*' {  
+				$convertPrinters = Get-WmiObject -Class Win32_Printer -Filter {Name like "%printing.it.mtu.edu%"}
+				if(!$convertPrinters){ 
+					break
+				}
+				foreach($convertPrinter in $convertPrinters){
+					$NewQueueName = (($convertPrinter.Name).Split("\"))[-1]
+					if($NewQueueName -eq "husky-bw" -or $NewQueueName -eq "husky-color"){
+						$convertPrinter.CancelAllJobs()
+						cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prnmngr.vbs" -d -p "$($convertPrinter.Name)"
+						"<Br />Printer: $($convertPrinter.Name) - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
+					}else{
+						cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\Prnport.vbs" -a -r $NewQueueName -h "print.mtu.edu" -o lpr -q $NewQueueName
+						"<Br />Port: $NewQueueName - <install style='color:green'>Added</install>" | Out-File -Append -FilePath $UserReportLog
+						$convertPrinter.CancelAllJobs()
+						$convertPrinter.RenamePrinter("$NewQueueName")
+						"<Br />Printer: $NewQueueName - <install style='color:green'>Renamed from $($convertPrinter.Name)</install>" | Out-File -Append -FilePath $UserReportLog
+						Stop-Service -Name Spooler -Force
+						# Need to do this hackish method due to how Internet Printers can't change the ports in a standard fashion. Adjusting it though WMI failed so had to hack the registry.
+						Set-RegistryKey -Key "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Printers\$NewQueueName" -Name 'Port' -Value $NewQueueName -Type String
+						"<Br />Printer: $NewQueueName - <install style='color:green'>Changed port</install>" | Out-File -Append -FilePath $UserReportLog
+						Start-Service -Name Spooler
+					}
+				}
+			}
+			default {
+				$convertPrinters = Get-Printer
+				foreach($convertPrinter in $convertPrinters){
+					if($convertPrinter.Name -like "*printing.it*" -or $convertPrinter.PortName -like "*printing.it*"){
+						Show-InstallationProgress -StatusMessage "Converting $($convertPrinter.Name)..."
+						#Lets parse out the queue name
+						$NewQueueName = (($convertPrinter.Name).Split("\"))[-1]
+						if($NewQueueName -eq "husky-bw" -or $NewQueueName -eq "husky-color"){
+							Get-PrintJob -PrinterName $convertPrinter.Name | Remove-PrintJob
+							Remove-Printer -Name $convertPrinter.Name
+							"<Br />Printer: $($convertPrinter.Name) - <install style='color:red'>Removed</install>" | Out-File -Append -FilePath $UserReportLog
+							continue
+						}
+						if(Get-PrinterPort -Name $NewQueueName -ErrorAction SilentlyContinue){
+							$wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$NewQueueName'"
+							if($wmiPrinterQuery.Protocol -ne 2){
+								$wmiPrinterQuery.Protocol=2
+								"<Br />Port: $NewQueueName - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File -Append -FilePath $UserReportLog
+							}
+							$wmiPrinterQuery.HostAddress="print.mtu.edu"
+							"<Br />Port: $NewQueueName - <install style='color:green'>Updated Address</install>" | Out-File -Append -FilePath $UserReportLog
+							$wmiPrinterQuery.Queue="$NewQueueName"
+							"<Br />Port: $NewQueueName - <install style='color:green'>Updated QueueName</install>" | Out-File -Append -FilePath $UserReportLog
+							$wmiPrinterQuery.put() | Out-Null
+						}else {
+							Add-PrinterPort -Name $NewQueueName -LprHostAddress "print.mtu.edu" -LprQueueName $NewQueueName -LprByteCounting:$true
+							"<Br />Port: $NewQueueName - <install style='color:green'>Created New Port</install>" | Out-File -Append -FilePath $UserReportLog
+						}
+							
+						Get-PrintJob -PrinterName $convertPrinter.Name | Remove-PrintJob
+						Rename-Printer -Name $convertPrinter.Name -NewName $NewQueueName
+						"<Br />Printer: $NewQueueName - <install style='color:green'>Renamed from $($convertPrinter.Name)</install>" | Out-File -Append -FilePath $UserReportLog
+						Stop-Service -Name Spooler -Force
+						# Need to do this hackish method due to how Internet Printers can't change the ports in a standard fashion. Adjusting it though WMI failed so had to hack the registry.
+						Set-RegistryKey -Key "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Printers\$NewQueueName" -Name 'Port' -Value $NewQueueName -Type String
+						"<Br />Printer: $NewQueueName - <install style='color:green'>Changed port</install>" | Out-File -Append -FilePath $UserReportLog
+						Start-Service -Name Spooler
+						Remove-PrinterPort -Name $convertPrinter.PortName
+						
+					}
+				}
+			}
+		}
+		#endregion PrinterConversion
 		##*===============================================
 		##* INSTALLATION 
 		##*===============================================

@@ -1,0 +1,308 @@
+*%******************************************************************************************
+*% GDL AutoConfig file for Xerox WorkCentre 7855/7845/7835/7830
+*% Copyright(c) 2015 Xerox Corporation
+*% All rights reserved.
+*%******************************************************************************************
+
+*Feature: InstallableAuthenticationModuleActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableAuthenticationModuleActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableAuthenticationModuleActual"
+	}
+
+	*BidiResponse: InstallableAuthenticationModuleActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableAuthenticationModuleActual)
+	}
+
+		
+	*Option: CommonAccessCardPiv
+	{
+		*BidiValue: STRING("CommonAccessCardPiv")
+	}
+		
+	*Option: None
+	{
+		*BidiValue: STRING("None")
+	}
+}
+
+*Feature: InstallableDocumentEncryptionActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableDocumentEncryptionActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableDocumentEncryptionActual"
+	}
+
+	*BidiResponse: InstallableDocumentEncryptionActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableDocumentEncryptionActual)
+	}
+
+		
+	*Option: Installed
+	{
+		*BidiValue: STRING("Installed")
+	}
+		
+	*Option: NotInstalled
+	{
+		*BidiValue: STRING("NotInstalled")
+	}
+}
+
+*Feature: InstallableFaxEmailNotificationActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableFaxEmailNotificationActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableFaxEmailNotificationActual"
+	}
+
+	*BidiResponse: InstallableFaxEmailNotificationActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableFaxEmailNotificationActual)
+	}
+
+		
+	*Option: Installed
+	{
+		*BidiValue: STRING("Installed")
+	}
+		
+	*Option: NotInstalled
+	{
+		*BidiValue: STRING("NotInstalled")
+	}
+}
+
+*Feature: InstallableFaxOutActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableFaxOutActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableFaxOutActual"
+	}
+
+	*BidiResponse: InstallableFaxOutActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableFaxOutActual)
+	}
+
+		
+	*Option: Installed
+	{
+		*BidiValue: STRING("Installed")
+	}
+		
+	*Option: NotInstalled
+	{
+		*BidiValue: STRING("NotInstalled")
+	}
+}
+
+*Feature: InstallableHoldForAuthenticationActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableHoldForAuthenticationActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableHoldForAuthenticationActual"
+	}
+
+	*BidiResponse: InstallableHoldForAuthenticationActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableHoldForAuthenticationActual)
+	}
+
+		
+	*Option: Pin
+	{
+		*BidiValue: STRING("Pin")
+	}
+		
+	*Option: UserId
+	{
+		*BidiValue: STRING("UserId")
+	}
+}
+
+*Feature: InstallableHolePunchUnitActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableHolePunchUnitActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableHolePunchUnitActual"
+	}
+
+	*BidiResponse: InstallableHolePunchUnitActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableHolePunchUnitActual)
+	}
+
+		
+	*Option: NotInstalled
+	{
+		*BidiValue: STRING("NotInstalled")
+	}
+		
+	*Option: Punch_2And_3HoleStack
+	{
+		*BidiValue: STRING("Punch_2And_3HoleStack")
+	}
+		
+	*Option: Punch_2And_4HoleStack
+	{
+		*BidiValue: STRING("Punch_2And_4HoleStack")
+	}
+		
+	*Option: Punch_4HoleStack
+	{
+		*BidiValue: STRING("Punch_4HoleStack")
+	}
+}
+
+*Feature: InstallableInputPaperTraysActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableInputPaperTraysActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableInputPaperTraysActual"
+	}
+
+	*BidiResponse: InstallableInputPaperTraysActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableInputPaperTraysActual)
+	}
+
+		
+	*Option: 5Trays
+	{
+		*BidiValue: STRING("5Trays")
+	}
+		
+	*Option: 5TraysHighCapacityTandemTray
+	{
+		*BidiValue: STRING("5TraysHighCapacityTandemTray")
+	}
+		
+	*Option: 6TraysHighCapacity
+	{
+		*BidiValue: STRING("6TraysHighCapacity")
+	}
+		
+	*Option: 6TraysHighCapacityTandemTray
+	{
+		*BidiValue: STRING("6TraysHighCapacityTandemTray")
+	}
+}
+
+*Feature: InstallableJobAccountingSystemActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableJobAccountingSystemActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableJobAccountingSystemActual"
+	}
+
+	*BidiResponse: InstallableJobAccountingSystemActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableJobAccountingSystemActual)
+	}
+
+		
+	*Option: Network
+	{
+		*BidiValue: STRING("Network")
+	}
+		
+	*Option: None
+	{
+		*BidiValue: STRING("None")
+	}
+		
+	*Option: Standard
+	{
+		*BidiValue: STRING("Standard")
+	}
+}
+
+*Feature: InstallableJobStorageActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableJobStorageActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableJobStorageActual"
+	}
+
+	*BidiResponse: InstallableJobStorageActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableJobStorageActual)
+	}
+
+		
+	*Option: Installed
+	{
+		*BidiValue: STRING("Installed")
+	}
+		
+	*Option: NotInstalled
+	{
+		*BidiValue: STRING("NotInstalled")
+	}
+}
+
+*Feature: InstallableOutputDeliveryUnitActual
+{
+	*FeatureType: PRINTER_PROPERTY
+	*BidiQuery: InstallableOutputDeliveryUnitActual
+	{
+		*QueryString: "\Printer.Configuration.InstallableOptionsActualCol:InstallableOutputDeliveryUnitActual"
+	}
+
+	*BidiResponse: InstallableOutputDeliveryUnitActual
+	{
+		*ResponseType: BIDI_STRING
+		*ResponseData: ENUM_OPTION(InstallableOutputDeliveryUnitActual)
+	}
+
+		
+	*Option: ATypeFinisher
+	{
+		*BidiValue: STRING("ATypeFinisher")
+	}
+		
+	*Option: CTypeFinisherBookletMaker
+	{
+		*BidiValue: STRING("CTypeFinisherBookletMaker")
+	}
+		
+	*Option: OffsetCatchTray
+	{
+		*BidiValue: STRING("OffsetCatchTray")
+	}
+		
+	*Option: TypeSb
+	{
+		*BidiValue: STRING("TypeSb")
+	}
+		
+	*Option: TypeSbBookletMaker
+	{
+		*BidiValue: STRING("TypeSbBookletMaker")
+	}
+}
+
+
+

@@ -1,0 +1,152 @@
+
+
+;***************************************************************************************
+; INF file for Xerox WorkCentre 7855/7845/7835/7830 PCL6 print driver
+; Copyright (c) 2015 Xerox Corporation
+; All rights reserved.
+;***************************************************************************************
+
+
+[Version]
+Signature="$Windows NT$"
+Provider=%XR%
+ClassGUID={4D36E979-E325-11CE-BFC1-08002BE10318}
+Class=Printer
+CatalogFile=XeroxWorkCentre78XX.cat
+ClassVer=4.0
+DriverVer=09/01/2015,6.159.10.0
+
+[Manufacturer]
+"Xerox"=Model,NTamd64
+[Model.NTamd64]
+"Xerox WorkCentre 7855 V4 PCL6" = INSTALL_SECTION_7855,usbprint\XeroxWorkCentre_78553076
+"Xerox WorkCentre 7855 V4 PCL6" = INSTALL_SECTION_7855,wsdprint\XeroxWorkCentre_78553076
+"Xerox WorkCentre 7845 V4 PCL6" = INSTALL_SECTION_7845,usbprint\XeroxWorkCentre_7845A077
+"Xerox WorkCentre 7845 V4 PCL6" = INSTALL_SECTION_7845,wsdprint\XeroxWorkCentre_7845A077
+"Xerox WorkCentre 7835 V4 PCL6" = INSTALL_SECTION_7835,usbprint\XeroxWorkCentre_78359075
+"Xerox WorkCentre 7835 V4 PCL6" = INSTALL_SECTION_7835,wsdprint\XeroxWorkCentre_78359075
+"Xerox WorkCentre 7830 V4 PCL6" = INSTALL_SECTION_7830,usbprint\XeroxWorkCentre_783093B5
+"Xerox WorkCentre 7830 V4 PCL6" = INSTALL_SECTION_7830,wsdprint\XeroxWorkCentre_783093B5
+"Xerox WorkCentre 7855 V4 PCL6" = INSTALL_SECTION_7855,{33d322fc-584b-43f4-93d3-f6af0228584d}
+
+[DestinationDirs]
+DefaultDestDir=66000
+
+;--Class Driver only--;[GENERIC.AddProp]
+;--Class Driver only--;GenericDriverInstalled,,,,1 
+[INSTALL_SECTION_7855]
+CopyFiles=GENERAL_FILES,LOCALE_FILES,XR_FILTER_FILES,MODEL_7855_FILES
+
+[INSTALL_SECTION_7845]
+CopyFiles=GENERAL_FILES,LOCALE_FILES,XR_FILTER_FILES,MODEL_7845_FILES
+
+[INSTALL_SECTION_7835]
+CopyFiles=GENERAL_FILES,LOCALE_FILES,XR_FILTER_FILES,MODEL_7835_FILES
+
+[INSTALL_SECTION_7830]
+CopyFiles=GENERAL_FILES,LOCALE_FILES,XR_FILTER_FILES,MODEL_7830_FILES
+
+
+[MODEL_7855_FILES]
+7855.GPD
+7855-manifest.ini
+7855.dpb
+7855-conf.GPD
+7855-conf.GDL
+
+[MODEL_7845_FILES]
+7845.GPD
+7845-manifest.ini
+7845.dpb
+7845-conf.GPD
+7845-conf.GDL
+
+[MODEL_7835_FILES]
+7835.GPD
+7835-manifest.ini
+7835.dpb
+7835-conf.GPD
+7835-conf.GDL
+
+[MODEL_7830_FILES]
+7830.GPD
+7830-manifest.ini
+7830.dpb
+7830-conf.GPD
+7830-conf.GDL
+
+[GENERAL_FILES]
+ProductData.xml
+XeroxWorkCentre78XX-pipelineconfig.xml
+XeroxWorkCentre78XX-constraints.js
+XeroxWorkCentre78XX-qpb.xml
+XeroxWorkCentre78XX-devmode-map.xml
+XeroxWorkCentre78XX-SNMP-conf.xml
+XeroxWorkCentre78XX-WSD-conf.xml
+
+[LOCALE_FILES]
+XeroxWorkCentre78XX-textres.gpd
+xr-TextResources.dll
+
+[XR_FILTER_FILES]
+xr-Utilities.v6.159.10.0.dll
+xr-FilterUtilities.v6.159.10.0.dll
+xr-VFilter.dll
+xr-TransformFilter.dll
+xr-AnnotationFilter.dll
+xr-PDLStreamFilter.dll
+msvcr120.dll
+msvcp120.dll
+
+[SourceDisksNames.amd64]
+1 = %Location%,,
+2 = %Location%,,,x64
+
+[SourceDisksFiles]
+7855.GPD                                           = 1
+7855-manifest.ini                                  = 1
+7855-conf.GPD                                      = 1
+7855-conf.GDL                                      = 1
+7855.dpb                                           = 1
+7845.GPD                                           = 1
+7845-manifest.ini                                  = 1
+7845-conf.GPD                                      = 1
+7845-conf.GDL                                      = 1
+7845.dpb                                           = 1
+7835.GPD                                           = 1
+7835-manifest.ini                                  = 1
+7835-conf.GPD                                      = 1
+7835-conf.GDL                                      = 1
+7835.dpb                                           = 1
+7830.GPD                                           = 1
+7830-manifest.ini                                  = 1
+7830-conf.GPD                                      = 1
+7830-conf.GDL                                      = 1
+7830.dpb                                           = 1
+XeroxWorkCentre78XX-pipelineconfig.xml             = 1
+XeroxWorkCentre78XX-SNMP-conf.xml                  = 1
+XeroxWorkCentre78XX-WSD-conf.xml                   = 1
+XeroxWorkCentre78XX-constraints.js                 = 1
+XeroxWorkCentre78XX-qpb.xml                        = 1
+XeroxWorkCentre78XX-devmode-map.xml                = 1
+XeroxWorkCentre78XX-textres.gpd                    = 1
+ProductData.xml = 1
+xr-TextResources.dll                               = 2
+xr-Utilities.v6.159.10.0.dll                       = 2
+xr-FilterUtilities.v6.159.10.0.dll                 = 2
+xr-VFilter.dll                                     = 2
+xr-TransformFilter.dll                             = 2
+xr-AnnotationFilter.dll                            = 2
+xr-PDLStreamFilter.dll                             = 2
+msvcr120.dll                                       = 2
+msvcp120.dll                                       = 2
+
+
+[OEM URLS]
+"Xerox"="http://go.microsoft.com/fwlink/?LinkID=49&prd=10798&sbp=Printers"
+
+
+[Strings]
+Location="Xerox WorkCentre 7855/7845/7835/7830"
+XR="Xerox"
+
