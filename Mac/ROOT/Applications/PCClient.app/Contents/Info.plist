@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>CFBundleDevelopmentRegion</key>
+<string>English</string>
+<key>CFBundleExecutable</key>
+<string>JavaAppLauncher</string>
+<key>CFBundleIconFile</key>
+<string>client-icon.icns</string>
+<key>CFBundleIdentifier</key>
+<string>biz.papercut.pcng.client</string>
+<key>CFBundleDisplayName</key>
+<string>PaperCut MF</string>
+<key>CFBundleInfoDictionaryVersion</key>
+<string>6.0</string>
+<key>CFBundleName</key>
+<string>PCClient</string>
+<key>CFBundlePackageType</key>
+<string>APPL</string>
+<key>CFBundleShortVersionString</key>
+<string>18.2.2.44706</string>
+<key>CFBundleSignature</key>
+<string>????</string>
+<key>LSUIElement</key>
+<string>1</string>
+<key>CFBundleVersion</key>
+<string>1</string>
+<key>NSHumanReadableCopyright</key>
+<string></string>
+<key>JVMRuntime</key>
+<string>jre</string>
+<key>JVMMainClassName</key>
+<string>biz.papercut.pcng.client.uit.UserClient</string>
+<key>JVMOptions</key>
+<array>
+<string>-Dclient.home=$APP_ROOT/Contents/Resources/</string>
+<string>-Dcom.apple.macos.useScreenMenuBar=true</string>
+<string>-Xmx256m</string>
+<!-- Workaround since the icon parameter for bundleapp doesn't work -->
+<string>-Xdock:icon=$APP_ROOT/Contents/Resources/client-icon.icns</string>
+</array>
+<key>JVMArguments</key>
+<array>
+</array>
+</dict>
+</plist>
+

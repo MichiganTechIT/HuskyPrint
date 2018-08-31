@@ -1,0 +1,2976 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <pdeConfiguration>
+        <contentRow name="PDEView">
+            <control class="NSView" frame="{420, 380}" origin="{0,0}" name="PDEView"/>
+        </contentRow>
+        <contentRow name="PanelPopup">
+            <control class="NSPopUpButton" frame="{250, 26}" origin="{90,350}" name="PDEPanelPopup"/>
+        </contentRow>
+        <contentRow name="PanelTabview">
+            <control class="NSTabView" frame="{420, 321}" origin="{0,25}" type="NSNoTabsBezelBorder" drawsBackground="YES" name="PDETabView">
+                <items>
+                    <item panel="Paper/Output"/>
+                    <item panel="Color Options"/>
+                    <item panel="Booklet/Watermark"/>
+                    <item panel="Advanced"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="PrinterStatusView" origin="{10, 0}" frame="{410, 25}">
+            <contentRow frame="{25, 25}" origin="{380, 0}">
+                <control class="UIBevelButtonController" size="small" frame="{25, 25}">
+                    <toolTip>Earth Smart Settings</toolTip>
+                    <images>
+                        <image image="EarthSmart_16_0.pdf">
+                            <states>
+                                <state operator="not">
+                                    <feature keyword="XRJobType">Proof</feature>
+                                </state>
+                                <state>
+                                    <feature keyword="Duplex">None</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_2.pdf">
+                            <states>
+                                <state>
+                                    <feature keyword="XRMassStorage">True</feature>
+                                </state>
+                                <state operator="not">
+                                    <feature keyword="XRJobType">Proof</feature>
+                                </state>
+                                <state operator="or">
+                                    <feature keyword="Duplex">DuplexTumble</feature>
+                                    <feature keyword="Duplex">DuplexNoTumble</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_2.pdf">
+                            <states>
+                                <state>
+                                    <feature keyword="XRMassStorage">True</feature>
+                                </state>
+                                <state>
+                                    <feature keyword="XRJobType">Proof</feature>
+                                    <feature keyword="Duplex">None</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_5.pdf">
+                            <states>
+                                <state>
+                                    <feature keyword="XRMassStorage">True</feature>
+                                </state>
+                                <state operator="or">
+                                    <feature keyword="Duplex">DuplexTumble</feature>
+                                    <feature keyword="Duplex">DuplexNoTumble</feature>
+                                </state>
+                                <state>
+                                    <feature keyword="XRJobType">Proof</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_5.pdf">
+                            <states>
+                                <state>
+                                    <feature keyword="XRMassStorage">False</feature>
+                                </state>
+                                <state operator="or">
+                                    <feature keyword="Duplex">DuplexTumble</feature>
+                                    <feature keyword="Duplex">DuplexNoTumble</feature>
+                                </state>
+                            </states>
+                        </image>
+                    </images>
+                    <events>
+                        <event type="onClick">
+                            <action selector="launchDialog:" name="EarthSmartSettings"/>
+                        </event>
+                    </events>
+                </control>
+            </contentRow>
+            <hide>
+                <state>
+                    <feature keyword="XRBiDiCommunication">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <onPrint>
+            <actions>
+                <action selector="launchDialog:" name="Secure">
+                    <states>
+                        <state>
+                            <feature keyword="XRJobType">Secure</feature>
+                            <feature keyword="XRJobPassword">""</feature>
+                        </state>
+                    </states>
+                </action>
+            </actions>
+            <settings>
+                <test>
+                    <states>
+                        <state>
+                            <feature keyword="XRMediaTypeMismatchPolicy">Ignore</feature>
+                        </state>
+                    </states>
+                    <set>
+                        <feature keyword="MediaType">Auto</feature>
+                    </set>
+                </test>
+            </settings>
+        </onPrint>
+    </pdeConfiguration>
+    <panel name="Paper/Output" helpBookPage="paper_output.html">
+        <contentRow name="JobTypes">
+            <label align="center">Job Type:</label>
+            <control class="UIPopupButtonController" frame="{175, 36}" size="normal" name="JobTypePopup" feature="XRJobType">
+                <items>
+                    <item keyword="Normal" image="JobType_24_NormalPrint.pdf"/>
+                    <item keyword="Secure" image="JobType_24_SecurePrint.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Secure"/>
+                            </event>
+                        </events>
+                    </item>
+                    <item keyword="Proof" image="JobType_24_ProofPrint.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Proof"/>
+                            </event>
+                        </events>
+                    </item>
+                    <item keyword="Personal" image="JobType_24_PersonalPrint.pdf"/>
+                    <item keyword="Save" image="JobType_24_SaveJob.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Save"/>
+                            </event>
+                        </events>
+                    </item>
+                    <item keyword="PrintWith" image="JobType_24_PrintWith.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="PrintWith"/>
+                            </event>
+                        </events>
+                        <hide>
+                            <state operator="or">
+                                <feature keyword="printer-state">Unspecified</feature>
+                                <feature keyword="XRBiDiCommunication">False</feature>
+                            </state>
+                        </hide>
+                    </item>
+                </items>
+            </control>
+            <control class="UIBevelButtonController" frame="{25, 36}" size="normal" title="Ellipsis" name="JobTypeBevel" horizontalSpacing="-2">
+                <events>
+                    <event type="onClick">
+                        <action selector="relaunchDialog:" name="XRJobType"/>
+                    </event>
+                </events>
+                <disable>
+                    <state operator="or">
+                        <feature keyword="XRJobType">Normal</feature>
+                        <feature keyword="XRJobType">Proof</feature>
+                        <feature keyword="XRJobType">Personal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow name="PaperSummary">
+            <label align="center">Paper:</label>
+            <control class="UISummarySelection" frame="{200, 50}" size="normal" name="SummarySelectionWidget">
+                <items>
+                    <item feature="XRTrayStatus" trayStatus="trayStatus" context="PageSize,MediaType"/>
+                    <items feature="MediaType" title="Other Type">
+                        <item keyword="Auto" image="Paper_24_Type_use-ready.pdf"/>
+                        <item keyword="Plain" image="Paper_24_Type_stationary.pdf"/>
+                        <item keyword="PrepunchedPlain" image="Paper_24_Type_stationary-pre-punched.pdf"/>
+                        <item keyword="Transparency" image="Paper_24_Type_transparency.pdf">
+                            <state>
+                                <feature keyword="XRMediaColor">Clear</feature>
+                            </state>
+                        </item>
+                        <item keyword="LetterheadPlain" image="Paper_24_Type_stationary-letterhead.pdf"/>
+                        <item keyword="ColoredPlain" image="Paper_24_Type_stationary.pdf"/>
+                        <item keyword="HeavyPlain" image="Paper_24_Type_cardstock-heavyweight.pdf"/>
+                        <item keyword="LightCard" image="Paper_24_Type_cardstock-lightweight.pdf"/>
+                        <item keyword="Card" image="Paper_24_Type_cardstock.pdf"/>
+                        <item keyword="HeavyCard" image="Paper_24_Type_cardstock-heavyweight.pdf"/>
+                        <item keyword="ExtraHeavyCard" image="Paper_24_Type_cardstock-heavyweight.pdf"/>
+                        <item keyword="RecycledPlain" image="Paper_24_Type_stationary-recycled.pdf"/>
+                        <item keyword="Labels" image="Paper_24_Type_labels.pdf"/>
+                        <item keyword="PreprintedPlain" image="Paper_24_Type_stationary-pre-printed.pdf"/>
+                        <item keyword="Envelope" image="Paper_24_Type_envelope.pdf"/>
+                        <item keyword="GlossyLightCard" image="Paper_24_Type_cardstock-lightweight-glossy.pdf"/>
+                        <item keyword="GlossyCard" image="Paper_24_Type_cardstock-glossy.pdf"/>
+                        <item keyword="GlossyHeavyCard" image="Paper_24_Type_cardstock-heavyweight-glossy.pdf"/>
+                        <item keyword="CustomType1" image="Paper_24_Type_custom1.pdf"/>
+                        <item keyword="CustomType2" image="Paper_24_Type_custom2.pdf"/>
+                        <item keyword="CustomType3" image="Paper_24_Type_custom3.pdf"/>
+                        <item keyword="CustomType4" image="Paper_24_Type_custom4.pdf"/>
+                        <item keyword="CustomType5" image="Paper_24_Type_custom5.pdf"/>
+                        <item keyword="Other" image="Paper_24_Color_other.pdf"/>
+                    </items>
+                    <items title="Paper Mismatch Policy">
+                        <item feature="XRMediaSizeMismatchPolicy" keyword="Prompt" title="Prompt me at the printer to load the correct paper size"/>
+                        <item feature="XRMediaSizeMismatchPolicy" keyword="Scale" title="Automatically scale and print on loaded paper size"/>
+                        <item feature="XRMediaSizeMismatchPolicy" keyword="Crop" title="Do not scale and print on loaded paper size"/>
+                        <item separatorLine="YES"/>
+                        <item feature="XRMediaTypeMismatchPolicy" keyword="Prompt" title="Prompt me at the printer to load the correct paper type"/>
+                        <item feature="XRMediaTypeMismatchPolicy" keyword="Ignore" title="Ignore mismatch and print on loaded paper type"/>
+                    </items>
+                    <item separatorLine="YES"/>
+                    <item title="Separators...">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Separators"/>
+                            </event>
+                        </events>
+                    </item>
+                    <item title="Covers...">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Covers"/>
+                            </event>
+                        </events>
+                    </item>
+                </items>
+                <title>
+                    <line label="- " valueOf="PageSize"/>
+                    <line label="- " valueOf="MediaType"/>
+                    <line label="- " separator=", ">
+                        <element title="Covers Title">
+                            <states>
+                                <state operator="or">
+                                    <feature keyword="XRFrontCoverKind">Blank</feature>
+                                    <feature keyword="XRBackCoverKind">Blank</feature>
+                                </state>
+                            </states>
+                        </element>
+                        <element title="Separators Title">
+                            <states>
+                                <state operator="or">
+                                    <feature keyword="XRSeparatorSheetType">AfterSet</feature>
+                                    <feature keyword="XRJobSheetType">End</feature>
+                                    <feature keyword="XRInterleaveSheetType">BlankAfter</feature>
+                                </state>
+                            </states>
+                        </element>
+                    </line>
+                </title>
+            </control>
+        </contentRow>
+        <contentRow name="Duplex">
+            <label align="center">2-Sided Printing:</label>
+            <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="DuplexPopup" feature="Duplex">
+                <items>
+                    <item keyword="None">
+                        <images>
+                            <image image="2Sided_24_1Sided_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_1Sided_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                    <item keyword="DuplexNoTumble">
+                        <images>
+                            <image image="2Sided_24_2Sided_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_2Sided_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                    <item keyword="DuplexTumble">
+                        <images>
+                            <image image="2Sided_24_2SidedFlip_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_2SidedFlip_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                </items>
+            </control>
+            <disable>
+                <state>
+                    <feature keyword="XRBookletLayout">True</feature>
+                </state>
+            </disable>
+        </contentRow>
+        <contentRow name="Xerox Black and White">
+            <label align="center">Xerox Black and White:</label>
+            <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="OutputColorPopup" feature="XROutputColor">
+                <items>
+                    <item keyword="Unspecified" title="Printer Default" image="Image_XeroxBW_24_PrinDef.pdf">
+                        <state>
+                            <feature keyword="XROutputColor">Unspecified</feature>
+                        </state>
+                    </item>
+                    <item keyword="PrintAsColor" title="Off (Use Document Color)" image="Image_XeroxBW_24_Off_UseDocumentColor.pdf">
+                        <state>
+                            <feature keyword="XRColorCorrection">Auto</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                        </state>
+                    </item>
+                    <item keyword="PrintAsGrayscale" title="On" image="Image_XeroxBW_24_On.pdf">
+                        <state>
+                            <feature keyword="XRColorCorrection">Gray</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                            <feature keyword="XROutputColor">PrintAsGrayscale</feature>
+                        </state>
+                    </item>
+                </items>
+                <disable>
+                    <state>
+                        <feature keyword="XRJobType">Fax</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow name="PrintQuality">
+            <label align="center">Print Quality:</label>
+            <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="PrintQualityPopup" feature="XRPrintQuality">
+                <items>
+                    <item keyword="Auto" image="PrintQuality_24_Auto.pdf"/>
+                    <item keyword="Standard" image="PrintQuality_24_Standard.pdf"/>
+                    <item keyword="Enhanced" image="PrintQuality_24_Enhanced.pdf"/>
+                    <item keyword="Photo" image="PrintQuality_24_Photo.pdf"/>
+                </items>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="Color Options" helpBookPage="color_options.html">
+        <contentRow name="ColorCorrectionsMimic" origin="{2, 110}" frame="{143, 180}">
+            <control class="UIColorCorrectionViewController" frame="{140, 175}" name="ColorCorrectionsImage"/>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="DefaultColorCorrectionsMimic" origin="{2, 110}" frame="{143, 180}">
+            <control class="UIColorCorrectionViewController" frame="{140, 175}" name="DefaultColorCorrectionsImage"/>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">True</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="PreviewButton" origin="{6, 80}" frame="{140, 30}">
+            <control class="UIMatrixController" frame="{26, 22}" origin="{0, 4}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+                <showTitle>NO</showTitle>
+                <toolTip>Preview</toolTip>
+                <items>
+                    <item title="Preview"/>
+                </items>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{76, 0}" name="PreviousButton">
+                <toolTip>Previous</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{108, 0}" name="NextButton">
+                <toolTip>Next</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow name="ColorCorrections" origin="{148, 285}" frame="{300, 22}">
+            <control class="UITextFieldController" frame="{300, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO"  name="ColorCorrectionLabel"/>
+        </contentRow>
+        <contentRow name="ColorCorrectionMatrix" origin="{148, 150}" frame="{300, 100}">
+            <control class="UIMatrixController" frame="{240, 100}" size="normal" buttonType="NSRadioButton" name="ColorCorrectionContext">
+                <intercellSpacing>2</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="Automatic Color (Recommended)">
+                        <state>
+                            <feature keyword="XRColorCorrection">Auto</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                        </state>
+                    </item>
+                    <item title="Vivid Color">
+                        <state>
+                            <feature keyword="XRColorCorrection">Vivid</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                        </state>
+                    </item>
+                    <item title="Xerox Black and White">
+                        <state>
+                            <feature keyword="XRColorCorrection">Gray</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                            <feature keyword="XROutputColor">PrintAsGrayscale</feature>
+                        </state>
+                    </item>
+                    <item title="Custom Color Options..." cellType="NSMomentaryLightButton">
+                        <disable>
+                            <state>
+                                <feature keyword="XRColorAdjustmentSet">None</feature>
+                            </state>
+                        </disable>
+                        <state>
+                            <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                            <!--feature keyword="XRColorAdjustmentSet">Basic</feature-->
+                        </state>
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="ColorAdjustments"/>
+                            </event>
+                        </events>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="ColorCorrectionSummaryBox" origin="{148, 48}" frame="{300, 100}">
+                <control class="UITextViewController" frame="{250, 100}" isEditable="NO" isSelectable="NO" name="ColorAdjustmentsSummary" feature="XRColorAdjustmentSet">
+                    <title>
+                        <line label="Color Correction:" valueOf="XRColorCorrection"/>
+                        <line>
+                            <element valueOf="XRNaturalLanguage" displayKeys="XRNaturalLanguageAdjective,XRNaturalLanguageColor,XRNaturalLanguageModifier,XRNaturalLanguageAdjustment">
+                                <states>
+                                    <state>
+                                        <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                    </state>
+                                </states>
+                            </element>
+                        </line>
+                        <line label="Lightness:" valueOf="XRLightness">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Contrast:" valueOf="XRContrast">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Saturation:" valueOf="XRSaturation">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Cyan-Red:" valueOf="XRCyanColorCast">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Magenta-Green:" valueOf="XRMagentaColorCast">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Yellow-Blue:" valueOf="XRYellowColorCast">
+                            <states>
+                                <state>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                    </title>
+                </control>
+            </contentRow>
+        <contentRow name="PrintSettingsOnPage" origin="{148, 20}" frame="{300, 20}">
+            <control class="UIMatrixController" frame="{240, 22}" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PrintSettingsCheckbox" feature="XRPrintSettingsOnPage">
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="Print Settings on Page"/>
+                </items>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="Booklet/Watermark" helpBookPage="booklet_watermark.html">
+        <contentRow origin="{10, 160}">
+            <control class="UIImageViewController" frame="{130, 130}">
+                <images>
+                    <image image="PageLayout_130_Booklet_None_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_None_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_Brdrs_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">True</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_NoBrdrs_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_Brdrs_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">True</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_NoBrdrs_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                </images>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Booklet Layout:"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{200, 24}" size="normal" feature="XRBookletLayout">
+                <items>
+                    <item keyword="False" title="Disabled"/>
+                    <item keyword="True" title="Enabled">
+                        <state>
+                            <feature keyword="Duplex">DuplexTumble</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIBevelButtonController" frame="{200, 24}" size="normal" title="Booklet Options...">
+                <disable>
+                    <state>
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="BookletOptions"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIMatrixController" frame="{240, 22}" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" feature="XRBookletOutlines">
+                <showTitle>YES</showTitle>
+                <disable>
+                    <state>
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+                <items>
+                    <item title="Draw Page Borders"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow origin="{10,10}" maximumSupportedOSVersion="10.6">
+            <control class="UIWatermarkViewController" frame="{130,130}"/>
+        </contentRow>
+        <contentRow verticalSpacing="80" maximumSupportedOSVersion="10.6">
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Watermark:"/>
+        </contentRow>
+        <contentRow maximumSupportedOSVersion="10.6">
+            <control class="UIWatermarkController" frame="{200, 24}" size="normal"/>
+        </contentRow>
+    </panel>
+    <panel name="Advanced" helpBookPage="advanced.html">
+        <contentRow>
+            <label align="center">Booklet Image Order:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="BookletImageOrderPopup" feature="XRBookletReverseOrder">
+                <disable>
+                    <state operator="or">
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Mirrored Output:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="MirroredOutputPopup" feature="MirrorPrint"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Print Optimization:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="PrintOptimizationPopup" feature="XRPrintOptimization"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">RGB Neutral Gray:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="sRGBNeutralGrayPopup" feature="XRsRGBGraylineMapping"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Thin Line Enhancement:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="ThinLineEnhancementPopup" feature="XRThinLineEnhancement"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Use Printer Halftones:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="HalftonesPopup" feature="XRHalftones"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Allow Printer to Manage Spot Colors:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="SpotColorsPopup" feature="XRSpotColorMapping"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Black Trapping:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="BlackTrappingPopup" feature="XRBlackTrapping"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Configuration:</label>
+            <control class="UIPushButtonController" frame="{225, 26}" fontSize="11" name="BiDiConfigurationButton" title="Bi-Directional Communication...">
+                <events>
+                    <event>
+                        <action selector="launchDialog:" name="BiDiCommunication"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Version:</label>
+            <control class="UITextFieldController" frame="{225, 26}" fontSize="11" name="Version" title="VersionBuild">
+                <parameters>
+                    <variableArguments displayKey="driverVersion,driverBuild">
+                        <driverVersion>XRDriverVersion</driverVersion>
+                        <driverBuild>XRDriverBuild</driverBuild>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </panel>
+    <dialog name="BiDiCommunication" helpBookPage="bi-di.html">
+        <dialogSetup title="Bi-Directional Communication" xOrigin="250" addDefaultButtonRow="YES" addSeparatorLine="YES" growDialog="YES">
+            <class>NSView</class>
+            <frame>{500, 75}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow>
+            <label align="top">Bi-Directional Communication:</label>
+            <control class="UIMatrixController" frame="{40,40}" size="normal" buttonType="NSRadioButton" name="Bi-DiCommunicationContext" feature="XRBiDiCommunication" excludeFromKeyboardAccess="YES">
+                <disable>
+                    <state>
+                        <feature keyword="XRPrinterStatus">NotReachable</feature>
+                    </state>
+                </disable>
+                <intercellSpacing>8</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="On" keyword="True"/>
+                    <item title="Off" keyword="False"/>
+                </items>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="BookletOptions" helpBookPage="booklet_options.html">
+        <dialogSetup title="Booklet Options" xOrigin="180">
+            <class>NSView</class>
+            <frame>{500, 166}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow>
+            <label align="center">Scale to New Paper Size:</label>
+            <control class="UIPopupButtonController" frame="{250, 26}" size="normal" feature="XRBookletSize"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Booklet Margins:</label>
+            <control class="UIPopupButtonController" frame="{250, 26}" size="normal" feature="XRBookletMargins"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Gutter:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletGutter"/>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletGutter" horizontalSpacing="-1">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{120, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Gutter Range" horizontalSpacing="8">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum">
+                        <minimum>XRBookletGutter</minimum>
+                        <maximum>XRBookletGutter</maximum>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Creep:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletCreep" name="BookletCreepEdit">
+                <allowsFloats>YES</allowsFloats>
+                <minimumFractionDigits>1</minimumFractionDigits>
+                <maximumFractionDigits>1</maximumFractionDigits>
+                <multiplier>.1</multiplier>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletCreep" horizontalSpacing="-1">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{120, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Creep Range" useFormatter="BookletCreepEdit" horizontalSpacing="8">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum">
+                        <minimum>XRBookletCreep</minimum>
+                        <maximum>XRBookletCreep</maximum>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="Secure" helpBookPage="secure_print.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Secure Print Title">
+            <class>NSView</class>
+            <frame>{400, 230}</frame>
+            <placement>center</placement>
+            <validation>passcodeValidation:</validation>
+        </dialogSetup>
+        <contentRow name="Passcode">
+            <label align="center">Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="PasscodeEnterEdit" feature="XRJobPassword"/>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(4 digits)" name="PasscodeEnterText"/>
+        </contentRow>
+        <contentRow name="Confirm_Passcode">
+            <label align="center">Confirm Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" confirmsInput="PasscodeEnterEdit" name="PasscodeConfirmEdit">
+                <disabledInitialState>YES</disabledInitialState>
+            </control>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(4 digits)" name="PasscodeConfirmText"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">User Name:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="YES" name="UserNameEdit" feature="XRUsername"/>
+        </contentRow>
+        <contentRow name="Notes to end the dialog" verticalSpacing="25">
+            <control class="UITextFieldController" frame="{360, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" xOrigin="20" title="Secure Print Note 1" name="SecurePrintNote">
+                <lineBreaks>YES</lineBreaks>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="Save" helpBookPage="saved_job.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Saved Job Title">
+            <class>NSView</class>
+            <frame>{400, 270}</frame>
+            <placement>center</placement>
+            <validation>savedJobValidation:</validation>
+        </dialogSetup>
+        <contentRow name="SavedJobType">
+            <control class="UIMatrixController" frame="{200, 100}" size="normal" buttonType="NSPushOnPushOffButton" name="SaveContextRadios" feature="XRSaveContext">
+                <titleAsLabel>YES</titleAsLabel>
+                <intercellSpacing>0</intercellSpacing>
+                <showTitle>NO</showTitle>
+                <items>
+                    <item keyword="Public" image="JobType_16_SecureOff.pdf"/>
+                    <item keyword="Private" image="JobType_16_SecureOn.pdf"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="JobName" verticalSpacing="8">
+            <label align="center">Job Name:</label>
+            <control class="UIComboBoxController" frame="{200, 26}" size="normal" name="JobNameCombo" feature="XRJobName">
+                <items>
+                    <item keyword="Use Document Name"/>
+                </items>
+                <historyKeyword>savedJobName</historyKeyword>
+                <maximumEntries>10</maximumEntries>
+            </control>
+        </contentRow>
+        <contentRow name="Passcode">
+            <label align="center">Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="SavedJobPasscodeEnterEdit" feature="XRJobPassword"/>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(4 digits)" name="SavedJobPasscodeEnterText"/>
+        </contentRow>
+        <contentRow name="Confirm_Passcode">
+            <label align="center">Confirm Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" confirmsInput="SavedJobPasscodeEnterEdit" name="SavedJobPasscodeConfirmEdit">
+                <disabledInitialState>YES</disabledInitialState>
+            </control>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(4 digits)" name="SavedJobPasscodeConfirmText"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">User Name:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="YES" name="UserNameEdit" feature="XRUsername"/>
+        </contentRow>
+    </dialog>
+    <dialog name="Proof" helpBookPage="proof_print.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Proof Print">
+            <class>NSView</class>
+            <frame>{400, 75}</frame>
+            <placement>center</placement>
+            <validation>proofJobValidation:</validation>
+        </dialogSetup>
+        <contentRow name="JobName">
+            <label align="center">Job Name:</label>
+            <control class="UIComboBoxController" frame="{200, 26}" size="normal" name="JobNameCombo" feature="XRJobName">
+                <items>
+                    <item keyword="Use Document Name"/>
+                </items>
+                <historyKeyword>proofJobName</historyKeyword>
+                <maximumEntries>10</maximumEntries>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="PrintWith" helpBookPage="print_with.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Print With Title">
+            <class>NSView</class>
+            <frame>{484, 475}</frame>
+            <placement>center</placement>
+            <validation>printWithValidation:</validation>
+            <controls>
+                <control class="UIPushButtonController" frame="{84, 20}" size="normal" align="left" title="Passcode..." name="Passcode">
+                    <events>
+                        <event type="onClick">
+                            <action selector="launchDialog:" name="PrintWithPasscode"/>
+                        </event>
+                    </events>
+                </control>
+            </controls>
+        </dialogSetup>
+        <contentRow name="SavedJobs">
+            <label align="center">Saved Jobs:</label>
+            <control class="UIPopupButtonController" frame="{301, 36}" size="normal" name="SavedJobsPopup">
+                <items>
+                    <item title="Personal and Shared Saved Jobs" image="JobType_16_PrintWith_Personal.pdf">
+                        <state>
+                            <feature keyword="XRPrintWithContext">PublicAndPrivate</feature>
+                        </state>
+                    </item>
+                    <item title="Shared Saved Jobs" image="JobType_PrintWith_GR_Shared.pdf">
+                        <state>
+                            <feature keyword="XRPrintWithContext">Public</feature>
+                        </state>
+                    </item>
+                    <item title="Personal Saved Jobs" image="JobType_16_SecureOn.pdf">
+                        <state>
+                            <feature keyword="XRPrintWithContext">Private</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="SearchField">
+            <control class="UISearchFieldController" frame="{297, 22}" size="normal" filter="SavedJobsTable" name="SavedJobsSearch"/>
+        </contentRow>
+        <contentRow name="SavedJobsTable">
+            <control class="UITableViewController" frame="{297, 139}" size="normal" name="SavedJobsTable" searchFilterKey="XRJobName" filterKey="XRSaveContext" filter="XRPrintWithContext" feature="XRSavedJobs" notifyObjectOnSelectionChange="AddSavedJobButton" rowHeight="17.0">
+                <columns>
+                    <column width="30" minWidth="30" maxWidth="30" displayKey="XRSaveContext" columnType="graphic">
+                        <images>
+                            <image image="JobType_PrintWith_GR_Shared.pdf" frame="{16, 16}">
+                                <states>
+                                    <state>
+                                        <feature displayKey="XRSaveContext">Public</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="JobType_16_SecureOn.pdf" frame="{16, 16}">
+                                <states>
+                                    <state>
+                                        <feature displayKey="XRSaveContext">Private</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </column>
+                    <column width="250" minWidth="250" maxWidth="250" displayKey="XRJobName"/>
+                </columns>
+            </control>
+        </contentRow>
+        <contentRow name="AddSavedJob">
+            <control class="UIBevelButtonController" size="normal" name="AddSavedJobButton" frame="{30, 30}">
+                <respondsToNotifications>YES</respondsToNotifications>
+                <disabledInitialState>YES</disabledInitialState>
+                <items>
+                    <item image="UI_Buttons_16_Add_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="addValues:" selection="SavedJobsTable" destination="XRPrintWith"/>
+                    </event>
+                </events>
+            </control>
+            <toolTip>Add</toolTip>
+        </contentRow>
+        <contentRow name="FinalJobTable">
+            <label align="top">Final Job:</label>
+            <control class="UITableViewController" frame="{297, 139}" size="normal" feature="XRPrintWith" name="FinalJobTable" dragAndDrop="YES" alternatingRowColor="YES" rowHeight="17.0">
+                <columns>
+                    <column width="30" minWidth="30" maxWidth="30" displayKey="XRSaveContext" columnType="graphic">
+                        <images>
+                            <image image="JobType_PrintWith_GR_Shared.pdf" frame="{16, 16}">
+                                <states>
+                                    <state>
+                                        <feature displayKey="XRSaveContext">Public</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="JobType_16_SecureOn.pdf" frame="{16, 16}">
+                                <states>
+                                    <state>
+                                        <feature displayKey="XRSaveContext">Private</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="JobType_16_PrintWith_Current.pdf" frame="{16, 16}">
+                                <states>
+                                    <state>
+                                        <feature displayKey="XRSaveContext">PDL</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </column>
+                    <column width="250" minWidth="250" maxWidth="250" displayKey="XRJobName"/>
+                </columns>
+            </control>
+        </contentRow>
+        <contentRow name="FinalJobButtons">
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" name="RemoveButton">
+                <respondsToNotifications>YES</respondsToNotifications>
+                <disabledInitialState>YES</disabledInitialState>
+                <toolTip>Remove</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Remove.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="removeValues:" selection="FinalJobTable" destination="XRPrintWith"/>
+                    </event>
+                </events>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" name="MoveUpButton">
+                <respondsToNotifications>YES</respondsToNotifications>
+                <disabledInitialState>YES</disabledInitialState>
+                <toolTip>MoveUp</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_MoveUp_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="promoteValues:" selection="FinalJobTable" destination="XRPrintWith"/>
+                    </event>
+                </events>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" name="MoveDownButton">
+                <respondsToNotifications>YES</respondsToNotifications>
+                <disabledInitialState>YES</disabledInitialState>
+                <toolTip>MoveDown</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_MoveDown_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="demoteValues:" selection="FinalJobTable" destination="XRPrintWith"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="PrintWithPasscode" helpBookPage="passcode.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Passcode Title">
+            <class>NSView</class>
+            <frame>{400, 180}</frame>
+            <placement>center</placement>
+            <validation>printWithPasscodeValidation:</validation>
+        </dialogSetup>
+        <contentRow name="UserName">
+            <label align="center">User Name:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="YES" name="UserNameEdit" feature="XRUsername"/>
+        </contentRow>
+        <contentRow name="Passcode">
+            <label align="center">Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="PasscodeEnterEdit" feature="XRJobPassword"/>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(4 digits)" name="PasscodeEnterText"/>
+        </contentRow>
+        <contentRow name="Print With Notes" verticalSpacing="25">
+            <control class="UITextFieldController" frame="{360, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" xOrigin="20" title="Print With Passcode Note 1" name="PrintWithPasscodeNote">
+                <lineBreaks>YES</lineBreaks>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="Covers" helpBookPage="covers.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Covers Title">
+            <class>NSView</class>
+            <frame>{400, 155}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow name="CoverOptions">
+            <label align="center">Cover Options</label>
+            <control class="UIPopupButtonController" frame="{172, 36}" size="normal" name="CoverOptionsPopup">
+                <items>
+                    <item title="NoCovers" >
+                        <state>
+                            <feature keyword="XRFrontCoverKind">None</feature>
+                            <feature keyword="XRBackCoverKind">None</feature>
+                        </state>
+                    </item>
+                    <item title="FrontOnly" >
+                        <state>
+                            <feature keyword="XRFrontCoverKind">Blank</feature>
+                            <feature keyword="XRBackCoverKind">None</feature>
+                        </state>
+                        <hide>
+                            <feature keyword="XRBookletLayout">True</feature>
+                        </hide>
+                    </item>
+                    <item title="FrontBack" >
+                        <state>
+                            <feature keyword="XRFrontCoverKind">Blank</feature>
+                            <feature keyword="XRBackCoverKind">Blank</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="CoverSource">
+            <label align="center">Source</label>
+            <control class="UIPopupButtonController" frame="{172, 36}" size="normal" name="CoverSourcePopup">
+                <disable>
+                    <state>
+                        <feature keyword="XRFrontCoverKind">None</feature>
+                        <feature keyword="XRBackCoverKind">None</feature>
+                    </state>
+                </disable>
+                <items>
+                    <item title="Tray 1 (MPT)">
+                        <state>
+                            <feature keyword="XRFrontCoverInputSlot">Tray1</feature>
+                            <feature keyword="XRBackCoverInputSlot">Tray1</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 2">
+                        <state>
+                            <feature keyword="XRFrontCoverInputSlot">Tray2</feature>
+                            <feature keyword="XRBackCoverInputSlot">Tray2</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 3">
+                        <state>
+                            <feature keyword="XRFrontCoverInputSlot">Tray3</feature>
+                            <feature keyword="XRBackCoverInputSlot">Tray3</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 4">
+                        <state>
+                            <feature keyword="XRFrontCoverInputSlot">Tray4</feature>
+                            <feature keyword="XRBackCoverInputSlot">Tray4</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 5">
+                        <state>
+                            <feature keyword="XRFrontCoverInputSlot">Tray5</feature>
+                            <feature keyword="XRBackCoverInputSlot">Tray5</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="Separators" helpBookPage="separators.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Separators Title">
+            <class>NSView</class>
+            <frame>{400, 200}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow name="Separators">
+            <label align="center">Separator Options</label>
+            <control class="UIPopupButtonController" frame="{172, 36}" size="normal" name="SeparatorsOptionsPopup">
+                <items>
+                    <item title="No Separators"  >
+                        <state>
+                            <feature keyword="XRSeparatorSheetType">None</feature>
+                            <feature keyword="XRJobSheetType">None</feature>
+                            <feature keyword="XRInterleaveSheetType">None</feature>
+                        </state>
+                    </item>
+                    <item title="End of Job"  >
+                        <state>
+                            <feature keyword="XRJobSheetType">End</feature>
+                            <feature keyword="XRSeparatorSheetType">None</feature>
+                            <feature keyword="XRInterleaveSheetType">None</feature>
+                        </state>
+                    </item>
+                    <item title="End of Set"   >
+                        <state>
+                            <feature keyword="XRSeparatorSheetType">AfterSet</feature>
+                            <feature keyword="XRJobSheetType">None</feature>
+                            <feature keyword="XRInterleaveSheetType">None</feature>
+                        </state>
+                    </item>
+                    <item title="End of Page" >
+                        <state>
+                            <feature keyword="XRInterleaveSheetType">BlankAfter</feature>
+                            <feature keyword="XRSeparatorSheetType">None</feature>
+                            <feature keyword="XRJobSheetType">None</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="SeparatorSource">
+            <label align="center">Source</label>
+            <control class="UIPopupButtonController" frame="{172, 36}" size="normal" name="SeparatorSourcePopup">
+                <disable>
+                    <state>
+                        <feature keyword="XRSeparatorSheetType">None</feature>
+                        <feature keyword="XRJobSheetType">None</feature>
+                        <feature keyword="XRInterleaveSheetType">None</feature>
+                    </state>
+                </disable>
+                <items>
+                    <item title="Tray 1 (MPT)">
+                        <state>
+                            <feature keyword="XRJobSheetMediaSource">Tray1</feature>
+                            <feature keyword="XRSeparatorSheetMediaSource">Tray1</feature>
+                            <feature keyword="XRInterleaveSheetMediaSource">Tray1</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 2">
+                        <state>
+                            <feature keyword="XRJobSheetMediaSource">Tray2</feature>
+                            <feature keyword="XRSeparatorSheetMediaSource">Tray2</feature>
+                            <feature keyword="XRInterleaveSheetMediaSource">Tray2</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 3">
+                        <state>
+                            <feature keyword="XRJobSheetMediaSource">Tray3</feature>
+                            <feature keyword="XRSeparatorSheetMediaSource">Tray3</feature>
+                            <feature keyword="XRInterleaveSheetMediaSource">Tray3</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 4">
+                        <state>
+                            <feature keyword="XRJobSheetMediaSource">Tray4</feature>
+                            <feature keyword="XRSeparatorSheetMediaSource">Tray4</feature>
+                            <feature keyword="XRInterleaveSheetMediaSource">Tray4</feature>
+                        </state>
+                    </item>
+                    <item title="Tray 5">
+                        <state>
+                            <feature keyword="XRJobSheetMediaSource">Tray5</feature>
+                            <feature keyword="XRSeparatorSheetMediaSource">Tray5</feature>
+                            <feature keyword="XRInterleaveSheetMediaSource">Tray5</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="ColorAdjustments" helpBookPage="custom_color_options.html">
+        <dialogSetup name="_ColorCorrectionSetup_" title="Custom Color Options">
+            <class>NSView</class>
+            <frame>{681, 488}</frame>
+            <placement>center</placement>
+            <onLaunch>
+                <settings>
+                    <test>
+                        <states>
+                            <state>
+                                <feature keyword="XRColorAdjustmentSet">None</feature>
+                            </state>
+                        </states>
+                        <set>
+                            <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                            <feature keyword="XRColorCorrection">Auto</feature>
+                        </set>
+                    </test>
+                </settings>
+            </onLaunch>
+            <defaultButtonAction>saveCustomColorCorrections:</defaultButtonAction>
+        </dialogSetup>
+        <contentRow origin="{13, 40}">
+            <control class="UITabViewController" frame="{656, 488}" tabViewType="NSTopTabsBezelBorder" drawsBackground="YES" name="CCTabView" allowsTruncatedLabels="YES">
+                <items>
+                    <item panel="Color By Words" supportedLanguages="en,fr,pt,it,de,es,ru"/>
+                    <item panel="Color Correction"/>
+                    <item panel="Color Adjustments"/>
+                </items>
+            </control>
+        </contentRow>
+    </dialog>
+<panel name="Color Correction">
+    <contentRow name="ColorCorrectionsOptions" origin="{17, 394}">
+        <control class="UIPopupButtonController" frame="{266, 26}" size="normal" name="ColorCorrectionsPopup" feature="XRColorCorrection">
+            <items>
+                <item keyword="Auto"/>
+                <item keyword="Custom">
+                    <events>
+                        <event type="onClick">
+                            <action selector="launchDialog:" name="CustomColorAdjustments"/>
+                        </event>
+                    </events>
+                </item>
+                <item separatorLine="YES"/>
+                <item keyword="LCD"/>
+                <item keyword="sRGB"/>
+                <item keyword="Vivid"/>
+                <item keyword="Commercial"/>
+                <item keyword="SWOP"/>
+                <item keyword="Euroscale"/>
+                <item keyword="Gray"/>
+                <item separatorLine="YES"/>
+                <item keyword="None"/>
+                <item keyword="Unspecified"/>
+            </items>
+        </control>
+    </contentRow>
+    <contentRow name="ColorCorrectionsDisplay" origin="{17, 81}">
+        <control class="UICustomColorCorrectionSummaryController" frame="{266, 300}" name="ColorCorrectionsDisplay"/>
+    </contentRow>
+    <contentRow name="ColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="ColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">False</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="DefaultColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="DefaultColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">True</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="ColorCorrectionPreviewButton" origin="{345, 49}" frame="{280, 30}">
+        <control class="UIMatrixController" frame="{100, 22}" origin="{0, 6}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+            <showTitle>YES</showTitle>
+            <toolTip>Preview</toolTip>
+            <items>
+                <item title="Preview"/>
+            </items>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{210, 0}" name="PreviousButton" horizontalSpacing="198">
+            <toolTip>Previous</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{242, 0}" name="NextButton" horizontalSpacing="2">
+            <toolTip>Next</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+    </contentRow>
+</panel>
+<panel name="Color By Words">
+    <contentRow name="ColorCorrectionBasicView" origin="{17, 26}" frame="{286, 394}">
+        <control class="UIColorByWordsViewController" frame="{286, 394}" size="normal" name="ColorByWordsView"/>
+    </contentRow>
+    <contentRow name="ColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="ColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">False</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="DefaultColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="DefaultColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">True</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="ColorByWordsPreviewButton" origin="{345, 49}" frame="{280, 30}">
+        <control class="UIMatrixController" frame="{100, 22}" origin="{0, 6}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+            <showTitle>YES</showTitle>
+            <toolTip>Preview</toolTip>
+            <items>
+                <item title="Preview"/>
+            </items>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{210, 0}" name="PreviousButton" horizontalSpacing="198">
+            <toolTip>Previous</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{242, 0}" name="NextButton" horizontalSpacing="2">
+            <toolTip>Next</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+    </contentRow>
+</panel>
+<panel name="Color Adjustments">
+    <contentRow name="ColorCorrectionAdvancedView" origin="{17, 39}" frame="{300, 397}">
+        <contentRow name="AdvancedViewLabel">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Lightness:" name="ColorAdjustmentsLightnessLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="LightnessSlider" feature="XRLightness">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Lightness</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Lightness.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="LightnessEdit" feature="XRLightness">
+                <allowsFloats>NO</allowsFloats>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="LightnessStepper" feature="XRLightness" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Lightness</toolTip>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Contrast:" name="ColorAdjustmentsContrastLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ContrastSlider" feature="XRContrast">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Contrast</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Contrast.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ContrastEdit" feature="XRContrast"/>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ContrastStepper" feature="XRContrast" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Contrast</toolTip>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Saturation:" name="ColorAdjustmentsSaturationLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="SaturationSlider" feature="XRSaturation">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Saturation</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Saturation.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="SaturationEdit" feature="XRSaturation">
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="SaturationStepper" feature="XRSaturation" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Saturation</toolTip>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Color Cast:" name="ColorAdjustmentsColorCastCyanRedLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastCyanRedSlider" feature="XRCyanColorCast">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Cyan-Red</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_CyanRed.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Cyan,Red</label>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastCyanRedEdit" feature="XRCyanColorCast">
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastCyanRedStepper" feature="XRCyanColorCast" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Cyan-Red</toolTip>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Magenta-Green</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_MagentaGreen.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Magenta,Green</label>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast">
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Magenta-Green</toolTip>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastYellowBlueSlider" feature="XRYellowColorCast">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Yellow-Blue</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_YellowBlue.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Yellow,Blue</label>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastYellowBlueEdit" feature="XRYellowColorCast">
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastYellowBlueStepper" feature="XRYellowColorCast" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Yellow-Blue</toolTip>
+                <disable>
+                    <state>
+                        <feature keyword="XRColorCorrection">Gray</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+    </contentRow>
+    <contentRow name="ColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="ColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">False</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="DefaultColorCorrectionsMimic" origin="{340, 81}" frame="{280, 350}">
+        <control class="UIColorCorrectionViewController" frame="{280, 350}" name="DefaultColorCorrectionsImage"/>
+        <hide>
+            <state>
+                <feature keyword="XRPreviewColorCorrection">True</feature>
+            </state>
+        </hide>
+    </contentRow>
+    <contentRow name="ColorByWordsPreviewButton" origin="{345, 49}" frame="{280, 30}">
+        <control class="UIMatrixController" frame="{100, 22}" origin="{0, 6}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+            <showTitle>YES</showTitle>
+            <toolTip>Preview</toolTip>
+            <items>
+                <item title="Preview"/>
+            </items>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{210, 0}" name="PreviousButton" horizontalSpacing="198">
+            <toolTip>Previous</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+        <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{242, 0}" name="NextButton" horizontalSpacing="2">
+            <toolTip>Next</toolTip>
+            <items>
+                <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+            </items>
+            <events>
+                <event type="onClick">
+                    <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                </event>
+            </events>
+        </control>
+    </contentRow>
+</panel>
+    <dialog name="CustomColorAdjustments" helpBookPage="custom_color_options.html">
+        <dialogSetup name="_CustomColorAdjustmentsSetup_" title="Custom Color Correction">
+            <class>NSView</class>
+            <frame>{610, 280}</frame>
+            <placement>center</placement>
+            <controls>
+                <control class="UIPushButtonController" frame="{25, 25}" size="normal" align="left" title="Defaults" name="Defaults">
+                    <events>
+                        <event type="onClick">
+                            <action selector="buttonPress:" name="Defaults"/>
+                        </event>
+                    </events>
+                </control>
+            </controls>
+        </dialogSetup>
+        <contentRow origin="{13, 40}">
+            <control class="UITabViewController" frame="{580, 272}" tabViewType="NSTopTabsBezelBorder" drawsBackground="YES" name="CCATabView" allowsTruncatedLabels="YES">
+                <items>
+                    <item panel="Office Color"/>
+                    <item panel="Press Match"/>
+                    <item panel="Spot Color"/>
+                    <item panel="CIE Color"/>
+                    <item panel="Gray"/>
+                </items>
+            </control>
+        </contentRow>
+    </dialog>
+    <panel name="Office Color">
+        <contentRow>
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Text and Graphics:" name="RGBTextGraphicsLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="RGBTextGraphicsPopup" feature="XRRGBTextColorCorrection">
+                <synchronize>
+                    <state>
+                        <feature keyword="XRRGBGraphicColorCorrection" valueOf="XRRGBTextColorCorrection"/>
+                    </state>
+                </synchronize>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="RGBTextGraphicsPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRRGBTextGraphicsMoreAdjustments"/>
+                                    <mapping name="RGBTextGraphicsPopup" feature="XRRGBTextColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRRGBTextLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRRGBTextLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRRGBTextLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRRGBTextContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRRGBTextContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRRGBTextContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRRGBTextSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRRGBTextSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRRGBTextSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRRGBTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRRGBTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRRGBTextCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRRGBTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRRGBTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRRGBTextMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRRGBTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRRGBTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRRGBTextYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="RGBTextGraphicsPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Images:" name="RGBImagesLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="RGBImagesPopup" feature="XRRGBImageColorCorrection"/>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="RGBImagesPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRRGBImageMoreAdjustments"/>
+                                    <mapping name="RGBImagesPopup" feature="XRRGBImageColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRRGBImageLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRRGBImageLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRRGBImageLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRRGBImageContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRRGBImageContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRRGBImageContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRRGBImageSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRRGBImageSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRRGBImageSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRRGBImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRRGBImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRRGBImageCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRRGBImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRRGBImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRRGBImageMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRRGBImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRRGBImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRRGBImageYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="RGBImagesPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="Press Match">
+        <contentRow>
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Text and Graphics:" name="CMYKTextGraphicsLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="CMYKTextGraphicsPopup" feature="XRCMYKTextColorCorrection">
+                <synchronize>
+                    <state>
+                        <feature keyword="XRCMYKGraphicColorCorrection" valueOf="XRCMYKTextColorCorrection"/>
+                    </state>
+                </synchronize>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="CMYKTextGraphicsPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRCMYKTextGraphicsMoreAdjustments"/>
+                                    <mapping name="CMYKTextGraphicsPopup" feature="XRCMYKTextColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRCMYKTextLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRCMYKTextLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRCMYKTextLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRCMYKTextContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRCMYKTextContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRCMYKTextContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRCMYKTextSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRCMYKTextSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRCMYKTextSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRCMYKTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRCMYKTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRCMYKTextCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRCMYKTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRCMYKTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRCMYKTextMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRCMYKTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRCMYKTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRCMYKTextYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="CMYKTextGraphicsPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Images:" name="CMYKImagesLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="CMYKImagesPopup" feature="XRCMYKImageColorCorrection"/>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="CMYKImagesPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRCMYKImageMoreAdjustments"/>
+                                    <mapping name="CMYKImagesPopup" feature="XRCMYKImageColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRCMYKImageLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRCMYKImageLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRCMYKImageLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRCMYKImageContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRCMYKImageContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRCMYKImageContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRCMYKImageSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRCMYKImageSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRCMYKImageSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRCMYKImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRCMYKImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRCMYKImageCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRCMYKImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRCMYKImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRCMYKImageMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRCMYKImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRCMYKImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRCMYKImageYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="CMYKImagesPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="Spot Color">
+        <contentRow>
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Text and Graphics:" name="SpotTextGraphicsLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="SpotTextGraphicsPopup" feature="XRSpotTextColorCorrection">
+                <synchronize>
+                    <state>
+                        <feature keyword="XRSpotGraphicColorCorrection" valueOf="XRSpotTextColorCorrection"/>
+                    </state>
+                </synchronize>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="SpotTextGraphicsPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRSpotTextGraphicsMoreAdjustments"/>
+                                    <mapping name="SpotTextGraphicsPopup" feature="XRSpotTextColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRSpotTextLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRSpotTextLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRSpotTextLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRSpotTextContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRSpotTextContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRSpotTextContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRSpotTextSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRSpotTextSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRSpotTextSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRSpotTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRSpotTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRSpotTextCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRSpotTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRSpotTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRSpotTextMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRSpotTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRSpotTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRSpotTextYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="SpotTextGraphicsPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Images:" name="SpotImagesLabel"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="SpotImagesPopup" feature="XRSpotImageColorCorrection"/>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="SpotImagesPushButton">
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRSpotImageMoreAdjustments"/>
+                                    <mapping name="SpotImagesPopup" feature="XRSpotImageColorCorrection"/>
+                                    <mapping name="LightnessSlider" feature="XRSpotImageLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRSpotImageLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRSpotImageLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRSpotImageContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRSpotImageContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRSpotImageContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRSpotImageSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRSpotImageSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRSpotImageSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRSpotImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRSpotImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRSpotImageCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRSpotImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRSpotImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRSpotImageMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRSpotImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRSpotImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRSpotImageYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="SpotImagesPopup">Gray</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="CIE Color">
+        <contentRow name="ColorCorrectionMatrix">
+            <control class="UIMatrixController" frame="{410, 29}" size="normal" buttonType="NSRadioButton" name="CIEProfileMatrix" feature="XRUseEmbeddedCIEProfiles">
+                <intercellSpacing>0</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item keyword="Always" title="Always Apply Embedded Profiles"/>
+                    <item keyword="Never" title="Never Apply Embedded Profiles"/>
+                    <item keyword="Auto" title="Automatically Apply Embedded Profiles When Appropriate"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Text and Graphics:" name="CIETextGraphicsLabel">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+                <synchronize>
+                    <state>
+                        <feature keyword="XRCIEGraphicColorCorrection" valueOf="XRCIETextColorCorrection"/>
+                    </state>
+                </synchronize>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="CIETextGraphicsPopup" feature="XRCIETextColorCorrection">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="CIETextGraphicsPushButton">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRCIETextGraphicsMoreAdjustments"/>
+                                    <mapping name="LightnessSlider" feature="XRCIETextLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRCIETextLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRCIETextLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRCIETextContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRCIETextContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRCIETextContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRCIETextSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRCIETextSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRCIETextSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRCIETextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRCIETextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRCIETextCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRCIETextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRCIETextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRCIETextMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRCIETextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRCIETextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRCIETextYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Images:" name="CIEImagesLabel">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="CIEImagesPopup" feature="XRCIEImageColorCorrection">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="CIEImagesPushButton">
+                <enable>
+                    <state>
+                        <feature keyword="XRUseEmbeddedCIEProfiles">Auto</feature>
+                    </state>
+                </enable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRCIEImageMoreAdjustments"/>
+                                    <mapping name="LightnessSlider" feature="XRCIEImageLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRCIEImageLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRCIEImageLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRCIEImageContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRCIEImageContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRCIEImageContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRCIEImageSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRCIEImageSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRCIEImageSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRCIEImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRCIEImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRCIEImageCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRCIEImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRCIEImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRCIEImageMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRCIEImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRCIEImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRCIEImageYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </panel>
+    <panel name="Gray">
+        <contentRow name="ColorCorrectionMatrix">
+            <control class="UIMatrixController" frame="{410, 29}" size="normal" buttonType="NSRadioButton" name="GrayProfileMatrix" feature="XRSubstituteGrayAdjustments">
+                <intercellSpacing>0</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item keyword="UseRGB" title="Use RGB Color Settings for Black"/>
+                    <item keyword="UseCMYK" title="Use CMYK Color Settings for Black"/>
+                    <item keyword="UseGray" title="Manually Configure Black"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Text and Graphics:" name="GrayTextGraphicsLabel">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="GrayTextGraphicsPopup" feature="XRGrayTextColorCorrection">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+                <synchronize>
+                    <state>
+                        <feature keyword="XRGrayGraphicColorCorrection" valueOf="XRGrayTextColorCorrection"/>
+                    </state>
+                </synchronize>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="GrayTextGraphicsPushButton">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRGrayTextGraphicsMoreAdjustments"/>
+                                    <mapping name="LightnessSlider" feature="XRGrayTextLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRGrayTextLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRGrayTextLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRGrayTextContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRGrayTextContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRGrayTextContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRGrayTextSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRGrayTextSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRGrayTextSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRGrayTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRGrayTextCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRGrayTextCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRGrayTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRGrayTextMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRGrayTextMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRGrayTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRGrayTextYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRGrayTextYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="MoreAdjustmentsRadio">MoreAdjustments</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{239, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Images:" name="GrayImagesLabel">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{239, 32}" size="normal" name="GrayImagesPopup" feature="XRGrayImageColorCorrection">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+            </control>
+            <control class="UIBevelButtonController" frame="{207, 32}" size="normal" title="More Adjustments..." name="GrayImagesPushButton">
+                <enable>
+                    <state>
+                        <feature keyword="XRSubstituteGrayAdjustments">UseGray</feature>
+                    </state>
+                </enable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="MoreAdjustments">
+                            <parameters>
+                                <mappings>
+                                    <mapping name="MoreAdjustmentsRadio" feature="XRGrayImageMoreAdjustments"/>
+                                    <mapping name="LightnessSlider" feature="XRGrayImageLightness"/>
+                                    <mapping name="LightnessEdit" feature="XRGrayImageLightness"/>
+                                    <mapping name="LightnessStepper" feature="XRGrayImageLightness"/>
+                                    <mapping name="ContrastSlider" feature="XRGrayImageContrast"/>
+                                    <mapping name="ContrastEdit" feature="XRGrayImageContrast"/>
+                                    <mapping name="ContrastStepper" feature="XRGrayImageContrast"/>
+                                    <mapping name="SaturationSlider" feature="XRGrayImageSaturation"/>
+                                    <mapping name="SaturationEdit" feature="XRGrayImageSaturation"/>
+                                    <mapping name="SaturationStepper" feature="XRGrayImageSaturation"/>
+                                    <mapping name="ColorCastCyanRedSlider" feature="XRGrayImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedEdit" feature="XRGrayImageCyanColorCast"/>
+                                    <mapping name="ColorCastCyanRedStepper" feature="XRGrayImageCyanColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenSlider" feature="XRGrayImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenEdit" feature="XRGrayImageMagentaColorCast"/>
+                                    <mapping name="ColorCastMagentaGreenStepper" feature="XRGrayImageMagentaColorCast"/>
+                                    <mapping name="ColorCastYellowBlueSlider" feature="XRGrayImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueEdit" feature="XRGrayImageYellowColorCast"/>
+                                    <mapping name="ColorCastYellowBlueStepper" feature="XRGrayImageYellowColorCast"/>
+                                </mappings>
+                                <dynamicDefaults>
+                                    <state>
+                                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                                    </state>
+                                    <defaults>
+                                        <default name="LightnessSlider" feature="XRLightness"/>
+                                        <default name="LightnessEdit" feature="XRLightness"/>
+                                        <default name="LightnessStepper" feature="XRLightness"/>
+                                        <default name="ContrastSlider" feature="XRContrast"/>
+                                        <default name="ContrastEdit" feature="XRContrast"/>
+                                        <default name="ContrastStepper" feature="XRContrast"/>
+                                        <default name="SaturationSlider" feature="XRSaturation"/>
+                                        <default name="SaturationEdit" feature="XRSaturation"/>
+                                        <default name="SaturationStepper" feature="XRSaturation"/>
+                                        <default name="ColorCastCyanRedSlider" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedEdit" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastCyanRedStepper" feature="XRCyanColorCast"/>
+                                        <default name="ColorCastMagentaGreenSlider" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenEdit" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastMagentaGreenStepper" feature="XRMagentaColorCast"/>
+                                        <default name="ColorCastYellowBlueSlider" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueEdit" feature="XRYellowColorCast"/>
+                                        <default name="ColorCastYellowBlueStepper" feature="XRYellowColorCast"/>
+                                    </defaults>
+                                </dynamicDefaults>
+                                <dynamicStates>
+                                    <disable>
+                                        <state>
+                                            <feature name="MoreAdjustmentsRadio">MoreAdjustments</feature>
+                                        </state>
+                                    </disable>
+                                    <disableControl>
+                                        <default name="SaturationSlider"/>
+                                        <default name="SaturationEdit"/>
+                                        <default name="SaturationStepper"/>
+                                        <default name="ColorCastCyanRedSlider"/>
+                                        <default name="ColorCastCyanRedEdit"/>
+                                        <default name="ColorCastCyanRedStepper"/>
+                                        <default name="ColorCastMagentaGreenSlider"/>
+                                        <default name="ColorCastMagentaGreenEdit"/>
+                                        <default name="ColorCastMagentaGreenStepper"/>
+                                        <default name="ColorCastYellowBlueSlider"/>
+                                        <default name="ColorCastYellowBlueEdit"/>
+                                        <default name="ColorCastYellowBlueStepper"/>
+                                    </disableControl>
+                                </dynamicStates>
+                            </parameters>
+                        </action>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </panel>
+    <dialog name="MoreAdjustments" helpBookPage="more_adjustments.html">
+        <dialogSetup name="_MoreAdjustmentsSetup_" title="More Adjustments Title" xOrigin="50">
+            <class>NSView</class>
+            <frame>{400, 500}</frame>
+            <placement>center</placement>
+            <controls>
+                <control class="UIPushButtonController" frame="{84, 32}" size="normal" align="left" title="Defaults" name="Defaults">
+                    <events>
+                        <event type="onClick">
+                            <action selector="buttonPress:" name="Defaults"/>
+                        </event>
+                    </events>
+                </control>
+            </controls>
+        </dialogSetup>
+        <contentRow>
+            <control class="UIMatrixController" frame="{410, 29}" size="normal" buttonType="NSRadioButton" name="MoreAdjustmentsRadio">
+                <intercellSpacing>2</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item keyword="UseGlobal"/>
+                    <item keyword="MoreAdjustments"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Lightness:" name="ColorAdjustmentsLightnessLabel">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="LightnessSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Lightness</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Lightness.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="LightnessEdit">
+                <allowsFloats>NO</allowsFloats>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="LightnessStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Lightness</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Contrast:" name="ColorAdjustmentsContrastLabel">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ContrastSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Contrast</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Contrast.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ContrastEdit">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ContrastStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Contrast</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Saturation:" name="ColorAdjustmentsSaturationLabel">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="SaturationSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>3</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Saturation</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Saturation.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">-100,0,+100</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="SaturationEdit">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="SaturationStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Saturation</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Color Cast:" name="ColorAdjustmentsColorCastCyanRedLabel">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastCyanRedSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Cyan-Red</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_CyanRed.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Cyan,Red</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastCyanRedEdit">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastCyanRedStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Cyan-Red</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastMagentaGreenSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Magenta-Green</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_MagentaGreen.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Magenta,Green</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastMagentaGreenEdit">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastMagentaGreenStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Magenta-Green</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="12">
+            <control class="UINumericController" subClass="NSSlider" frame="{215, 26}" size="normal" name="ColorCastYellowBlueSlider">
+                <ticksAboveSlider>NO</ticksAboveSlider>
+                <integerValuesOnly>YES</integerValuesOnly>
+                <stopOnTicks>NO</stopOnTicks>
+                <numberOfTicks>2</numberOfTicks>
+                <circularSlider>NO</circularSlider>
+                <toolTip>Yellow-Blue</toolTip>
+                <images>
+                    <image image="Image_ColorAdjustments_12x215_Slider_Cast_YellowBlue.pdf" frame="{210, 10}"/>
+                </images>
+                <label size="mini">Yellow,Blue</label>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="ColorCastYellowBlueEdit">
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="ColorCastYellowBlueStepper" horizontalSpacing="-2">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+                <toolTip>Yellow-Blue</toolTip>
+                <disable>
+                    <state>
+                        <feature name="MoreAdjustmentsRadio">UseGlobal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="EarthSmartSettings" helpBookPage="earth_smart.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Earth Smart Settings">
+            <class>NSView</class>
+            <frame>{660,200 }</frame>
+            <placement>center</placement>
+            <xOrigin>200</xOrigin>
+            <validation>earthSmartValidation:</validation>
+        </dialogSetup>
+        <contentRow name="GreenControllersMimic" origin="{2, 10}" frame="{50,100}">
+            <control class="UIImageViewController" frame="{50,150}" size="normal" xOrigin="10" align="leftmost">
+                <images>
+                    <image image="EarthSmart_24x130_0.pdf" frame="{50,200}">
+                        <states>
+                            <state operator="not">
+                                <feature keyword="XRJobType">Proof</feature>
+                            </state>
+                            <state>
+                                <feature keyword="Duplex">None</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_2.pdf" frame="{50,200}">
+                        <states>
+                            <state>
+                                <feature keyword="XRMassStorage">True</feature>
+                            </state>
+                            <state operator="not">
+                                <feature keyword="XRJobType">Proof</feature>
+                            </state>
+                            <state operator="or">
+                                <feature keyword="Duplex">DuplexNoTumble</feature>
+                                <feature keyword="Duplex">DuplexTumble</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_2.pdf" frame="{50,200}">
+                        <states>
+                            <state>
+                                <feature keyword="XRMassStorage">True</feature>
+                            </state>
+                            <state>
+                                <feature keyword="XRJobType">Proof</feature>
+                                <feature keyword="Duplex">None</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_5.pdf" frame="{50,200}">
+                        <states>
+                            <state>
+                                <feature keyword="XRMassStorage">True</feature>
+                            </state>
+                            <state operator="or">
+                                <feature keyword="Duplex">DuplexTumble</feature>
+                                <feature keyword="Duplex">DuplexNoTumble</feature>
+                            </state>
+                            <state>
+                                <feature keyword="XRJobType">Proof</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_5.pdf" frame="{50,200}">
+                        <states>
+                            <state>
+                                <feature keyword="XRMassStorage">False</feature>
+                            </state>
+                            <state operator="or">
+                                <feature keyword="Duplex">DuplexTumble</feature>
+                                <feature keyword="Duplex">DuplexNoTumble</feature>
+                            </state>
+                        </states>
+                    </image>
+                </images>
+            </control>
+        </contentRow>
+        <contentRow name="EarthFriendlyDuplexMatrix">
+            <control class="UIMatrixController" frame="{250, 22}" fontSize="11" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="EarthFriendlyDuplexMatrix">
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="2-Sided Print"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="EarthFriendlyJobTypeMatrix" xOrigin="45" verticalSpacing="20">
+            <control class="UIMatrixController" frame="{250, 22}" fontSize="11" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="EarthFriendlyJobTypeMatrix">
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="Proof Print">
+                        <state>
+                            <feature keyword="XRJobType">Proof</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+            <hide>
+                <state>
+                    <feature keyword="XRMassStorage">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+    </dialog>
+</data>
