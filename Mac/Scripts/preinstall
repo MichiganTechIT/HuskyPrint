@@ -1,0 +1,11 @@
+#!/bin/sh
+## preinstall
+
+pid=$(ps -A | grep -m1 PCClient.app | awk '{ print $1 }')
+kill $pid
+
+rm -rf /Applications/PCClient/
+rm -rf /AppLications/PCClient.app
+
+exit 0
+exit 1

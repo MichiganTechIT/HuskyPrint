@@ -1,0 +1,1177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <pdeConfiguration>
+        <contentRow name="PDEView">
+            <control class="NSView" frame="{420, 380}" origin="{0,0}" name="PDEView"/>
+        </contentRow>
+        <contentRow name="PanelPopup">
+            <control class="NSPopUpButton" frame="{250, 26}" origin="{90,350}" name="PDEPanelPopup"/>
+        </contentRow>
+        <contentRow name="PanelTabview">
+            <control class="NSTabView" frame="{420, 321}" origin="{0,25}" type="NSNoTabsBezelBorder" drawsBackground="YES" name="PDETabView">
+                <items>
+                    <item panel="Paper/Output"/>
+                    <item panel="Image Options"/>
+                    <item panel="Booklet/Watermark"/>
+                    <item panel="Advanced"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="PrinterStatusView" origin="{10, 0}">
+            <contentRow frame="{410, 26}">
+                <control class="UIBevelButtonController" size="small" origin="{375, .5}">
+                    <toolTip>Earth Smart Settings</toolTip>
+                    <images>
+                        <image image="EarthSmart_16_0.pdf" frame="{25, 25}">
+                            <states>
+                                <state>
+                                    <feature keyword="XRDraftMode">False</feature>
+                                    <feature keyword="Duplex">None</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_2.pdf" frame="{25, 25}">
+                            <states>
+                                <state operator="or">
+                                    <feature keyword="Duplex">DuplexNoTumble</feature>
+                                    <feature keyword="Duplex">DuplexTumble</feature>
+                                </state>
+                                <state>
+                                    <feature keyword="XRDraftMode">False</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_2.pdf" frame="{25, 25}">
+                            <states>
+                                <state>
+                                    <feature keyword="XRDraftMode">True</feature>
+                                    <feature keyword="Duplex">None</feature>
+                                    <feature keyword="XRDuplexUnit">True</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_5.pdf" frame="{25, 25}">
+                            <states>
+                                <state>
+                                    <feature keyword="XRDraftMode">True</feature>
+                                </state>
+                                <state operator="or">
+                                    <feature keyword="Duplex">DuplexNoTumble</feature>
+                                    <feature keyword="Duplex">DuplexTumble</feature>
+                                </state>
+                            </states>
+                        </image>
+                        <image image="EarthSmart_16_5.pdf" frame="{25, 25}">
+                            <states>
+                                <state>
+                                    <feature keyword="XRDraftMode">True</feature>
+                                    <feature keyword="XRDuplexUnit">False</feature>
+                                </state>
+                            </states>
+                        </image>
+                    </images>
+                    <events>
+                        <event type="onClick">
+                            <action selector="launchDialog:" name="EarthSmartSettings"/>
+                        </event>
+                    </events>
+                </control>
+            </contentRow>
+        </contentRow>
+        <onPrint>
+            <actions>
+                <action selector="launchDialog:" name="fxGreenControllerUIPrompt">
+                    <states>
+                        <state operator="or">
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                            <feature keyword="XRAccountingPrompt">Prompt</feature>
+                        </state>
+                        <state>
+                            <feature keyword="XRAccountingSystem">UserID</feature>
+                        </state>
+                    </states>
+                </action>
+                <action selector="launchDialog:" name="Secure">
+                    <states>
+                        <state>
+                            <feature keyword="XRJobType">Secure</feature>
+                            <feature keyword="XRJobPassword">""</feature>
+                        </state>
+                    </states>
+                </action>
+            </actions>
+            <settings>
+                <test>
+                    <states>
+                        <state>
+                            <feature keyword="XRDraftMode">True</feature>
+                        </state>
+                    </states>
+                    <set>
+                        <feature keyword="XRTonerSaver">Standard</feature>
+                    </set>
+                </test>
+                <test>
+                    <states>
+                        <state>
+                            <feature keyword="XRBookletLayout">True</feature>
+                        </state>
+                    </states>
+                    <set>
+                        <feature keyword="Duplex">DuplexTumble</feature>
+                    </set>
+                </test>
+            </settings>
+        </onPrint>
+    </pdeConfiguration>
+    <panel name="Paper/Output" helpBookPage="paper_output.html">
+        <contentRow name="JobTypes">
+            <label align="center">Job Type:</label>
+            <control class="UIPopupButtonController" frame="{175, 36}" size="normal" name="JobTypePopup" feature="XRJobType">
+                <items>
+                    <item keyword="Normal" image="JobType_24_NormalPrint.pdf"/>
+                    <item keyword="Secure" image="JobType_24_SecurePrint.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Secure"/>
+                            </event>
+                        </events>
+                    </item>
+                    <item keyword="Save" image="JobType_24_SaveJob.pdf">
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="Save"/>
+                            </event>
+                        </events>
+                    </item>
+                </items>
+            </control>
+            <control class="UIBevelButtonController" frame="{25, 36}" size="normal" title="Ellipsis" name="JobTypeBevel" horizontalSpacing="-2">
+                <events>
+                    <event type="onClick">
+                        <action selector="relaunchDialog:" name="XRJobType"/>
+                    </event>
+                </events>
+                <disable>
+                    <state>
+                        <feature keyword="XRJobType">Normal</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow name="PaperSummary">
+            <label align="center">Paper:</label>
+            <control class="UISummarySelection" frame="{200, 64}" size="normal" name="SummarySelectionWidget">
+                <items>
+                    <items feature="MediaType" title="Other Type">
+                        <item keyword="Auto" image="Paper_24_Type_use-ready.pdf"></item>
+                        <item keyword="SystemDefault" image="Paper_24_Type_system-default.pdf"></item>
+                        <item keyword="Plain" image="Paper_24_Type_stationary.pdf"></item>
+                        <item keyword="PrepunchedPlain" image="Paper_24_Type_stationary-pre-punched.pdf"></item>
+                        <item keyword="LetterheadPlain" image="Paper_24_Type_stationary-letterhead.pdf"></item>
+                        <item keyword="LightCard" image="Paper_24_Type_cardstock-lightweight.pdf"/>
+                        <item keyword="HeavyCard" image="Paper_24_Type_cardstock-heavyweight.pdf"></item>
+                        <item keyword="GlossyLightCard" image="Paper_24_Type_cardstock-lightweight-glossy.pdf"/>
+                        <item keyword="GlossyHeavyCard" image="Paper_24_Type_cardstock-heavyweight-glossy.pdf"></item>
+                        <item keyword="Labels" image="Paper_24_Type_labels.pdf"></item>
+                        <item keyword="Envelope" image="Paper_24_Type_envelope.pdf"></item>
+                        <item keyword="Other" image="Paper_24_Type_other.pdf"></item>
+                        <item keyword="ColoredPlain" image="Paper_24_Type_stationary.pdf"></item>
+                    </items>
+                    <item separatorLine="YES"/>
+                </items>
+                <title>
+                    <line label="- " valueOf="MediaType"/>
+                </title>
+            </control>
+        </contentRow>
+        <contentRow name="Duplex">
+            <label align="center">2-Sided Printing:</label>
+            <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="DuplexPopup" feature="Duplex">
+                <items>
+                    <item keyword="None">
+                        <images>
+                            <image image="2Sided_24_1Sided_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_1Sided_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                    <item keyword="DuplexNoTumble">
+                        <images>
+                            <image image="2Sided_24_2Sided_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_2Sided_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                    <item keyword="DuplexTumble">
+                        <images>
+                            <image image="2Sided_24_2SidedFlip_Portrait.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Portrait</feature>
+                                    </state>
+                                </states>
+                            </image>
+                            <image image="2Sided_24_2SidedFlip_Landscape.pdf">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROrientation">Landscape</feature>
+                                    </state>
+                                </states>
+                            </image>
+                        </images>
+                    </item>
+                </items>
+            </control>
+            <disable>
+                <state operator="or">
+                    <feature keyword="XRBookletLayout">True</feature>
+                    <feature keyword="XRPrintQuality">Photo</feature>
+                </state>
+            </disable>
+    </contentRow>
+        <contentRow name="Xerox Black and White">
+                <label align="center">Xerox Black and White:</label>
+                <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="OutputColorPopup" feature="XROutputColor">
+                    <items>
+                        <item keyword="Unspecified" title="Printer Default" image="Image_XeroxBW_24_PrinDef.pdf">
+                            <state>
+                                <feature keyword="XROutputColor">Unspecified</feature>
+                            </state>
+                        </item>
+                        <item keyword="PrintAsColor" title="Off (Use Document Color)" image="Image_XeroxBW_24_Off_UseDocumentColor.pdf">
+                            <state>
+                                <feature keyword="XRColorCorrection">Auto</feature>
+                                <feature keyword="XRColorAdjustmentSet">None</feature>
+                                <feature keyword="XROutputColor">PrintAsColor</feature>
+                            </state>
+                        </item>
+                        <item keyword="PrintAsGrayscale" title="On" image="Image_XeroxBW_24_On.pdf">
+                            <state>
+                                <feature keyword="XRColorCorrection">Auto</feature>
+                                <feature keyword="XRColorAdjustmentSet">None</feature>
+                                <feature keyword="XROutputColor">PrintAsGrayscale</feature>
+                            </state>
+                        </item>
+                    </items>
+                    <disable>
+                        <state>
+                            <feature keyword="XRJobType">Fax</feature>
+                        </state>
+                    </disable>
+                </control>
+            </contentRow>
+        <contentRow name="PrintQuality">
+            <label align="center">Print Quality:</label>
+            <control class="UIPopupButtonController" frame="{200, 36}" size="normal" name="PrintQualityPopup" feature="XRPrintQuality">
+                <items>
+                    <item keyword="Standard" image="PrintQuality_24_Standard.pdf"/>
+                    <item keyword="Enhanced" image="PrintQuality_24_Enhanced.pdf"/>
+                    <item keyword="Photo" image="PrintQuality_24_Photo.pdf"/>
+                </items>
+            </control>
+        </contentRow>
+    </panel>
+    <dialog name="Secure" helpBookPage="secure_print.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Secure Print Title">
+            <class>NSView</class>
+            <frame>{400, 230}</frame>
+            <placement>center</placement>
+            <validation>passcodeValidation:</validation>
+            <onLaunch>
+                <settings>
+                    <test>
+                        <set>
+                            <feature keyword="XRBannerSheet">None</feature>
+                        </set>
+                    </test>
+                </settings>
+            </onLaunch>
+        </dialogSetup>
+        <contentRow name="Passcode">
+            <label align="center">Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="PasscodeEnterEdit" feature="XRJobPassword"/>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(1-12 Digits)" name="PasscodeEnterText"/>
+        </contentRow>
+        <contentRow name="Confirm_Passcode">
+            <label align="center">Confirm Passcode:</label>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" confirmsInput="PasscodeEnterEdit" name="PasscodeConfirmEdit">
+                <disabledInitialState>YES</disabledInitialState>
+            </control>
+            <control class="UITextFieldController" frame="{100, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="(1-12 Digits)" name="PasscodeConfirmText"/>
+        </contentRow>
+        <contentRow name="Notes to end the dialog" verticalSpacing="25">
+            <control class="UITextFieldController" frame="{360, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" xOrigin="20" title="Secure Print Note 1" name="SecurePrintNote">
+                <lineBreaks>YES</lineBreaks>
+            </control>
+        </contentRow>
+    </dialog>
+    <panel name="Image Options" helpBookPage="color_options.html">
+        <contentRow name="ColorCorrectionsMimic" origin="{2, 110}" frame="{143, 180}">
+            <control class="UIColorCorrectionViewController" frame="{143, 180}" name="ColorCorrectionsImage" feature="XRColorCorrection">
+                <adjustments>
+                    <feature keyword="XRLightness"/>
+                </adjustments>
+            </control>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="DefaultColorCorrectionsMimic" origin="{2, 110}" frame="{143, 180}">
+            <control class="UIColorCorrectionViewController" frame="{143, 180}" name="DefaultColorCorrectionsImage" feature="XRColorCorrection">
+                <adjustments>
+                    <feature keyword="XRLightness"/>
+                </adjustments>
+            </control>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">True</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="PreviewButton" origin="{6, 80}" frame="{140, 30}">
+            <control class="UIMatrixController" frame="{26, 22}" origin="{0, 4}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+                <showTitle>NO</showTitle>
+                <toolTip>Preview</toolTip>
+                <items>
+                    <item title="Preview"/>
+                </items>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{76, 0}" name="PreviousButton">
+                <toolTip>Previous</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{108, 0}" name="NextButton">
+                <toolTip>Next</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow name="ColorCorrections">
+            <control class="UITextFieldController" frame="{300, 22}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" name="ColorCorrectionLabel"/>
+        </contentRow>
+        <contentRow name="ColorCorrectionMatrix">
+            <control class="UIMatrixController" frame="{240, 100}" size="normal" buttonType="NSRadioButton" name="ColorCorrectionContext">
+                <intercellSpacing>8</intercellSpacing>
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="Automatic Color (Recommended)">
+                        <state>
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                            <feature keyword="XRColorCorrection">Auto</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                        </state>
+                    </item>
+                    <item title="Xerox Black and White">
+                        <state>
+                            <feature keyword="XROutputColor">PrintAsGrayscale</feature>
+                            <feature keyword="XRColorCorrection">Auto</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                        </state>
+                    </item>
+                    <item title="Vivid Color">
+                        <state>
+                            <feature keyword="XROutputColor">PrintAsColor</feature>
+                            <feature keyword="XRColorCorrection">Vivid</feature>
+                            <feature keyword="XRColorAdjustmentSet">None</feature>
+                        </state>
+                    </item>
+                    <item title="Custom Color Options..." cellType="NSMomentaryLightButton">
+                        <disable>
+                            <state>
+                                <feature keyword="XRColorAdjustmentSet">None</feature>
+                            </state>
+                        </disable>
+                        <state operator="readOnly">
+                            <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                        </state>
+                        <events>
+                            <event type="onClick">
+                                <action selector="launchDialog:" name="ColorAdjustments"/>
+                            </event>
+                        </events>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="ColorCorrectionSummaryView" frame="{240, 130}" xOrigin="150">
+            <contentRow name="ColorCorrectionSummaryBox">
+                <control class="UITextViewController" frame="{207, 100}" isEditable="NO" isSelectable="NO" name="ColorAdjustmentsSummary" feature="XRColorAdjustmentSet">
+                    <title>
+                        <line label="Color Correction:" valueOf="XRColorCorrection">
+                            <states>
+                                <state operator="or">
+                                    <feature keyword="XRColorAdjustmentSet">None</feature>
+                                    <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                </state>
+                            </states>
+                        </line>
+                        <line label="Lightness:">
+                            <element valueOf="XRLightness">
+                                <states>
+                                    <state>
+                                        <feature keyword="XROutputColor">PrintAsColor</feature>
+                                        <feature keyword="XRColorAdjustmentSet">Advanced</feature>
+                                    </state>
+                                </states>
+                            </element>
+                        </line>
+                    </title>
+                </control>
+            </contentRow>
+        </contentRow>
+    </panel>
+    <dialog name="ColorAdjustments" helpBookPage="custom_color_options.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Custom Color Options">
+            <class>NSView</class>
+            <frame>{681, 488}</frame>
+        </dialogSetup>
+        <contentRow origin="{13, 40}">
+            <control class="UITabViewController" frame="{656, 488}" tabViewType="NSTopTabsBezelBorder" drawsBackground="YES" name="CCTabView" allowsTruncatedLabels="YES">
+                <items>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="ColorAdjustmentLightness" origin="{20, 380}">
+            <contentRow name="LightnessLabel">
+                <control class="UITextFieldController" frame="{266, 17}" align="center" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Lightness:" name="ColorAdjustmentsLightnessLabel"/>
+            </contentRow>
+            <contentRow>
+                <control class="UINumericController" subClass="NSSlider" frame="{266, 26}" size="normal" name="LightnessSlider" feature="XRLightness">
+                    <ticksAboveSlider>NO</ticksAboveSlider>
+                    <integerValuesOnly>YES</integerValuesOnly>
+                    <stopOnTicks>NO</stopOnTicks>
+                    <numberOfTicks>3</numberOfTicks>
+                    <circularSlider>NO</circularSlider>
+                    <toolTip>Lightness</toolTip>
+                    <images>
+                        <image image="Image_ColorAdjustments_12x215_Slider_Lightness.pdf" frame="{261, 10}"/>
+                    </images>
+                    <label size="mini">-100,0,+100</label>
+                </control>
+                <control class="UITextFieldController" frame="{50, 25}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="LightnessEdit" feature="XRLightness">
+                    <allowsFloats>NO</allowsFloats>
+                </control>
+                <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" name="LightnessStepper" feature="XRLightness" horizontalSpacing="-2">
+                    <increment>1</increment>
+                    <valueWraps>NO</valueWraps>
+                    <autoRepeats>YES</autoRepeats>
+                    <toolTip>Lightness</toolTip>
+                </control>
+            </contentRow>
+        </contentRow>
+        <contentRow origin="{20, 320}">
+            <contentRow name="ColorCorrections">
+                <control class="UITextFieldController" frame="{266, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Color Correction:" name="ColorCorrectionLabel"/>
+            </contentRow>
+            <contentRow name="ColorCorrectionsOptions">
+                <control class="UIPopupButtonController" frame="{266, 26}" size="normal" name="ColorCorrectionsPopup">
+                    <items>
+                        <item title="Automatic Color">
+                            <state>
+                                <feature keyword="XROutputColor">PrintAsColor</feature>
+                                <feature keyword="XRColorCorrection">Auto</feature>
+                            </state>
+                        </item>
+                        <item title="Xerox Black and White">
+                            <state>
+                                <feature keyword="XROutputColor">PrintAsGrayscale</feature>
+                                <feature keyword="XRColorCorrection">Gray</feature>
+                            </state>
+                        </item>
+                        <item title="Vivid Color">
+                            <state>
+                                <feature keyword="XROutputColor">PrintAsColor</feature>
+                                <feature keyword="XRColorCorrection">Vivid</feature>
+                            </state>
+                        </item>
+                        <item title="None">
+                            <state>
+                                <feature keyword="XROutputColor">PrintAsColor</feature>
+                                <feature keyword="XRColorCorrection">None</feature>
+                            </state>
+                        </item>
+                    </items>
+                </control>
+            </contentRow>
+        </contentRow>
+        <contentRow name="ColorCorrectionsMimic" origin="{370, 81}" frame="{280, 350}">
+            <control class="UIColorCorrectionViewController" frame="{280, 350}" name="ColorCorrectionsImage"/>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="DefaultColorCorrectionsMimic" origin="{370, 81}" frame="{280, 350}">
+            <control class="UIColorCorrectionViewController" frame="{280, 350}" name="DefaultColorCorrectionsImage"/>
+            <hide>
+                <state>
+                    <feature keyword="XRPreviewColorCorrection">True</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="ColorByWordsPreviewButton" origin="{370, 49}" frame="{280, 30}">
+            <control class="UIMatrixController" frame="{100, 22}" origin="{0, 6}" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="PreviewCheckbox" feature="XRPreviewColorCorrection">
+                <showTitle>YES</showTitle>
+                <toolTip>Preview</toolTip>
+                <items>
+                    <item title="Preview"/>
+                </items>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{210, 0}" name="PreviousButton" horizontalSpacing="198">
+                <toolTip>Previous</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Previous_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="previousImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+            <control class="UIBevelButtonController" size="normal" frame="{30, 30}" origin="{242, 0}" name="NextButton" horizontalSpacing="2">
+                <toolTip>Next</toolTip>
+                <items>
+                    <item image="UI_Buttons_16_Next_000000.pdf" frame="{16, 16}"/>
+                </items>
+                <events>
+                    <event type="onClick">
+                        <action selector="nextImage:" selection="ColorCorrectionsImage"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+    </dialog>
+    <panel name="Booklet/Watermark" helpBookPage="booklet_watermark.html">
+        <contentRow origin="{10, 160}">
+            <control class="UIImageViewController" frame="{130, 130}">
+                <images>
+                    <image image="PageLayout_130_Booklet_None_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_None_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_Brdrs_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">True</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_NoBrdrs_Prt.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Portrait</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_Brdrs_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">True</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="PageLayout_130_Booklet_NoBrdrs_Lnd.pdf" frame="{130, 130}">
+                        <states>
+                            <state>
+                                <feature keyword="XROrientation">Landscape</feature>
+                                <feature keyword="XRBookletLayout">True</feature>
+                                <feature keyword="XRBookletOutlines">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                </images>
+            </control>
+        </contentRow>
+        <contentRow verticalSpacing="20">
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Booklet Layout:"/>
+        </contentRow>
+        <contentRow>
+            <control class="UIPopupButtonController" frame="{200, 24}" size="normal" feature="XRBookletLayout">
+                <disable>
+                    <state>
+                        <feature keyword="XRDuplexUnit">False</feature>
+                    </state>
+                </disable>
+                <items>
+                    <item keyword="False" title="Disabled"/>
+                    <item keyword="True" title="Enabled">
+                        <state>
+                            <feature keyword="Duplex">DuplexTumble</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIBevelButtonController" frame="{200, 24}" size="normal" title="Booklet Options...">
+                <disable>
+                    <state>
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+                <events>
+                    <event type="onClick">
+                        <action selector="launchDialog:" name="BookletOptions"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow>
+            <control class="UIMatrixController" frame="{240, 22}" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" feature="XRBookletOutlines">
+                <showTitle>YES</showTitle>
+                <disable>
+                    <state>
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+                <items>
+                    <item title="Draw Page Borders"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow origin="{10,10}" maximumSupportedOSVersion="10.6">
+            <control class="UIWatermarkViewController" frame="{130,130}"/>
+        </contentRow>
+        <contentRow verticalSpacing="80" maximumSupportedOSVersion="10.6">
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Watermark:"/>
+        </contentRow>
+        <contentRow maximumSupportedOSVersion="10.6">
+            <control class="UIWatermarkController" frame="{200, 24}" size="normal"/>
+        </contentRow>
+    </panel>
+    <dialog name="BookletOptions" helpBookPage="booklet_options.html">
+        <dialogSetup title="Booklet Options" xOrigin="180">
+            <class>NSView</class>
+            <frame>{500.00, 220.00}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow>
+            <label align="center">Scale to New Paper Size:</label>
+            <control class="UIPopupButtonController" frame="{250, 26}" size="normal" feature="XRBookletSize" actions="BookletSizeActions"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Booklet Margins:</label>
+            <control class="UIPopupButtonController" frame="{250, 26}" size="normal" feature="XRBookletMargins"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Gutter:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletGutter"/>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletGutter" horizontalSpacing="-1">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{120, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Gutter Range" horizontalSpacing="8">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum">
+                        <minimum>XRBookletGutter</minimum>
+                        <maximum>XRBookletGutter</maximum>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Creep:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletCreep" name="BookletCreepEdit">
+                <allowsFloats>YES</allowsFloats>
+                <minimumFractionDigits>1</minimumFractionDigits>
+                <maximumFractionDigits>1</maximumFractionDigits>
+                <multiplier>.1</multiplier>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletCreep" horizontalSpacing="-1">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{120, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Creep Range" useFormatter="BookletCreepEdit" horizontalSpacing="8">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum">
+                        <minimum>XRBookletCreep</minimum>
+                        <maximum>XRBookletCreep</maximum>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="BookletCustomSize" helpBookPage="custom_size.html">
+        <dialogSetup title="Custom Size" xOrigin="180">
+            <class>NSView</class>
+            <frame>{500, 140}</frame>
+            <placement>center</placement>
+            <controls>
+                <control class="UIPopupButtonController" frame="{61, 26}" align="left" size="normal" name="UnitsPopup" feature="XRUnits" ignoresMappings="YES"/>
+            </controls>
+            <validation>customMediaSizeValidation:</validation>
+        </dialogSetup>
+        <contentRow>
+            <label align="center">Width:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletWidth" name="MediaWidthEdit" isMeasurement="YES" partialInputValidation="YES">
+                <allowsFloats>YES</allowsFloats>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletWidth" horizontalSpacing="-1" isMeasurement="YES">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" title="Booklet Custom Width Range" horizontalSpacing="8" isStaticFrame="YES" isMeasurement="YES">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum,units">
+                        <minimum>XRBookletWidth</minimum>
+                        <maximum>XRBookletWidth</maximum>
+                        <units>XRUnits</units>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Height:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" feature="XRBookletHeight" name="MediaHeightEdit" isMeasurement="YES" partialInputValidation="YES">
+                <allowsFloats>YES</allowsFloats>
+            </control>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" feature="XRBookletHeight" horizontalSpacing="-1" isMeasurement="YES">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" title="Booklet Custom Height Range" horizontalSpacing="8" isStaticFrame="YES" isMeasurement="YES">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum,units">
+                        <minimum>XRBookletHeight</minimum>
+                        <maximum>XRBookletHeight</maximum>
+                        <units>XRUnits</units>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="CustomSize" helpBookPage="custom_size.html">
+        <dialogSetup title="Custom Size" xOrigin="180">
+            <class>NSView</class>
+            <frame>{500, 140}</frame>
+            <placement>center</placement>
+            <controls>
+                <control class="UIPopupButtonController" frame="{61, 26}" align="left" size="normal" name="UnitsPopup" feature="XRUnits" ignoresMappings="YES"/>
+            </controls>
+            <validation>customMediaSizeValidation:</validation>
+        </dialogSetup>
+        <contentRow>
+            <label align="center">Width:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="MediaWidthEdit" isMeasurement="YES" partialInputValidation="YES"/>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" horizontalSpacing="-1" name="MediaWidthSpin" isMeasurement="YES">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Booklet Custom Width Range" horizontalSpacing="8" isStaticFrame="YES" isMeasurement="YES">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum,units">
+                        <minimum>XRMediaWidth</minimum>
+                        <maximum>XRMediaWidth</maximum>
+                        <units>XRUnits</units>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Height:</label>
+            <control class="UITextFieldController" frame="{50, 22}" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="MediaHeightEdit" isMeasurement="YES" partialInputValidation="YES"/>
+            <control class="UINumericController" subClass="NSStepper" frame="{19, 27}" size="normal" horizontalSpacing="-1" name="MediaHeightSpin" isMeasurement="YES">
+                <increment>1</increment>
+                <valueWraps>NO</valueWraps>
+                <autoRepeats>YES</autoRepeats>
+            </control>
+            <control class="UITextFieldController" frame="{200, 17}" size="normal" title="Booklet Custom Height Range" horizontalSpacing="8" isStaticFrame="YES" isMeasurement="YES">
+                <parameters>
+                    <variableArguments displayKey="minimum,maximum,units">
+                        <minimum>XRMediaHeight</minimum>
+                        <maximum>XRMediaHeight</maximum>
+                        <units>XRUnits</units>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </dialog>
+    <dialog name="Save" helpBookPage="saved_job.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Saved Job Title">
+            <class>NSView</class>
+            <frame>{410, 90}</frame>
+            <placement>center</placement>
+        </dialogSetup>
+        <contentRow name="JobName" verticalSpacing="8">
+            <label align="center">Job Name:</label>
+            <control class="UIComboBoxController" frame="{200, 26}" size="normal" name="JobNameCombo" feature="XRJobName">
+                <items>
+                    <item keyword="Use Document Name"/>
+                </items>
+                <historyKeyword>savedJobName</historyKeyword>
+                <maximumEntries>10</maximumEntries>
+            </control>
+        </contentRow>
+    </dialog>
+    <panel name="Advanced" helpBookPage="advanced.html">
+        <contentRow>
+            <label align="center">Booklet Image Order:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="BookletImageOrderPopup" feature="XRBookletReverseOrder">
+                <disable>
+                    <state operator="or">
+                        <feature keyword="XRBookletLayout">False</feature>
+                    </state>
+                </disable>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Job Identification:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="BannerSheetPopup">
+                <items>
+                    <item title="Disable Job ID">
+                        <state>
+                            <feature keyword="XRBannerSheet">None</feature>
+                            <feature keyword="XRAnnotationOption">None</feature>
+                        </state>
+                    </item>
+                    <item title="Print ID in Margins - First Page Only">
+                        <state>
+                            <feature keyword="XRBannerSheet">None</feature>
+                            <feature keyword="XRAnnotationOption">Standard</feature>
+                            <feature keyword="XRAnnotationPage">FirstPageOnly</feature>
+                        </state>
+                    </item>
+                    <item title="Print ID in Margins - All Pages">
+                        <state>
+                            <feature keyword="XRBannerSheet">None</feature>
+                            <feature keyword="XRAnnotationOption">Standard</feature>
+                            <feature keyword="XRAnnotationPage">AllPages</feature>
+                        </state>
+                    </item>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Mirrored Output:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="MirroredOutputPopup" feature="MirrorPrint"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Draft Mode:</label>
+            <control class="UIPopupButtonController" frame="{225, 26}" fontSize="11" name="DraftModePopup" feature="XRDraftMode"/>
+        </contentRow>
+        <contentRow>
+            <label align="center">Configuration:</label>
+            <control class="UIPushButtonController" frame="{225, 26}" fontSize="11" name="AccountingButton" title="Accounting...">
+                <events>
+                    <event>
+                        <action selector="launchDialog:" name="Accounting"/>
+                    </event>
+                </events>
+            </control>
+        </contentRow>
+        <contentRow>
+            <label align="center">Version:</label>
+            <control class="UITextFieldController" frame="{225, 26}" fontSize="11" name="Version" title="VersionBuild">
+                <parameters>
+                    <variableArguments displayKey="driverVersion,driverBuild">
+                        <driverVersion>XRDriverVersion</driverVersion>
+                        <driverBuild>XRDriverBuild</driverBuild>
+                    </variableArguments>
+                </parameters>
+            </control>
+        </contentRow>
+    </panel>
+    <dialog name="Accounting" helpBookPage="accounting.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Accounting Title">
+            <class>NSView</class>
+            <frame>{540, 380}</frame>
+            <placement>center</placement>
+            <validation>accountingValidation:</validation>
+            <defaultButtonAction>grAccountingCodesError:</defaultButtonAction>
+        </dialogSetup>
+        <contentRow name="AccountingSystem" xOrigin="200">
+            <label size="small" align="center">Accounting System:</label>
+            <control class="UIPopupButtonController" frame="{272, 26}" fontSize="11" size="normal" feature="XRAccountingSystem" name="AccountingSystemPopup"/>
+        </contentRow>
+        <contentRow origin="{40, 220}">
+            <control class="UITextFieldController" frame="{475, 25}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" title="Accounting Note" horizontalSpacing="15">
+                <hide>
+                    <state>
+                        <feature keyword="XRAccountingSystem">UserID</feature>
+                    </state>
+                </hide>
+            </control>
+        </contentRow>
+        <contentRow name="AccountingPrompt" xOrigin="200">
+            <label size="small" align="center">Accounting Prompt:</label>
+            <control class="UIPopupButtonController" frame="{272, 26}" fontSize="11" size="normal" feature="XRAccountingPrompt" name="AccountingPromptPopup"/>
+            <hide>
+                <state>
+                    <feature keyword="XRAccountingSystem">None</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="AccountingOptions" frame="{500, 300}" xOrigin="200">
+            <contentRow name="AccountingMaskUserIDMatrix" xOrigin="75">
+                <control class="UIMatrixController" frame="{250, 22}" fontSize="11" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" feature="XRAccountingMaskUserID">
+                    <showTitle>YES</showTitle>
+                    <items>
+                        <item title="Mask User ID (****)"/>
+                    </items>
+                    <disable>
+                        <state>
+                            <feature keyword="XRAccountingPrompt">DoNotPrompt</feature>
+                        </state>
+                    </disable>
+                </control>
+            </contentRow>
+            <contentRow name="DefaultUserID" verticalSpacing="10">
+                <label size="small" align="center">Default User ID / Passcode:</label>
+                <control class="UITextFieldController" frame="{180, 22}" xOrigin="150" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="DefaultUserIDEdit" feature="XRAccountingUserID">
+                    <hide>
+                        <state operator="or">
+                            <feature keyword="XRAccountingMaskUserID">True</feature>
+                            <feature keyword="XRAccountingSystem">None</feature>
+                        </state>
+                    </hide>
+                </control>
+                <control class="UITextFieldController" frame="{180, 22}" xOrigin="150" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="DefaultSecureUserIDEdit" feature="XRAccountingUserID" horizontalSpacing="-272">
+                    <hide>
+                        <state operator="or">
+                            <feature keyword="XRAccountingMaskUserID">False</feature>
+                            <feature keyword="XRAccountingSystem">None</feature>
+                        </state>
+                    </hide>
+                </control>
+                <control class="UITextFieldController" frame="{85, 22}" xOrigin="335" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="DefaultUserIDPasscodeEdit" feature="XRAccountingUserIDPasscode" horizontalSpacing="-272"></control>
+                <hide>
+                    <state>
+                        <feature keyword="XRAccountingSystem">None</feature>
+                    </state>
+                </hide>
+            </contentRow>
+            <hide>
+                <state>
+                    <feature keyword="XRAccountingSystem">None</feature>
+                </state>
+            </hide>
+        </contentRow>
+    </dialog>
+    <dialog name="fxGreenControllerUIPrompt" helpBookPage="">
+        <dialogSetup name="_fxGreenControllerUIPrompt" title="Accounting Title" xOrigin="150" growDialog="NO">
+            <class>NSView</class>
+            <frame>{500, 150}</frame>
+            <placement>center</placement>
+            <validation>fxGreenControllerAccountingValidation:</validation>
+            <cancelButtonAction>accountingError:</cancelButtonAction>
+        </dialogSetup>
+        <contentRow name="UserIDPasscode" verticalSpacing="15">
+            <label>User ID / Passcode:</label>
+            <control class="UITextFieldController" frame="{180, 22}" xOrigin="150" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" name="DefaultUserIDEdit" feature="XRAccountingUserID">
+                <hide>
+                    <state operator="or">
+                        <feature keyword="XRAccountingMaskUserID">True</feature>
+                    </state>
+                </hide>
+            </control>
+            <control class="UITextFieldController" frame="{180, 22}" xOrigin="150" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="DefaultSecureUserIDEdit" feature="XRAccountingUserID" horizontalSpacing="-272">
+                <hide>
+                    <state operator="or">
+                        <feature keyword="XRAccountingMaskUserID">False</feature>
+                    </state>
+                </hide>
+            </control>
+            <control class="UITextFieldController" frame="{85, 22}" xOrigin="335" fontSize="11" size="normal" isEditable="YES" isSelectable="YES" isBezeled="YES" isSecureTextField="YES" name="UserPasscodeField" feature="XRAccountingUserIDPasscode" horizontalSpacing="-272"/>
+        </contentRow>
+    </dialog>
+    <dialog name="EarthSmartSettings" helpBookPage="earth_smart.html">
+        <dialogSetup name="_DialogSetupInformation_" title="Earth Smart Settings">
+            <class>NSView</class>
+            <frame>{500,250 }</frame>
+            <placement>center</placement>
+            <xOrigin>200</xOrigin>
+            <validation>earthSmartValidation:</validation>
+        </dialogSetup>
+        <contentRow name="GreenControllersMimic" origin="{10, 130}" frame="{60,170}">
+            <control class="UIImageViewController" frame="{50,150}" size="normal" xOrigin="10" align="leftmost">
+                <images>
+                    <image image="EarthSmart_24x130_0.pdf" frame="{25, 25}">
+                        <states>
+                            <state>
+                                <feature keyword="XRDraftMode">False</feature>
+                                <feature keyword="Duplex">None</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_2.pdf" frame="{25, 25}">
+                        <states>
+                            <state operator="or">
+                                <feature keyword="Duplex">DuplexNoTumble</feature>
+                                <feature keyword="Duplex">DuplexTumble</feature>
+                            </state>
+                            <state>
+                                <feature keyword="XRDraftMode">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_2.pdf" frame="{25, 25}">
+                        <states>
+                            <state>
+                                <feature keyword="XRDraftMode">True</feature>
+                                <feature keyword="Duplex">None</feature>
+                                <feature keyword="XRDuplexUnit">True</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_5.pdf" frame="{25, 25}">
+                        <states>
+                            <state>
+                                <feature keyword="XRDraftMode">True</feature>
+                            </state>
+                            <state operator="or">
+                                <feature keyword="Duplex">DuplexNoTumble</feature>
+                                <feature keyword="Duplex">DuplexTumble</feature>
+                            </state>
+                        </states>
+                    </image>
+                    <image image="EarthSmart_24x130_5.pdf" frame="{25, 25}">
+                        <states>
+                            <state>
+                                <feature keyword="XRDraftMode">True</feature>
+                                <feature keyword="XRDuplexUnit">False</feature>
+                            </state>
+                        </states>
+                    </image>
+                </images>
+            </control>
+        </contentRow>
+        <contentRow name="EarthFriendlyDuplexMatrix">
+            <control class="UIMatrixController" frame="{250, 22}" fontSize="11" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="EarthFriendlyDuplexMatrix">
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="2-Sided Print"/>
+                </items>
+            </control>
+            <hide>
+                <state>
+                    <feature keyword="XRDuplexUnit">False</feature>
+                </state>
+            </hide>
+        </contentRow>
+        <contentRow name="EarthFriendlyDraftMatrix" xOrigin="45" verticalSpacing="20">
+            <control class="UIMatrixController" frame="{250, 22}" fontSize="11" size="normal" buttonType="NSSwitchButton" matrixMode="NSHighlightModeMatrix" name="EarthFriendlyDraftMatrix">
+                <showTitle>YES</showTitle>
+                <items>
+                    <item title="Draft Mode"/>
+                </items>
+            </control>
+        </contentRow>
+        <contentRow name="Paper Saving" origin="{-80 ,20}" frame="{500, 45}" maximumSupportedOSVersion="10.6">
+            <contentRow verticalSpacing="5">
+                <control class="UITextFieldController" frame="{360, 70}" size="normal" isEditable="NO" isSelectable="NO" isBezeled="NO" origin="{145,5}" title="Earth Smart Savings" name="Earth Smart">
+                    <parameters>
+                        <variableArguments displayKey="reams,sheets">
+                            <reams>XREarthSmartReamsSaved</reams>
+                            <sheets>XREarthSmartPagesSaved</sheets>
+                        </variableArguments>
+                    </parameters>
+                </control>
+            </contentRow>
+        </contentRow>
+    </dialog>
+    <images name="MediaTypeImages">
+        <keyword>Auto</keyword>
+        <image image="Paper_24_Type_use-ready.pdf"/>
+        <keyword>SystemDefault</keyword>
+        <image image="Paper_24_Type_system-default.pdf"/>
+        <keyword>Plain</keyword>
+        <image image="Paper_24_Type_stationary.pdf"/>
+        <keyword>PrepunchedPlain</keyword>
+        <image image="Paper_24_Type_stationary-pre-punched.pdf"/>
+        <keyword>LetterheadPlain</keyword>
+        <image image="Paper_24_Type_stationary-letterhead.pdf"/>
+        <keyword>LightPlain</keyword>
+        <image image="Paper_24_Type_stationary-lightweight.pdf"/>
+        <keyword>LightCard</keyword>
+        <image image="Paper_24_Type_cardstock-lightweight.pdf"/>
+        <keyword>HeavyCard</keyword>
+        <image image="Paper_24_Type_cardstock-heavyweight.pdf"/>
+        <keyword>GlossyLightCard</keyword>
+        <image image="Paper_24_Type_cardstock-lightweight-glossy.pdf"/>
+        <keyword>GlossyHeavyCard</keyword>
+        <image image="Paper_24_Type_cardstock-heavyweight-glossy.pdf"/>
+        <keyword>Labels</keyword>
+        <image image="Paper_24_Type_labels.pdf"/>
+        <keyword>HeavyLabels</keyword>
+        <image image="Paper_24_Type_labels-heavyweight.pdf"/>
+        <keyword>Envelope</keyword>
+        <image image="Paper_24_Type_envelope.pdf"/>
+        <keyword>Other</keyword>
+        <image image="Paper_24_Type_other.pdf"/>
+    </images>
+    <actions name="BookletSizeActions">
+        <keyword>Custom</keyword>
+        <action selector="launchDialog:" name="BookletCustomSize">
+            <parameters>
+                <mappings>
+                    <mapping name="MediaWidthEdit" feature="XRBookletWidth"/>
+                    <mapping name="MediaWidthSpin" feature="XRBookletWidth"/>
+                    <mapping name="MediaHeightEdit" feature="XRBookletHeight"/>
+                    <mapping name="MediaHeightSpin" feature="XRBookletHeight"/>
+                </mappings>
+            </parameters>
+        </action>
+    </actions>
+</data>
