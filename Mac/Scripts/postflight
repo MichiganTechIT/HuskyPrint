@@ -1,0 +1,23 @@
+#!/bin/sh
+
+OS_MAJOR_VERSION=`sw_vers -productVersion | cut -f2 -d'.'`
+if [ $OS_MAJOR_VERSION -lt 7 ]; then
+	if [ ! -d "/Library/Caches/Xerox" ]; then
+		/bin/mkdir "/Library/Caches/Xerox"
+	fi
+
+	chmod 0777 "/Library/Caches/Xerox"
+fi
+
+/tmp/ppdmgr -u -P "/Library/Printers/PPDs/Contents/Resources"
+
+rm -rdf "/tmp/ppdmgr"
+
+cd "/Applications/Xerox"
+for file in *.xst
+	do
+	if [ -f ${file} ];
+	then 
+	   mv -f "${file}" "/Library/Caches/Xerox/${file}"
+	fi
+done

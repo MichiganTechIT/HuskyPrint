@@ -1,0 +1,1 @@
+# Do not remove this file (and PlugIns folder), as it breaks mac PCClient.app packaging (main build.xml assumes the folder exists).

@@ -1,0 +1,130 @@
+body {
+  background: #fff;
+  font-family: SimSun, 中易宋体;            /* chinese simplified */
+  font-family: Microsoft MingLiU, 新細明體; /* chinese traditional */
+  font-family: MS Mincho, 明朝;             /* japanese */
+  font-family: Gulim, 굴림;                 /* korean */
+  font-family: "Lucida Grande", Helvetica, arial, sans-serif !important;
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+}
+b, strong {
+  font-family: SimHei, 中易黑体;            /* chinese simplified */
+  font-family: MS Gothic, MS ゴシック;        /* japanese */
+  font-family: "Lucida Grande", Helvetica, arial, sans-serif !important;
+  }
+#content {
+  background: url(../images/xerox_logo.png) top right no-repeat;
+  padding: 50px 10px;
+  margin: 15px 15px 0 0;
+}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+a:link {color: #2895d5;}
+a:visited {color: #adafb2;}
+a:hover {color: #2895d5;}
+
+.alphalist {list-style: lower-alpha;}
+.expandingblocktemplate {list-style: none;}
+.brandcolor {color: #2895d5;}
+.theading {color: #fff; font-weight: bold;}
+/*.bul2 {margin-left: -13px;}*/
+
+h1, h2, h3, h4, h5, h6 {color: #2895d5; font-size: 1.6em;}
+h4, h5, h6 {color: #000;}
+p	{line-height: 16px;}
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */  
+#toc_link {display: none;}
+.tabledhtmltoc {padding: 5px 0 0 10px;}
+.tabledhtmltoc a {margin: 0 0 0 5px; text-decoration: none; color: #000;}
+.tabledhtmltoc a:hover {color: #2895d5;}
+.tabledhtmltoc a:visited {color: #666;}
+.tabledhtmltoc a:visited:hover {color: #2895d5;}
+.tablist {
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+  border: none;
+}
+.tablist li {
+  float: left; 
+  margin-right: 0.13em; 
+}
+.tablist li a {
+  background: #f5f5f5;
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-bottom: 0;
+}
+.tablist li a:hover {
+  background: #adafb2; 
+  color: #fff;
+  text-decoration: none;
+}
+.tablist li#current a {
+  background: #2895d5;
+  color: #fff;
+}
+.sp {display: none;}
+.bodyindent {
+  display: block;
+  text-align: left;
+  text-indent: 0cm;
+  width: auto;
+  height: auto;
+  white-space: normal;
+}
+.expandingblock {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-style: none;
+  float: none;
+  clear: none;
+  text-align: left;
+  text-indent: 0cm;
+  width: 90%;
+  height: auto;
+  white-space: normal;
+}
+li.bul1 {
+	margin-left: -17pt;
+	margin-bottom: 6pt;
+  list-style: circle;
+}
+li.bul2 {
+	margin-left: -19pt;
+	margin-bottom: 6pt;
+  margin-top: 5px;
+  list-style: circle;
+}
+li.bul3 {
+	margin-left: -19pt;
+	margin-bottom: 6pt;
+  list-style: circle;
+}
+li.numlist	{
+	margin-left: -15pt;
+	margin-bottom: 6pt;
+}
+li.alphalist	{
+	margin-left: -19pt;
+	margin-top: 3pt;
+}
+li.notesbul {
+	margin-left: -19pt;
+	margin-bottom: 6pt;
+  margin-top: 5px;
+  list-style: circle;
+}
+p.bodyindent {
+  margin-bottom: 6pt;
+  margin-left: 0pt;
+  margin-right: 0pt;
+  padding-top: 0;
+  padding-bottom: 0pt;
+  padding-left: 2px;
+  padding-right: 0pt;
+}
