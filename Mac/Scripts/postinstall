@@ -59,8 +59,8 @@ if [ -z $Color ]; then
 fi
 
 # Add new Color and BW with the adjusted drivers
-lpadmin -p "Husky-Color" -E -v lpd://print.mtu.edu/husky-color -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ C8055.gz -o XRHolePunch='23Unit' -o XRFinisher='SBFinisher' -o printer-is-shared=false
-lpadmin -p "Husky-BW" -E -v lpd://print.mtu.edu/husky-bw -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ B8055.gz -o XRFinisher='OF' -o XRHolePunch='TruePunch' -o printer-is-shared=false
+lpadmin -p "Husky-Color" -E -v lpd://print.mtu.edu/husky-color -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ C8055.gz -o XRTrays='SixTraysHCFTT' -o XRHolePunch='23Unit' -o XRFinisher='SBFinisher' -o printer-is-shared=false
+lpadmin -p "Husky-BW" -E -v lpd://print.mtu.edu/husky-bw -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ B8055.gz -o XRTrays='SixTraysHCFTT' -o XRFinisher='OF' -o XRHolePunch='TruePunch' -o printer-is-shared=false
 
 # Grab the names again to be sure that they were added correctly
 BW=$(lpstat -v | grep -i husky-bw | awk 'BEGIN { FS = "/" } ; NR==1{ print $NF}')
