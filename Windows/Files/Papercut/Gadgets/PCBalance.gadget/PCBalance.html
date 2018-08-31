@@ -1,0 +1,115 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Print Balance</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 8px;
+        width: 130px;
+        height: 62px;
+        color: #FFF;
+        vertical-align: middle;
+        background-image: url('images/background.png');
+        background-repeat: no-repeat;
+        }
+      table {
+        width: 114px;
+        height: 46px;
+        }
+        table td {
+          vertical-align: middle;
+          }
+      #balance-icon {
+        width: 24px;
+        }
+        #balance-icon img {
+          width: 24px;
+          height: 24px;
+          }
+      #balance {
+        text-align: left;
+        vertical-align: middle;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.2em;
+        }
+    </style>
+    <script type="text/javascript" src="conf/client-config.js"></script>
+    <script type="text/javascript">
+      // ---------------------------------------------------------------------------------------------------------------
+      // Called when the gadget loads (body#onload) to set things up.
+      // ---------------------------------------------------------------------------------------------------------------
+      function init() {
+        System.Gadget.settingsUI = 'settings.html';
+
+        loadStoredSettings();
+
+        // load balance on startup
+        refreshBalance();
+
+        // refresh balance periodically
+        var refreshSecs = 5 * 60;
+        window.setInterval(refreshBalance, refreshSecs * 1000);
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Checks stored gadget settings.  If settings are not found in the gadget settings store they are loaded from the
+      // 'config.properties' file.
+      // ---------------------------------------------------------------------------------------------------------------
+      function loadStoredSettings() {
+        if (System.Gadget.Settings.read('server.hostName') == '') {
+          System.Gadget.Settings.write('server.hostName', pcClientConfig.serverName);
+        }
+        if (System.Gadget.Settings.read('server.port') == '') {
+          System.Gadget.Settings.write('server.port', pcClientConfig.serverPort);
+        }
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Fires a GET request to "http://<server.hostName>:9191/rpc/api/web/user/<username>/details.json" to retrieve
+      // the user's current balance.  On successful response setBalance is called with the result.
+      // ---------------------------------------------------------------------------------------------------------------
+      function refreshBalance() {
+        var serverHostName = System.Gadget.Settings.readString('server.hostName');
+        var serverPort = System.Gadget.Settings.readString('server.port');
+        var userName = System.Environment.getEnvironmentVariable('USERNAME');
+        var url = 'http://' + serverHostName + ':' + serverPort + '/rpc/api/web/user/' + userName + '/details.json';
+        var request = new XMLHttpRequest();
+
+        request.onreadystatechange = function() {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              var data = eval('(' + request.responseText + ')');
+              if (data.balanceFormatted != null) {
+                setBalance(data.balanceFormatted);
+              }
+            }
+          }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+      }
+
+      // ---------------------------------------------------------------------------------------------------------------
+      // Updates the balance displayed on the page with the given formatted balance.
+      // Parameters:
+      // formattedBalance - the formatted user balance, e.g. "$1.23".
+      // ---------------------------------------------------------------------------------------------------------------
+      function setBalance(formattedBalance){
+        document.getElementById('balance').innerHTML = formattedBalance;
+      }
+    </script>
+  </head>
+
+  <body onload="init()">
+    <table>
+      <tbody>
+        <tr>
+          <td id="balance-icon"><img src="images/printer.png" alt="" title="" /></td>
+          <td id="balance" title="Click to refresh" onclick="refreshBalance();"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

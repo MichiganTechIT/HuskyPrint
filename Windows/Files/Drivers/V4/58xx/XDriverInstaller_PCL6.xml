@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  This XML file includes options and settings that drive the functionality of the Xerox Driver Installer.
+  -->
+<XDriverInstaller>
+  <!-- 
+  EDITS ALLOWED: YES
+  DESCRIPTION:
+    This section contains administrator configurable options that customize the functionality and features used
+    throughout the install process for the device being installed.  Feel free to edit the options in this section
+    to customize the behavior of the installer in order to achieve the desired results.
+    -->
+  <AdminSection>
+    <!-- 
+    MAIN TAG NAME(s):
+      <DiscoveryProtocols>
+    DESCRIPTION:
+      The following settings define which network protocols to use to discover additional devices.
+    OPTIONS:
+      0 - Do not search for printer/scanner using this method
+      1 - Search for printer/scanner using this method
+      -->
+    <DiscoveryProtocols>
+      <TekDLP>1</TekDLP>
+      <SNMP>1</SNMP>
+      <USB>1</USB>
+    </DiscoveryProtocols>
+    <!-- 
+    MAIN TAG NAME(s):
+      <Registration>
+    DESCRIPTION:
+      These settings define whether electronic registration support will be enabled or disabled along with providing the information
+      necessary to execute the registration utility.
+      If enabled, the installer will launch the registration utility at the end of install after the finish button is clicked
+      and only if at least one driver and queue were successfully installed.
+    OPTIONS:
+      - <Enabled>
+        DESCRIPTION:
+          This setting defines whether Registration will be enabled or disabled.
+        OPTIONS:
+          0 - Registration support is disabled
+          1 - Registration support is enabled
+      - <SerialSNMPOID>
+        DESCRIPTION:
+          This setting defines the SNMP OID used to obtain the serial number of the device we are trying to register
+          which is then passed to the registration utility so that it is auto populated.
+      - <FileSrc>
+        DESCRIPTION:
+          This setting defines the source location and filename of the registration utility that we will copy locally 
+          before using it to register the device at the end of a successful install if enabled.
+      - <FileDst>
+        DESCRIPTION:
+          This setting defines the destination location and filename that we will copy the registration utility to before
+          using it to register the device at the end of a successful install if enabled.
+      -->
+    <Registration>
+      <Enabled>1</Enabled>
+      <SerialSNMPOID>1.3.6.1.2.1.43.5.1.1.17.1</SerialSNMPOID>
+      <FileSrc>!CDROOT!\Windows Utilities\Installer32\XReg.exe</FileSrc>
+      <FileDst>!TEMPDIR!\Xerox\XReg\XReg.exe</FileDst>
+    </Registration>
+
+	<RegVerEntry>Xerox Print Experience 2.5</RegVerEntry>
+  </AdminSection>
+  <!-- 
+  EDITS ALLOWED: NO (DO NOT EDIT OR EDIT AT YOUR OWN RISK!)
+  DESCRIPTION:
+    This section contains model specific information necessary for successful installations.  Please do NOT edit this
+    section unless specifically directed to by Xerox personnel.  Invalid edits may cause unpredictable results.  Xerox
+    will not be held responsible for any personal damage due to unauthorized or incorrect edits of this section of the XML
+    -->
+  <ModelSection>
+    <!-- List of Printer Models -->
+    <PrinterToInstall>
+      <Printer>Xerox WorkCentre 5845</Printer>
+      <SysObjectID>1.3.6.1.4.1.253.8.62.1.20.6.19</SysObjectID>
+      <USB_Vendor>0924</USB_Vendor>
+      <USB_ProductID>42B4</USB_ProductID>
+      <USB_PnpID>XeroxWorkCentre_58451876</USB_PnpID>
+<RegistrationModel>WC5840</RegistrationModel>
+      <DriverInfo>
+        <Driver>
+          <Name>Xerox WorkCentre 5845 V4 PCL6</Name>
+          <DriverType>PCL6</DriverType>
+          <TargetEnv>
+            <inf>XeroxWorkCentre58XX_PCL6.inf</inf>
+          </TargetEnv>
+        </Driver>
+      </DriverInfo>
+    </PrinterToInstall>
+    <PrinterToInstall>
+      <Printer>Xerox WorkCentre 5855</Printer>
+      <SysObjectID>1.3.6.1.4.1.253.8.62.1.20.6.20</SysObjectID>
+      <USB_Vendor>0924</USB_Vendor>
+      <USB_ProductID>42B5</USB_ProductID>
+      <USB_PnpID>XeroxWorkCentre_58558877</USB_PnpID>
+<RegistrationModel>WC5840</RegistrationModel>
+      <DriverInfo>
+        <Driver>
+          <Name>Xerox WorkCentre 5855 V4 PCL6</Name>
+          <DriverType>PCL6</DriverType>
+          <TargetEnv>
+            <inf>XeroxWorkCentre58XX_PCL6.inf</inf>
+          </TargetEnv>
+        </Driver>
+      </DriverInfo>
+    </PrinterToInstall>
+    <PrinterToInstall>
+      <Printer>Xerox WorkCentre 5865</Printer>
+      <SysObjectID>1.3.6.1.4.1.253.8.62.1.20.6.21</SysObjectID>
+      <USB_Vendor>0924</USB_Vendor>
+      <USB_ProductID>42B6</USB_ProductID>
+      <USB_PnpID>XeroxWorkCentre_58657877</USB_PnpID>
+<RegistrationModel>WC5840</RegistrationModel>
+      <DriverInfo>
+        <Driver>
+          <Name>Xerox WorkCentre 5865 V4 PCL6</Name>
+          <DriverType>PCL6</DriverType>
+          <TargetEnv>
+            <inf>XeroxWorkCentre58XX_PCL6.inf</inf>
+          </TargetEnv>
+        </Driver>
+      </DriverInfo>
+    </PrinterToInstall>
+    <PrinterToInstall>
+      <Printer>Xerox WorkCentre 5875</Printer>
+      <SysObjectID>1.3.6.1.4.1.253.8.62.1.20.6.22</SysObjectID>
+      <USB_Vendor>0924</USB_Vendor>
+      <USB_ProductID>42B7</USB_ProductID>
+      <USB_PnpID>XeroxWorkCentre_5875E876</USB_PnpID>
+<RegistrationModel>WC5840</RegistrationModel>
+      <DriverInfo>
+        <Driver>
+          <Name>Xerox WorkCentre 5875 V4 PCL6</Name>
+          <DriverType>PCL6</DriverType>
+          <TargetEnv>
+            <inf>XeroxWorkCentre58XX_PCL6.inf</inf>
+          </TargetEnv>
+        </Driver>
+      </DriverInfo>
+    </PrinterToInstall>
+    <PrinterToInstall>
+      <Printer>Xerox WorkCentre 5890</Printer>
+      <SysObjectID>1.3.6.1.4.1.253.8.62.1.20.6.23</SysObjectID>
+      <USB_Vendor>0924</USB_Vendor>
+      <USB_ProductID>42B8</USB_ProductID>
+      <USB_PnpID>XeroxWorkCentre_58908BB2</USB_PnpID>
+<RegistrationModel>WC5840</RegistrationModel>
+      <DriverInfo>
+        <Driver>
+          <Name>Xerox WorkCentre 5890 V4 PCL6</Name>
+          <DriverType>PCL6</DriverType>
+          <TargetEnv>
+            <inf>XeroxWorkCentre58XX_PCL6.inf</inf>
+          </TargetEnv>
+        </Driver>
+      </DriverInfo>
+    </PrinterToInstall>
+  </ModelSection>
+</XDriverInstaller>

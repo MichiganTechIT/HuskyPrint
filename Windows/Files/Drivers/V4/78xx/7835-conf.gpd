@@ -1,0 +1,238 @@
+
+*%******************************************************************************************
+*% AutoConfig features for Xerox WorkCentre 7855/7845/7835/7830
+*% Copyright(c) 2015 Xerox Corporation
+*% All rights reserved.
+*%******************************************************************************************
+ 
+*GPDSpecVersion: "1.0"
+
+*BidiQueryFile: "7835-conf.GDL"
+
+*Feature: InstallableAuthenticationModuleActual
+{
+	*rcNameID: =IDS_NOT_VISIBLE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: None
+	*ConcealFromUI?: TRUE
+		
+	*Option: CommonAccessCardPiv
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+		
+	*Option: None
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+}
+
+
+*Feature: InstallableDocumentEncryptionActual
+{
+	*rcNameID: =IDS_NOT_VISIBLE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: NotInstalled
+	*ConcealFromUI?: TRUE
+		
+	*Option: Installed
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+		
+	*Option: NotInstalled
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+}
+
+
+*Feature: InstallableFaxEmailNotificationActual
+{
+	*rcNameID: =IDS_LAN_FAX_EMAIL_CONFIRMATION
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: NotInstalled
+		
+	*Option: Installed
+	{
+		*rcNameID: =IDS_INSTOPT_INSTALLED
+	}
+		
+	*Option: NotInstalled
+	{
+		*rcNameID: =IDS_INSTOPT_NOT_INSTALLED
+	}
+}
+
+
+*Feature: InstallableFaxOutActual
+{
+	*rcNameID: =IDS_LAN_FAX_MODULE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: NotInstalled
+		
+	*Option: Installed
+	{
+		*rcNameID: =IDS_INSTOPT_INSTALLED
+	}
+		
+	*Option: NotInstalled
+	{
+		*rcNameID: =IDS_INSTOPT_NOT_INSTALLED
+	}
+}
+
+
+*Feature: InstallableHoldForAuthenticationActual
+{
+	*rcNameID: =IDS_NOT_VISIBLE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: Pin
+	*ConcealFromUI?: TRUE
+		
+	*Option: Pin
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+		
+	*Option: UserId
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+		*DisabledFeatures: LIST(JobPasscode)
+	}
+}
+
+
+*Feature: InstallableHolePunchUnitActual
+{
+	*rcNameID: =IDS_INSTOPT_HOLE_PUNCH_UNIT
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: NotInstalled
+		
+	*Option: NotInstalled
+	{
+		*rcNameID: =IDS_INSTOPT_NOT_INSTALLED
+	}
+		
+	*Option: Punch_2And_3HoleStack
+	{
+		*rcNameID: =IDS_INSTOPT_2_3_PUNCH_UNIT
+	}
+		
+	*Option: Punch_2And_4HoleStack
+	{
+		*rcNameID: =IDS_INSTOPT_2_4_PUNCH_UNIT
+	}
+		
+	*Option: Punch_4HoleStack
+	{
+		*rcNameID: =IDS_INSTOPT_4_PUNCH_UNIT
+	}
+}
+
+
+*Feature: InstallableInputPaperTraysActual
+{
+	*rcNameID: =IDS_INSTOPT_PAPER_TRAYS
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: 5Trays
+		
+	*Option: 5Trays
+	{
+		*rcNameID: =IDS_INSTOPT_FIVE_TRAYS
+	}
+		
+	*Option: 5TraysHighCapacityTandemTray
+	{
+		*rcNameID: =IDS_INSTOPT_5_TRAYS_HI_CAP_TANDEM
+	}
+		
+	*Option: 6TraysHighCapacity
+	{
+		*rcNameID: =IDS_INSTOPT_6_TRAYS_HCF
+	}
+		
+	*Option: 6TraysHighCapacityTandemTray
+	{
+		*rcNameID: =IDS_INSTOPT_6_TRAYS_HCF_TANDEM
+	}
+}
+
+
+*Feature: InstallableJobAccountingSystemActual
+{
+	*rcNameID: =IDS_NOT_VISIBLE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: None
+	*ConcealFromUI?: TRUE
+		
+	*Option: Network
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+		
+	*Option: None
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+		
+	*Option: Standard
+	{
+		*rcNameID: =IDS_NOT_VISIBLE
+	}
+}
+
+
+*Feature: InstallableJobStorageActual
+{
+	*rcNameID: =IDS_INSTOPT_JOB_STORAGE
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: Installed
+		
+	*Option: Installed
+	{
+		*rcNameID: =IDS_INSTOPT_INSTALLED
+	}
+		
+	*Option: NotInstalled
+	{
+		*rcNameID: =IDS_INSTOPT_NOT_INSTALLED
+		*DisabledFeatures: LIST(JobPasscode)
+	}
+}
+
+
+*Feature: InstallableOutputDeliveryUnitActual
+{
+	*rcNameID: =IDS_INSTOPT_FINISHER
+	*FeatureType: PRINTER_PROPERTY
+	*DefaultOption: OffsetCatchTray
+		
+	*Option: ATypeFinisher
+	{
+		*rcNameID: =IDS_INSTOPT_INTEGRATED_OFFICE_FINISHER
+	}
+		
+	*Option: CTypeFinisherBookletMaker
+	{
+		*rcNameID: =IDS_INSTOPT_PROFESSIONAL_FINISHER
+	}
+		
+	*Option: OffsetCatchTray
+	{
+		*rcNameID: =IDS_INSTOPT_OCT_OFFSET_CATCH_TRAY
+	}
+		
+	*Option: TypeSb
+	{
+		*rcNameID: =IDS_INSTOPT_OFFICE_FINISHER_LX
+	}
+		
+	*Option: TypeSbBookletMaker
+	{
+		*rcNameID: =IDS_INSTOPT_OFFICE_FINISHER_LX_W_BK
+	}
+}
+
+
+

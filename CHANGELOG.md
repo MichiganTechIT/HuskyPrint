@@ -1,4 +1,5 @@
 # Changelog for HuskyPrint
+
 ## Version **1.1.0.0** _[2018_08/31]_
 * Updated for Windows
     * Removed printer conversion from legacy servers
