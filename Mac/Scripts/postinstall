@@ -1,73 +1,49 @@
 #!/bin/sh
+## postinstall
 
-# should already be correct but let's make sure
-chown -R root:admin "/Library/Printers/Xerox"
-chmod -R go-w "/Library/Printers/Xerox"
+pathToScript=$0
+pathToPackage=$1
+targetLocation=$2
+targetVolume=$3
 
-if [ ! -d "/Library/Caches/Xerox" ]; then
-	/bin/mkdir "/Library/Caches/Xerox"
-fi
-
-chmod 0777 "/Library/Caches/Xerox"
-
-if [ -f /Library/Caches/ppdmgr ]; then
-	/Library/Caches/ppdmgr -u -P "/Library/Printers/PPDs/Contents/Resources"
-	rm -rdf "/Library/Caches/ppdmgr"
-fi
-
-# should already be correct but let's make sure
-chown -R root:wheel "/Library/Printers/PPDs"
-chmod -R go-w "/Library/Printers/PPDs"
-
-# xsubinaries
-cd /Applications/Xerox/Xerox\ Scan\ Utility/
-for file in *.xst
-	do
-	if [ -f ${file} ];
-	then 
-	   mv -f "${file}" /Library/Caches/Xerox/"${file}"
-	fi
-done
-
-# xsucontents and 107xsucontents
-if [ -d /Applications/Xerox/Xerox\ Scan\ Utility/UpgradeXScanUtility.app ]; then
-	exec /Applications/Xerox/Xerox\ Scan\ Utility/UpgradeXScanUtility.app/Contents/MacOS/UpgradeXScanUtility "/Library/Caches/Xerox/XSU.plist"  
-fi
-
-sleep 10
-
-# PaperCut Client
+# install papercut
 # Fix executable 
 find '/Applications/PCClient.app' -exec chmod 775 {} \\;
 rm -fr ~/Library/Preferences/PCClient 2>/dev/null
 export PC_CLIENT_ARGS=-a; open -a /Applications/PCClient.app/Contents/MacOS/JavaAppLauncher --args biz.papercut.pcng.client.uit.UserClient
-echo "Launched JavaAppLauncher for confirm identitiy mode"
 
-# Grab pre-existing printers
-BW=$(lpstat -v | grep -i husky-bw | awk 'BEGIN { FS = "/" } ; NR==1{ print $NF}')
-Color=$(lpstat -v | grep -i Husky-Color | awk 'BEGIN { FS = "/" } ; NR==1{ print $NF}')
+# Xerox printer drivers
+installer -target $targetVolume -pkg /tmp/Xerox-Printers-Apple-4.1.pkg
+installer -target $targetVolume -pkg /tmp/Xerox-Printers-4.22.2.pkg
+rm -rf /tmp/Xerox*
 
-# Remove BW and Color if they exist already
-if [ -z $BW ]; then 
-    echo "Deleting old $BW"
-    lpadmin -x $BW
-fi
+# add husky prints
+# Remove any old versions of the husky printers
+lpstat -p | awk '{print $2}' | while read printer; do
+    if [[ "$printer" == "husky"* ]]; then
+        echo "Deleting printer: $printer"
+        lpadmin -x $printer
+    else if [[ "$printer" == "Husky"* ]]; then
+        echo "Deleting printer: $printer"
+        lpadmin -x $printer
+    fi
+    fi
+done
 
-if [ -z $Color ]; then 
-    echo "Deleting old $Color"
-    lpadmin -x $Color
-fi
+# Add husky printers with drivers
+# Currently we are using Xerox AltaLink B/C8055
 
-# Add new Color and BW with the adjusted drivers
-lpadmin -p "Husky-Color" -E -v lpd://print.mtu.edu/husky-color -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ C8055.gz -o XRTrays='SixTraysHCFTT' -o XRHolePunch='23Unit' -o XRFinisher='SBFinisher' -o printer-is-shared=false
-lpadmin -p "Husky-BW" -E -v lpd://print.mtu.edu/husky-bw -P /Library/Printers/PPDs/Contents/Resources/Xerox\ AltaLink\ B8055.gz -o XRTrays='SixTraysHCFTT' -o XRFinisher='OF' -o XRHolePunch='TruePunch' -o printer-is-shared=false
+# Husky-BW
+echo "Adding Husky-BW"
+lpadmin -p "Husky-BW" -D "Husky-BW" -L "Husky-BW" -E -v "lpd://print.mtu.edu/husky-bw" -P "/Library/Printers/PPDs/Contents/Resources/Xerox AltaLink B8055.gz"\
+    -o printer-is-shared=false -o XRTrays='SixTraysHCFTT' -o XRHolePunch='TruePunch' -o XRFinisher='OFBM'
+cupsenable Husky-BW
 
-# Grab the names again to be sure that they were added correctly
-BW=$(lpstat -v | grep -i husky-bw | awk 'BEGIN { FS = "/" } ; NR==1{ print $NF}')
-Color=$(lpstat -v | grep -i Husky-Color | awk 'BEGIN { FS = "/" } ; NR==1{ print $NF}')
+# Husky-Color
+echo "Adding Husky-Color"
+lpadmin -p "Husky-Color" -D "Husky-Color" -L "Husky-Color" -E -v "lpd://print.mtu.edu/husky-color" -P "/Library/Printers/PPDs/Contents/Resources/Xerox AltaLink C8055.gz"\
+    -o printer-is-shared=false -o XRHolePunch='23Unit' -o XRFinisher='SBBookletFinisher'
+cupsenable Husky-Color
 
 
-if [[ $BW == "husky-bw" && $Color == "husky-color" ]]; then
-  exit 0		## Success
-fi
-exit 1       ## Failure
+exit 0

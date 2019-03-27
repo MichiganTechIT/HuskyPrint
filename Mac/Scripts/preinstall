@@ -1,11 +1,17 @@
 #!/bin/sh
 ## preinstall
 
+pathToScript=$0
+pathToPackage=$1
+targetLocation=$2
+targetVolume=$3
+
+# kill off any papercut client that already exists
 pid=$(ps -A | grep -m1 PCClient.app | awk '{ print $1 }')
 kill $pid
 
-rm -rf /Applications/PCClient/
-rm -rf /AppLications/PCClient.app
+rm -rf $targetVolume/Applications/PCClient/
+rm -rf $targetVolume/AppLications/PCClient.app
+
 
 exit 0
-exit 1
