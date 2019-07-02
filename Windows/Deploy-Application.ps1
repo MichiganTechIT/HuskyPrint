@@ -66,14 +66,14 @@ Try {
     ##*===============================================
     ## Variables: Application
     [string]$appVendor = ''
-    [string]$appName = ''
+    [string]$appName = 'Off-Domain Printer Setup'
     [string]$appVersion = ''
     [string]$appArch = ''
     [string]$appLang = 'EN'
     [string]$appRevision = '01'
     [string]$appScriptVersion = '1.0.0'
-    [string]$appScriptDate = '02/12/2017'
-    [string]$appScriptAuthor = '<author name>'
+    [string]$appScriptDate = '07/02/2019'
+    [string]$appScriptAuthor = 'Eric Boersma'
     ##*===============================================
     ## Variables: Install Titles (Only set here to override defaults set by the toolkit)
     [string]$installName = ''
@@ -138,19 +138,75 @@ Try {
         ##*===============================================
         [string]$installPhase = 'Pre-Installation'
 
-        ## Show Welcome Message, close Internet Explorer if required, allow up to 3 deferrals, verify there is enough disk space to complete the install, and persist the prompt
-        Show-InstallationWelcome -CloseApps 'iexplore' -AllowDefer -DeferTimes 3 -CheckDiskSpace -PersistPrompt
+        # pc-client is the Papercut Client process. This needs to be stop to uninstall successfully
+        Show-InstallationWelcome -CloseApps 'pc-client' -PersistPrompt
 
         ## Show Progress Message (with the default message)
         Show-InstallationProgress
 
-        # Show estimated time balloon in minutes
-        # <Update this based on the elapsed installation time found in the logs>
-        $EstimatedTime = 2
-        Show-BalloonTip -BalloonTipText "$EstimatedTime minutes" -BalloonTipTitle 'Estimated Installation Time' -BalloonTipTime '10000'
+        # Create a log file to show at the end of the setup
+        $userReportLog = "$configToolkitLogDir\PrinterSetup$((Get-Date -Format o) -replace ":", ".").html"
+        $outFile = @{
+            FilePath = $userReportLog
+            Append   = $true
+        }
+
+        $paperCutVersion = '19.0.3'
+
+        #Lets create the log file with our initial header
+
+        "<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File @outFile
 
         ## <Perform Pre-Installation tasks here>
+        #region SoftwareInstall
+        "<h3>Software Installations</h3>" | Out-File -Append -FilePath $UserReportLog
+        if (Get-InstalledApplication -Name 'PaperCut') {
+            Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
+            Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(, , @('DisplayVersion', $paperCutVersion, 'Exact'))
 
+            # Need to go through Program Files to make sure Papercut was not installed using the .exe as the uninstall is different
+            $paperCutDirectories = (Get-ChildItem $envProgramFilesX86, $envProgramFiles -Directory -Filter "PaperCut*").FullName
+            if ($null -ne $paperCutDirectory) {
+                foreach ($paperCutDirectory in $paperCutDirectories) {
+                    if (Test-Path -Path "$paperCutDirectory\unins000.exe") {
+                        Execute-Process -Path "$paperCutDirectory\unins000.exe" -Parameters '/VERYSILENT'
+                    }
+                }
+            }
+            "<Br />Previous PaperCut Agent - <install style='color:red'>Removed</install>" | Out-File @outFile
+        }
+
+        if (Get-InstalledApplication -ProductCode '{23FE50A1-67BD-11E9-AA17-DE30237607C3}') {
+            "<Br />PaperCut MF $paperCutVersion - <install style='color:green'>Already Installed</install>" | Out-File @outFile
+        } else {
+            Show-InstallationProgress -StatusMessage "Extracting PaperCut Agent..."
+            # Create a folder where the PaperCut installer can be extracted to
+            $paperCutInstallerDirectory = "{0}\{1}" -f $envTemp, [guid]::NewGuid().ToString()
+            New-Folder -Path $paperCutInstallerDirectory
+
+            # Window 10 has builtin command to expand an archive file. Windows 7 requires alternate method
+            try {
+                Expand-Archive -Path "$dirFiles\PaperCut.zip" -DestinationPath $paperCutInstallerDirectory
+            } catch {
+                [System.IO.Compression.ZipFile]::ExtractToDirectory("$dirFiles\PaperCut.zip", $paperCutInstallerDirectory)
+            }
+
+            Show-InstallationProgress -StatusMessage "Installing PaperCut Agent..."
+            Execute-MSI -Action 'Install' -Path "$paperCutInstallerDirectory\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
+            "<Br />PaperCut MF $paperCutVersion - <install style='color:green'>Installed</install>" | Out-File @outFile
+
+            $StartupShortcut = Show-InstallationPrompt -Title 'Papercut AutoRun' -Message "Would you like PaperCut to run on startup?`nOtherwise you'll have to manually start it when you want to print." -ButtonRightText 'Yes' -ButtonLeftText 'No' -Icon Exclamation -PersistPrompt
+            if ($StartupShortcut -eq 'yes') {
+                New-Shortcut -Path "$envCommonStartUp\PaperCut MF Client.lnk" -TargetPath "$envProgramFiles\PaperCut MF Client\pc-client.exe" -IconLocation "$envProgramFiles\PaperCut MF Client\pc-client.exe" -Description 'PaperCut MF Client' -WorkingDirectory "$envProgramFilesX86\PaperCut MF Client"
+                "<Br />PaperCut MF $paperCutVersion AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File @outFile
+            }
+
+            Show-InstallationProgress -StatusMessage "Cleaning up installation files for PaperCut Agent..."
+            Remove-Folder -Path $paperCutInstallerDirectory
+        }
+
+
+        #endregion SoftwareInstall
 
         ##*===============================================
         ##* INSTALLATION
@@ -166,6 +222,13 @@ Try {
         [string]$installPhase = 'Post-Installation'
 
         ## <Perform Post-Installation tasks here>
+
+        # Open a browser to show what changes were done to their system
+        if ($envUserName -eq "Administrator") {
+            Start-Process -FilePath "C:\Program Files\Internet Explorer\iexplore.exe" -ArgumentList $UserReportLog
+        } else {
+            Start-Process $UserReportLog
+        }
 
         ## Display a message at the end of the install
     } ElseIf ($deploymentType -ieq 'Uninstall') {
@@ -194,7 +257,10 @@ Try {
         [string]$installPhase = 'Uninstallation'
 
         # <Perform Uninstallation tasks here>
+        Show-InstallationProgress -StatusMessage "Removing All PaperCut Agent versions..."
 
+        Remove-MSIApplications -Name "PaperCut"
+        Remove-File -Path "$envCommonStartUp\PaperCut MF Client.lnk"
 
         ##*===============================================
         ##* POST-UNINSTALLATION
