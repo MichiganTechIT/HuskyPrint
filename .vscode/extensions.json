@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "CoenraadS.bracket-pair-colorizer",
+        "eamodio.gitlens",
+        "hnw.vscode-auto-open-markdown-preview",
+        "ms-vscode.powershell",
+        "naumovs.color-highlight",
+        "streetsidesoftware.code-spell-checker",
+        "vscode-icons-team.vscode-icons",
+        "DavidAnson.vscode-markdownlint"
+    ]
+}
