@@ -18,17 +18,30 @@
         "editor.tabSize": 2
     },
     "cSpell.words": [
+        "ALLUSERS",
         "Aman",
+        "Boersma",
         "Citrix",
-        "endregion",
-        "hashtable",
+        "Installable",
         "Jira",
         "Lillis",
         "Mashwani",
         "Motazedian",
         "PSADT",
+        "PSDAT",
+        "Papercut",
+        "Prnport",
+        "cscript",
+        "endregion",
+        "hashtable",
         "iexplore",
+        "norestart",
+        "notcontains",
+        "pnputil",
+        "prndrvr",
+        "prnmngr",
         "sccm",
-        "uninstallation"
+        "uninstallation",
+        "zipfile"
     ],
 }
