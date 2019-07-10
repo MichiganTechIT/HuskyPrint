@@ -1,8 +1,0 @@
-[version]
-name-with-version=PaperCut MF 17.2.2 (Build 41281)
-name=PaperCut MF
-version-major=17
-version-minor=2
-version-patch=2
-version-suffix=
-version-build=41281
