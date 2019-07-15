@@ -9,6 +9,8 @@
       * Class 3 (Windows 7) -> 5.639.3.0
       * Class 4 (Windows 10) -> 7.76.0.0
   * Updated PaperCut installer version to 19.0.3
+* Updated for Linux
+  * Updated papercut files to version 19.0.3
 
 ## Version **1.1.0.0** _[2018_08/31]_
 

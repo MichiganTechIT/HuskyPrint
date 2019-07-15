@@ -30,7 +30,7 @@ find_preferred_system_java() {
 	system_java_cmd=${JAVACMD}
 	JAVACMD=""
 
-	# Have known system Java, check version is 1.8+.
+	# Have known system Java, check version is 10+.
 	java_version=`"${system_java_cmd}" -version 2>&1 | head -1 | cut -d '"' -f2`
 	if [ -z "${java_version}" ]; then
 		# Couldn't detect system Java version.
@@ -49,8 +49,8 @@ find_preferred_system_java() {
 		''|*[!0-9]*) return 1 ;;
 	esac
 
-	if [ ${java_version_major} -ge 1 ] && [ ${java_version_minor} -ge 8 ]; then
-		: # Have Java 1.8+, use it.
+	if [ ${java_version_major} -ge 10 ]; then
+		: # Have Java 10+, use it.
 	else
 		# Old/unknown Java, don't use it.
 		return 1
@@ -112,14 +112,14 @@ if [ -z "${JAVACMD}" ]; then
 	find_bundled_java
 fi
 if [ -z "${JAVACMD}" ]; then
-	echo "Warning: Could not find required version of java (1.8 / 8.0 or higher)"
+	echo "Warning: Could not find required version of java (10 or higher)"
 	echo "This will now try to find and use any installed version of java."
 	find_any_system_java
 fi
 
 if [ ! -x "${JAVACMD}" ]; then
 	echo "Error: Could not find Java." 1>&2 
-	echo "Please ensure Java 1.8 / 8.0 or higher is installed and java is on the path" 1>&2
+	echo "Please ensure Java 10 or higher is installed and java is on the path" 1>&2
 	exit 1
 fi
 
@@ -145,4 +145,5 @@ done`
 # Run the program
 #
 exec "${JAVACMD}" -classpath "${classpath}"  \
+	-Djava.locale.providers=COMPAT,SPI \
 	-Dclient.home=. biz.papercut.pcng.client.uit.UserClient "$@"
