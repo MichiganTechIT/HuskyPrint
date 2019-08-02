@@ -19,7 +19,7 @@
 <key>CFBundlePackageType</key>
 <string>APPL</string>
 <key>CFBundleShortVersionString</key>
-<string>18.2.2.44706</string>
+<string>19.0.3.49324</string>
 <key>CFBundleSignature</key>
 <string>????</string>
 <key>LSUIElement</key>
@@ -37,6 +37,7 @@
 <string>-Dclient.home=$APP_ROOT/Contents/Resources/</string>
 <string>-Dcom.apple.macos.useScreenMenuBar=true</string>
 <string>-Xmx256m</string>
+<string>-Djava.locale.providers=COMPAT,SPI</string>
 <!-- Workaround since the icon parameter for bundleapp doesn't work -->
 <string>-Xdock:icon=$APP_ROOT/Contents/Resources/client-icon.icns</string>
 </array>

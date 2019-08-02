@@ -13,9 +13,10 @@ rm -fr ~/Library/Preferences/PCClient 2>/dev/null
 export PC_CLIENT_ARGS=-a; open -a /Applications/PCClient.app/Contents/MacOS/JavaAppLauncher --args biz.papercut.pcng.client.uit.UserClient
 
 # Xerox printer drivers
-installer -target $targetVolume -pkg /tmp/Xerox-Printers-Apple-4.1.pkg
 installer -target $targetVolume -pkg /tmp/Xerox-Printers-4.22.2.pkg
 rm -rf /tmp/Xerox*
+rm -rf /Applications/Xerox\ PowerENGAGE.app
+rm -rf /Applications/XeroxPEInstallationCompanion.app
 
 # add husky prints
 # Remove any old versions of the husky printers
