@@ -1,15 +1,27 @@
 # Changelog for HuskyPrint
 
-## Version **1.1.0.0** _[2018_08/31]_
+## Version **1.2.0.0** _[2019/08/05]_
+
+* Updated PaperCut installer version to 19.0.3
 * Updated for Windows
-    * Removed printer conversion from legacy servers
-    * Updated drivers for husky-color and husky-bw
-    * Updated PaperCut version
-    * Moved to zip files for drivers and PaperCut installer
+  * Updated PSDAT to version 3.7.0
+  * Updated printer drivers
+    * Xerox AltaLink C80xx and B80xx versions
+      * Class 3 (Windows 7) -> 5.639.3.0
+      * Class 4 (Windows 10) -> 7.76.0.0
+
+## Version **1.1.0.0** _[2018/08/31]_
+
+* Updated for Windows
+  * Removed printer conversion from legacy servers
+  * Updated drivers for husky-color and husky-bw
+  * Updated PaperCut version
+  * Moved to zip files for drivers and PaperCut installer
 * Updated for Mac
-    * Initial upload of instal files
+  * Initial upload of instal files
 
 ## Version **1.0.0.0** _[2017/08/09]_
+
 * Added existing printers to be converted to point to the new servers
 * Added Windows 7 support
 * Added PaperCut install, and removing previous installation
