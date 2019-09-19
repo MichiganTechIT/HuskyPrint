@@ -1,5 +1,9 @@
 # Changelog for HuskyPrint
 
+## Version **1.2.1.0** _[2019/09/19]_
+
+* Changed Linux PaperCut configuration file to use unix line endings
+
 ## Version **1.2.0.0** _[2019/08/05]_
 
 * Updated PaperCut installer version to 19.0.3
