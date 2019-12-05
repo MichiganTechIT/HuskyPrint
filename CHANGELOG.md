@@ -1,4 +1,8 @@
 # Changelog for HuskyPrint
+## Version **1.2.2.0** Unreleased
+
+* Updated for Linux
+  * Updated huskyprint drivers
 
 ## Version **1.2.1.0** _[2019/09/19]_
 
