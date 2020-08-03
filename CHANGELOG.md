@@ -1,8 +1,10 @@
 # Changelog for HuskyPrint
-## Version **1.2.2.0** Unreleased
+
+## Version **2.0.0.0** Unreleased
 
 * Updated for Linux
   * Updated huskyprint drivers
+* **Breaking Change** Removed Windows 7 support
 
 ## Version **1.2.1.0** _[2019/09/19]_
 

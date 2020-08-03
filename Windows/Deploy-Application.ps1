@@ -263,74 +263,36 @@ Try {
 
         #region Drivers
         "<h3>Drivers</h3>" | Out-File @outFile
-        switch -wildcard ($envOSVersion) {
-            '6.1*' {
-                #Windows 7
-                $drivers = @(
-                    @{
-                        Name   = 'Xerox AltaLink B8065 PCL6' # husky-bw
-                        Source = "$dirFiles\Drivers\AltaLinkB80xx_5.639.3.0_PCL6_x64_v3.zip"
-                    }, @{
-                        Name   = "Xerox AltaLink C8055 PCL6" # husky-color
-                        Source = "$dirFiles\Drivers\AltaLinkC80xx_5.639.3.0_PCL6_x64_v3.zip"
-                    }
-                ) # end drivers
-            } # end 6.1
-            default {
-                $drivers = @(
-                    @{
-                        Name    = "Xerox AltaLink B8065 V4 PCL6" # husky-bw
-                        Version = "7.76.0.0"
-                        Source  = "$dirFiles\Drivers\AltaLinkB80xx_7.76.0.0_PCL6_x64.zip"
-                    }, @{
-                        Name    = "Xerox AltaLink C8055 V4 PCL6" # husky-color
-                        Version = "7.76.0.0"
-                        Source  = "$dirFiles\Drivers\AltaLinkC80xx_7.76.0.0_PCL6_x64.zip"
-                    }
-                ) # end drivers
-            } # end default
-        } # end switch
+
+        $drivers = @(
+            @{
+                Name    = "Xerox AltaLink B8065 V4 PCL6" # husky-bw
+                Version = "7.76.0.0"
+                Source  = "$dirFiles\Drivers\AltaLinkB80xx_7.76.0.0_PCL6_x64.zip"
+            }, @{
+                Name    = "Xerox AltaLink C8055 V4 PCL6" # husky-color
+                Version = "7.76.0.0"
+                Source  = "$dirFiles\Drivers\AltaLinkC80xx_7.76.0.0_PCL6_x64.zip"
+            }
+        ) # end drivers
 
         Show-InstallationProgress -StatusMessage "Checking Printer Drivers..."
         foreach ($driver in $drivers) {
+            try {
+                $installedPrintDriver = Get-PrinterDriver -Name $driver.Name -ErrorAction Stop
+                $installedDriverVersion = (Get-WindowsDriver -Online -Verbose:$false -Driver $installedPrintDriver.InfPath)[0].Version
 
-            switch -wildcard ($envOSVersion) {
-                '6.1*' {
-                    # Windows 7
-                    $driverDirectory = "{0}\{1}" -f $envTemp, [guid]::NewGuid()
-                    New-Folder -Path $driverDirectory
-                    Show-InstallationProgress -StatusMessage "Extracting Driver $($driver.Name)..."
-                    # Window 10 has builtin command to expand an archive file. Windows 7 requires alternate method depending on PowerShell version installed
-                    try {
-                        Expand-Archive -Path $driver.Source -DestinationPath $driverDirectory
-                    } catch {
-                        [System.IO.Compression.ZipFile]::ExtractToDirectory($driver.Source, $driverDirectory)
-                    }
-                    $driverInf = (Get-childItem -Path $driverDirectory -File *.inf).FullName
-                    cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prndrvr.vbs" -a -m "$($driver.name)" -i $driverInf
-                    "<Br />$($driver.name) - <install style='color:green'>Installed</install>" | Out-File @outFile
-
-                    Show-InstallationProgress -StatusMessage "Cleaning up driver files..."
-                    Remove-Folder -Path $driverDirectory
-                } # end 6.1
-                default {
-                    try {
-                        $installedPrintDriver = Get-PrinterDriver -Name $driver.Name -ErrorAction Stop
-                        $installedDriverVersion = (Get-WindowsDriver -Online -Verbose:$false -Driver $installedPrintDriver.InfPath)[0].Version
-
-                        if ($installedDriverVersion -ne $driver.Version) {
-                            "<Br />$($driver.name) - <install style='color:orange'>Needs to be Updated</install>" | Out-File @outFile
-                            # The driver does not match the desired version, it needs to be upgraded
-                            Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
-                        } else {
-                            "<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File @outFile
-                        }
-                    } catch {
-                        # Driver does not exist
-                        Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
-                    }
-                } # end default
-            } # end switch
+                if ($installedDriverVersion -ne $driver.Version) {
+                    "<Br />$($driver.name) - <install style='color:orange'>Needs to be Updated</install>" | Out-File @outFile
+                    # The driver does not match the desired version, it needs to be upgraded
+                    Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
+                } else {
+                    "<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File @outFile
+                }
+            } catch {
+                # Driver does not exist
+                Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
+            }
         } # end foreach printer
         #endregion Drivers
 
@@ -344,148 +306,120 @@ Try {
         #region Printers
         Show-InstallationProgress -StatusMessage "Adding Printers..."
         "<h3>Printers</h3>" | Out-File @outFile
-        switch -wildcard ($envOSVersion) {
-            '6.1*' {
-                $printers = @(
-                    @{
-                        Name    = "husky-bw"
-                        Driver  = "Xerox AltaLink B8065 PCL6"
-                        Address = "print.mtu.edu"
-                    }, @{
-                        Name    = "husky-color"
-                        Driver  = "Xerox AltaLink C8055 PCL6"
-                        Address = "print.mtu.edu"
-                    }
-                )
+
+        $printers = @(
+            @{
+                Name              = "husky-bw"
+                Driver            = "Xerox AltaLink B8065 V4 PCL6"
+                Address           = "print.mtu.edu"
+                InstalledFeatures = @{
+                    "Config:InstallableHolePunchUnitActual"      = "PunchUnknown" # Hole punch
+                    "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
+                    "Config:InstallableOutputDeliveryUnitActual" = "OfficeFinisher" # Finisher Option
+                }
+            }, @{
+                Name              = "husky-color"
+                Driver            = "Xerox AltaLink C8055 V4 PCL6"
+                Address           = "print.mtu.edu"
+                InstalledFeatures = @{
+                    "Config:InstallableHolePunchUnitActual"      = "Punch_2And_3HoleStack" # hole punch
+                    "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
+                    "Config:InstallableOutputDeliveryUnitActual" = "TypeSb" # Finisher Option
+                }
             }
-            default {
-                $printers = @(
-                    @{
-                        Name              = "husky-bw"
-                        Driver            = "Xerox AltaLink B8065 V4 PCL6"
-                        Address           = "print.mtu.edu"
-                        InstalledFeatures = @{
-                            "Config:InstallableHolePunchUnitActual"      = "PunchUnknown" # Hole punch
-                            "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
-                            "Config:InstallableOutputDeliveryUnitActual" = "OfficeFinisher" # Finisher Option
-                        }
-                    }, @{
-                        Name              = "husky-color"
-                        Driver            = "Xerox AltaLink C8055 V4 PCL6"
-                        Address           = "print.mtu.edu"
-                        InstalledFeatures = @{
-                            "Config:InstallableHolePunchUnitActual"      = "Punch_2And_3HoleStack" # hole punch
-                            "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
-                            "Config:InstallableOutputDeliveryUnitActual" = "TypeSb" # Finisher Option
-                        }
-                    }
-                )
-            }
-        }
+        )
 
         foreach ($printer in $printers) {
             Show-InstallationProgress -StatusMessage "Creating printer ports for $($printer.name)..."
-            switch -wildcard ($envOSVersion) {
-                '6.1*' {
-                    cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\Prnport.vbs" -a -r $printer.name -h $printer.Address -o lpr -q $printer.name
-                    "<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
-                    cscript "C:\Windows\System32\Printing_Admin_Scripts\en-US\prnmngr.vbs" -a -p "$($printer.name)" -m "$($printer.Driver)" -r "$($printer.name)"
-                    "<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
+
+            #Lets check if the printer already exists.
+            try {
+                $existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction Stop
+            } catch {
+                $existingPort = $null
+            }
+
+            if ($null -eq $existingPort) {
+                # The port does not exist, a new port is needed
+                $newPortParams = @{
+                    Name            = $printer.name
+                    LprHostAddress  = $printer.Address
+                    LprQueueName    = $printer.name
+                    LprByteCounting = $true
+                    ErrorAction     = 'Stop'
                 }
-                default {
-                    #Lets check if the printer already exists.
-                    try {
-                        $existingPort = Get-PrinterPort -Name $Printer.Name -ErrorAction Stop
-                    } catch {
-                        $existingPort = $null
+                try {
+                    Add-PrinterPort @newPortParams
+                } catch {
+                    "<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFile
+                    continue
+                }
+                "<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
+            } else {
+                $newPrinterPort = @{
+                    Name = $printer.Name
+                } # End newPrinterPort
+                # printer port name is already used. Need to validate the settings are in a desired state.
+                Show-InstallationProgress -StatusMessage "Validating pre-existing port settings for $($printer.name)..."
+                $wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
+                if ($existingPort.PrinterHostAddress -ne $printer.Address) {
+                    $newPrinterPort.PrinterHostAddress = $printer.Address
+                    "<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFile
+                }
+                if ($existingPort.LprQueueName -ne $printer.name) {
+                    if ($wmiPrinterQuery.Protocol -ne 2) {
+                        $newPrinterPort.Protocol = 2
+                        "<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File @outFile
                     }
+                    $newPrinterPort.lprQueueName = $printer.name
+                    "<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File @outFile
+                }
+                if ($newPrinterPort.count -gt 1) {
+                    Get-WmiObject -Query ("Select * FROM Win32_TCPIpPrinterPort WHERE Name = '{0}'" -f $printer.name ) | Set-WmiInstance -Arguments $newPrinterPort -PutType UpdateOnly | Out-Null
+                } # End If newPrinterPort.Count
+            }
+            try {
+                $existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction 'Stop'
+            } catch {
+                $existingPrinter = $null
+            }
 
-                    if ($null -eq $existingPort) {
-                        # The port does not exist, a new port is needed
-                        $newPortParams = @{
-                            Name            = $printer.name
-                            LprHostAddress  = $printer.Address
-                            LprQueueName    = $printer.name
-                            LprByteCounting = $true
-                            ErrorAction     = 'Stop'
-                        }
-                        try {
-                            Add-PrinterPort @newPortParams
-                        } catch {
-                            "<Br />Port: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFile
-                            continue
-                        }
-                        "<Br />Port: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
-                    } else {
-                        $newPrinterPort = @{
-                            Name = $printer.Name
-                        } # End newPrinterPort
-                        # printer port name is already used. Need to validate the settings are in a desired state.
-                        Show-InstallationProgress -StatusMessage "Validating pre-existing port settings for $($printer.name)..."
-                        $wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
-                        if ($existingPort.PrinterHostAddress -ne $printer.Address) {
-                            $newPrinterPort.PrinterHostAddress = $printer.Address
-                            "<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFile
-                        }
-                        if ($existingPort.LprQueueName -ne $printer.name) {
-                            if ($wmiPrinterQuery.Protocol -ne 2) {
-                                $newPrinterPort.Protocol = 2
-                                "<Br />Port: $($printer.name) - <install style='color:green'>Converted Port to use LPR protocol</install>" | Out-File @outFile
-                            }
-                            $newPrinterPort.lprQueueName = $printer.name
-                            "<Br />Port: $($printer.name) - <install style='color:green'>Updated QueueName</install>" | Out-File @outFile
-                        }
-                        if ($newPrinterPort.count -gt 1) {
-                            Get-WmiObject -Query ("Select * FROM Win32_TCPIpPrinterPort WHERE Name = '{0}'" -f $printer.name ) | Set-WmiInstance -Arguments $newPrinterPort -PutType UpdateOnly | Out-Null
-                        } # End If newPrinterPort.Count
-                    }
-                    try {
-                        $existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction 'Stop'
-                    } catch {
-                        $existingPrinter = $null
-                    }
+            if ($null -eq $existingPrinter) {
+                try {
+                    Add-Printer -Name $printer.Name -PortName $Printer.Name -DriverName $Printer.Driver -Shared:$false
+                } catch {
+                    "<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFile
+                    continue
+                }
 
-                    if ($null -eq $existingPrinter) {
-                        try {
-                            Add-Printer -Name $printer.Name -PortName $Printer.Name -DriverName $Printer.Driver -Shared:$false
-                        } catch {
-                            "<Br />Printer: $($printer.name) - <install style='color:red'>Failed</install>" | Out-File @outFile
-                            continue
-                        }
-
-                        "<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
-                    } else {
-                        #Printer already exists. Need to verify the settings are in a desired state.
-                        Show-InstallationProgress -StatusMessage "Validating $($printer.name) settings..."
-                        if ($existingPrinter.Shared) {
-                            Set-Printer -Name $Printer.Name -Shared:$false
-                            "<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File @outFile
-                        }
-                        if ($existingPrinter.DriverName -ne $printer.Driver) {
-                            Set-Printer -Name $existingPrinter.Name -DriverName $printer.Driver
-                            "<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File @outFile
-                        }
-                        if ($existingPrinter.PortName -ne $printer.name) {
-                            Get-PrintJob -PrinterName $Printer.Name | Remove-PrintJob
-                            Set-Printer -Name $Printer.Name -PortName $Printer.Name
-                            "<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($existingPrinter.PortName)</install>" | Out-File @outFile
-                        }
-                    }
-                    if ($printer.InstalledFeatures) {
-                        foreach ($feature in ($printer.InstalledFeatures).GetEnumerator()) {
-                            $currentFeatureValue = Get-PrinterProperty -PrinterName $printer.name -PropertyName $feature.name
-                            if ($currentFeatureValue.value -ne $feature.Value) {
-                                Set-PrinterProperty -PrinterName $printer.name -PropertyName $feature.Name -Value $feature.Value
-                                "<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File @outFile
-                            }
-                        }
-                    }
-                    "<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File @outFile
+                "<Br />Printer: $($printer.name) - <install style='color:green'>Added</install>" | Out-File @outFile
+            } else {
+                #Printer already exists. Need to verify the settings are in a desired state.
+                Show-InstallationProgress -StatusMessage "Validating $($printer.name) settings..."
+                if ($existingPrinter.Shared) {
+                    Set-Printer -Name $Printer.Name -Shared:$false
+                    "<Br />Printer: $($printer.name) - <install style='color:green'>Disabled Sharing</install>" | Out-File @outFile
+                }
+                if ($existingPrinter.DriverName -ne $printer.Driver) {
+                    Set-Printer -Name $existingPrinter.Name -DriverName $printer.Driver
+                    "<Br />Printer: $($printer.name)- <install style='color:green'>Changed Driver to $($printer.driver)</install>" | Out-File @outFile
+                }
+                if ($existingPrinter.PortName -ne $printer.name) {
+                    Get-PrintJob -PrinterName $Printer.Name | Remove-PrintJob
+                    Set-Printer -Name $Printer.Name -PortName $Printer.Name
+                    "<Br />Printer: $($printer.name) - <install style='color:green'>Changed Port to $($printer.name) from $($existingPrinter.PortName)</install>" | Out-File @outFile
                 }
             }
-        }
-        if ($envOSVersion -like '6.1*') {
-            Start-Process "http://support.it.mtu.edu/981790941"
+            if ($printer.InstalledFeatures) {
+                foreach ($feature in ($printer.InstalledFeatures).GetEnumerator()) {
+                    $currentFeatureValue = Get-PrinterProperty -PrinterName $printer.name -PropertyName $feature.name
+                    if ($currentFeatureValue.value -ne $feature.Value) {
+                        Set-PrinterProperty -PrinterName $printer.name -PropertyName $feature.Name -Value $feature.Value
+                        "<Br />Printer: $($printer.name) - <install style='color:green'>Setting an Installed Option $($feature.Name)</install>" | Out-File @outFile
+                    }
+                }
+            }
+            "<Br />Printer: $($printer.name) - <install style='color:green'>OK</install>" | Out-File @outFile
         }
         #endregion Printers
 
