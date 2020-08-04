@@ -41,7 +41,7 @@
 [CmdletBinding()]
 Param (
     [Parameter(Mandatory = $false)]
-    [ValidateSet('Install', 'Uninstall')]
+    [ValidateSet('Install', 'Uninstall', 'Repair')]
     [string]$DeploymentType = 'Install',
     [Parameter(Mandatory = $false)]
     [ValidateSet('Interactive', 'Silent', 'NonInteractive')]
@@ -121,13 +121,13 @@ Try {
     ## Variables: Application
     [string]$appVendor = ''
     [string]$appName = 'Off-Domain Printer Setup'
-    [string]$appVersion = '1.2.0.0'
+    [string]$appVersion = '2.0.0.0'
     [string]$papercutVersion = '19.0.3'
     [string]$appArch = ''
     [string]$appLang = 'EN'
     [string]$appRevision = '01'
     [string]$appScriptVersion = '1.0.0'
-    [string]$appScriptDate = '07/02/2019'
+    [string]$appScriptDate = '08/04/2020'
     [string]$appScriptAuthor = 'Eric Boersma'
     ##*===============================================
     ## Variables: Install Titles (Only set here to override defaults set by the toolkit)
@@ -142,8 +142,8 @@ Try {
 
     ## Variables: Script
     [string]$deployAppScriptFriendlyName = 'Deploy Application'
-    [version]$deployAppScriptVersion = [version]'3.7.0'
-    [string]$deployAppScriptDate = '02/13/2018'
+    [version]$deployAppScriptVersion = [version]'3.8.2'
+    [string]$deployAppScriptDate = '08/05/2020'
     [hashtable]$deployAppScriptParameters = $psBoundParameters
 
     ## Variables: Environment
@@ -178,7 +178,7 @@ Try {
         }
     }
 
-    #endregion
+    # endRegion
     ##* Do not modify section above
     ##*===============================================
     ##* END VARIABLE DECLARATION
@@ -187,7 +187,7 @@ Try {
     # Installation elapsed start time collection
     $start = (Get-Date)
 
-    If ($deploymentType -ine 'Uninstall') {
+    If ($deploymentType -ine 'Uninstall' -and $deploymentType -ine 'Repair') {
         ##*===============================================
         ##* PRE-INSTALLATION
         ##*===============================================
@@ -477,12 +477,42 @@ Try {
         ## <Perform Post-Uninstallation tasks here>
 
 
+    } ElseIf ($deploymentType -ieq 'Repair') {
+        ##*===============================================
+        ##* PRE-REPAIR
+        ##*===============================================
+        [string]$installPhase = 'Pre-Repair'
+
+        ## Show Progress Message (with the default message)
+        Show-InstallationProgress
+
+        ## <Perform Pre-Repair tasks here>
+
+        ##*===============================================
+        ##* REPAIR
+        ##*===============================================
+        [string]$installPhase = 'Repair'
+
+        # <Perform Repair tasks here>
+        Show-InstallationProgress -StatusMessage "Repairing $installTitle..."
+
+        ##*===============================================
+        ##* POST-REPAIR
+        ##*===============================================
+        [string]$installPhase = 'Post-Repair'
+
+        ## <Perform Post-Repair tasks here>
+
+        ## Display a message at the end of the uninstall
+        Show-InstallationProgress -StatusMessage "Done Repairing $installTitle."
+
     }
 
     ##*===============================================
     ##* END SCRIPT BODY
     ##*===============================================
 
+    ## Write Elapsed Time to Log
     $finish = Get-Date
     $elapsedTime = "{0:hh}:{0:mm}:{0:ss}" -f (New-TimeSpan -Start $start -End $finish)
     Write-Log -Message "Elapsed $deploymentType Time(hh:mm:ss): $elapsedTime" -Source "Elapsed $deploymentType Time" -LogType 'CMTrace'

@@ -4,7 +4,9 @@
 
 * Updated for Linux
   * Updated huskyprint drivers
-* **Breaking Change** Removed Windows 7 support
+* Updated for Windows
+  * **Breaking Change** Removed Windows 7 support
+  * Updated PSADT files to version 3.8.2 - [Issue 18](https://github.com/MichiganTechIT/HuskyPrint/issues/18)
 
 ## Version **1.2.1.0** _[2019/09/19]_
 
