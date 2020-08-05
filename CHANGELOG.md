@@ -3,11 +3,12 @@
 ## Version **2.0.0.0** Unreleased
 
 * Updated for Linux
-  * Updated huskyprint drivers
+  * Updated Huskyprint drivers
   * Updated papercut files to version 19.2.3
 * Updated for Windows
   * **Breaking Change** Removed Windows 7 support
   * Updated PSADT files to version 3.8.2 - [Issue 18](https://github.com/MichiganTechIT/HuskyPrint/issues/18)
+  * Updated PaperCut installer to version 19.2.3 - [Issue 19](https://github.com/MichiganTechIT/HuskyPrint/issues/19)
 
 ## Version **1.2.1.0** _[2019/09/19]_
 
