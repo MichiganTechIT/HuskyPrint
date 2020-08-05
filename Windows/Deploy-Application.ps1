@@ -122,7 +122,7 @@ Try {
     [string]$appVendor = ''
     [string]$appName = 'Off-Domain Printer Setup'
     [string]$appVersion = '2.0.0.0'
-    [string]$papercutVersion = '19.0.3'
+    [string]$papercutVersion = '19.2.3'
     [string]$appArch = ''
     [string]$appLang = 'EN'
     [string]$appRevision = '01'
