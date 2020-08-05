@@ -1,8 +1,8 @@
 [version]
-name-with-version=PaperCut MF 19.0.3 (Build 49324)
+name-with-version=PaperCut MF 19.2.3 (Build 53767)
 name=PaperCut MF
 version-major=19
-version-minor=0
+version-minor=2
 version-patch=3
 version-suffix=
-version-build=49324
+version-build=53767
