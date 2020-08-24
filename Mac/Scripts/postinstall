@@ -6,19 +6,9 @@ pathToPackage=$1
 targetLocation=$2
 targetVolume=$3
 
-# install papercut
-# Fix executable 
-find '/Applications/PCClient.app' -exec chmod 775 {} \\;
-rm -fr ~/Library/Preferences/PCClient 2>/dev/null
-export PC_CLIENT_ARGS=-a; open -a /Applications/PCClient.app/Contents/MacOS/JavaAppLauncher --args biz.papercut.pcng.client.uit.UserClient
+installer -pkg /private/var/tmp/huskyprint_mac/PCClient_19.2.3.53767.pkg -target $3
+installer -pkg /private/var/tmp/huskyprint_mac/Xerox_Print_Driver_5.6.0.pkg -target $3
 
-# Xerox printer drivers
-installer -target $targetVolume -pkg /tmp/Xerox-Printers-4.22.2.pkg
-rm -rf /tmp/Xerox*
-rm -rf /Applications/Xerox\ PowerENGAGE.app
-rm -rf /Applications/XeroxPEInstallationCompanion.app
-
-# add husky prints
 # Remove any old versions of the husky printers
 lpstat -p | awk '{print $2}' | while read printer; do
     if [[ "$printer" == "husky"* ]]; then
@@ -38,13 +28,12 @@ done
 echo "Adding Husky-BW"
 lpadmin -p "Husky-BW" -D "Husky-BW" -L "Husky-BW" -E -v "lpd://print.mtu.edu/husky-bw" -P "/Library/Printers/PPDs/Contents/Resources/Xerox AltaLink B8055.gz"\
     -o printer-is-shared=false -o XRTrays='SixTraysHCFTT' -o XRHolePunch='TruePunch' -o XRFinisher='OFBM'
-cupsenable Husky-BW
 
 # Husky-Color
 echo "Adding Husky-Color"
 lpadmin -p "Husky-Color" -D "Husky-Color" -L "Husky-Color" -E -v "lpd://print.mtu.edu/husky-color" -P "/Library/Printers/PPDs/Contents/Resources/Xerox AltaLink C8055.gz"\
     -o printer-is-shared=false -o XRHolePunch='23Unit' -o XRFinisher='SBBookletFinisher'
-cupsenable Husky-Color
 
+rm -rf /private/var/tmp/huskyprint_mac/
 
 exit 0
