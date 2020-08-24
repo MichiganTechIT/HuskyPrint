@@ -3,11 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>IFPkgDescriptionDescription</key>
-	<string>Installs the following drivers and utilities
- • Papercut
- • Xerox Printer Drivers
- • Husky-BW &amp; Husky-Color</string>
+	<string></string>
 	<key>IFPkgDescriptionTitle</key>
-	<string>Papercut-Xerox-HuskyPrint-Combo</string>
+	<string>HuskyPrint v2.0.0.0</string>
 </dict>
 </plist>
