@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>Papercut-Xerox-HuskyPrint-Combo</string>
+	<string>HuskyPrint</string>
 	<key>CFBundleIdentifier</key>
-	<string>edu.mtu.it.papercut-xerox-huskyprint-combo</string>
+	<string>edu.mtu.huskyprint</string>
 	<key>CFBundleName</key>
-	<string>MTU Logo.jpg</string>
+	<string>Mac</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1</string>
+	<string>2.0.0.0</string>
 	<key>IFMajorVersion</key>
 	<string>1</string>
 	<key>IFMinorVersion</key>
@@ -25,7 +25,7 @@
 	<key>IFPkgFlagInstallFat</key>
 	<false/>
 	<key>IFPkgFlagInstalledSize</key>
-	<integer>65</integer>
+	<integer>142337</integer>
 	<key>IFPkgFlagIsRequired</key>
 	<false/>
 	<key>IFPkgFlagOverwritePermissions</key>
