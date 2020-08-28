@@ -121,7 +121,7 @@ Try {
     ## Variables: Application
     [string]$appVendor = ''
     [string]$appName = 'Off-Domain Printer Setup'
-    [string]$appVersion = '2.0.0.0'
+    [string]$appVersion = '2.1.0.0'
     [string]$papercutVersion = '19.2.3'
     [string]$appArch = ''
     [string]$appLang = 'EN'
@@ -259,6 +259,14 @@ Try {
             Remove-Folder -Path $installerDirectory
         } # end
 
+        $checkXeroxDesktop = Get-InstalledApplication -Name 'Xerox Desktop Print Experience'
+        if ($checkXeroxDesktop) {
+            "<Br />Xerox Desktop Experience - <install style='color:green'>Already Installed</install>" | Out-File @outFile
+        } else {
+            Show-InstallationProgress -StatusMessage "Installing Xerox Desktop Print Experience..."
+            Execute-MSI -Action 'Install' -Path "$dirFiles\XrxSetup_DesktopApp_x64.msi" -Parameters "/qn"
+            "<Br />Xerox Desktop Experience - <install style='color:green'>Installed</install>" | Out-File @outFile
+        }
         #endregion SoftwareInstall
 
         #region Drivers
@@ -366,6 +374,7 @@ Try {
                     $newPrinterPort.PrinterHostAddress = $printer.Address
                     "<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFile
                 }
+
                 if ($existingPort.LprQueueName -ne $printer.name) {
                     if ($wmiPrinterQuery.Protocol -ne 2) {
                         $newPrinterPort.Protocol = 2
@@ -468,6 +477,9 @@ Try {
 
         Remove-MSIApplications -Name "PaperCut"
         Remove-File -Path "$envCommonStartUp\PaperCut MF Client.lnk"
+
+        Show-InstallationProgress -StatusMessage "Removing Xerox Desktop Print Experience..."
+        Remove-MSIApplications -Name 'Xerox Desktop Print Experience'
 
         ##*===============================================
         ##* POST-UNINSTALLATION
