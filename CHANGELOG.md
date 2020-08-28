@@ -2,7 +2,7 @@
 
 ## Version **2.1.0.0** _[2020/08/28]_
 
-* Added `Xerox Desktop Experience` installation for Windows - [Issue 28](https://github.com/MichiganTechIT/HuskyPrint/issues/8)
+* Added `Xerox Desktop Experience` installation for Windows - [Issue 28](https://github.com/MichiganTechIT/HuskyPrint/issues/28)
 
 ## Version **2.0.0.0** _[2020/08/24]_
 
