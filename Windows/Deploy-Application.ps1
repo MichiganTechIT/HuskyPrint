@@ -374,6 +374,7 @@ Try {
                     $newPrinterPort.PrinterHostAddress = $printer.Address
                     "<Br />Port: $($printer.name) - <install style='color:green'>Updated Address</install>" | Out-File @outFile
                 }
+
                 if ($existingPort.LprQueueName -ne $printer.name) {
                     if ($wmiPrinterQuery.Protocol -ne 2) {
                         $newPrinterPort.Protocol = 2
