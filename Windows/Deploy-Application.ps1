@@ -121,8 +121,9 @@ Try {
     ## Variables: Application
     [string]$appVendor = ''
     [string]$appName = 'Off-Domain Printer Setup'
-    [string]$appVersion = '2.1.0.0'
+    [string]$appVersion = '2.2.0.0'
     [string]$papercutVersion = '19.2.3'
+    [string]$xdeVersion = '7.192.8.0'
     [string]$appArch = ''
     [string]$appLang = 'EN'
     [string]$appRevision = '01'
@@ -260,11 +261,11 @@ Try {
         } # end
 
         $checkXeroxDesktop = Get-InstalledApplication -Name 'Xerox Desktop Print Experience'
-        if ($checkXeroxDesktop) {
-            "<Br />Xerox Desktop Experience - <install style='color:green'>Already Installed</install>" | Out-File @outFile
+        if ($checkXeroxDesktop -and $checkXeroxDesktop.DisplayVersion -eq $xdeVersion) {
+            "<Br />Xerox Desktop Experience $($checkXeroxDesktop.DisplayVersion) - <install style='color:green'>Already Installed</install>" | Out-File @outFile
         } else {
             Show-InstallationProgress -StatusMessage "Installing Xerox Desktop Print Experience..."
-            Execute-MSI -Action 'Install' -Path "$dirFiles\XrxSetup_DesktopApp_x64.msi" -Parameters "/qn"
+            Execute-MSI -Action 'Install' -Path "$dirFiles\XrxSetup_$($xdeVersion)_x64.msi" -Parameters "/qn"
             "<Br />Xerox Desktop Experience - <install style='color:green'>Installed</install>" | Out-File @outFile
         }
         #endregion SoftwareInstall
