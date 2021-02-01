@@ -1,9 +1,10 @@
 # Changelog for HuskyPrint
 
-## unreleased
+## v2.2.0.0
 
 - moved to use `main` as the default branch instead of `master`
 - Updated `Xerox Desktop Print Experience` to latest version - [Issue 31](https://github.com/MichiganTechIT/HuskyPrint/issues/31)
+- Added github actions to upload assets on release
 
 ## Version **2.1.0.0** _[2020/08/28]_
 
