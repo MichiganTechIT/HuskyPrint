@@ -2,6 +2,7 @@
 
 ## v2.2.0.0
 
+- fixed duplicate ids in workflow - [Issue 34](https://github.com/MichiganTechIT/HuskyPrint/issues/34)
 - moved to use `main` as the default branch instead of `master`
 - Updated `Xerox Desktop Print Experience` to latest version - [Issue 31](https://github.com/MichiganTechIT/HuskyPrint/issues/31)
 - Added github actions to upload assets on release
