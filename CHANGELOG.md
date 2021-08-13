@@ -1,5 +1,9 @@
 # Changelog for HuskyPrint
 
+## Unreleased
+
+- Updated `PaperCut` to version `21.0.1` for Windows - [Issue 36](https://github.com/MichiganTechIT/HuskyPrint/issues/36)
+
 ## v2.2.0.0
 
 - fixed duplicate ids in workflow - [Issue 34](https://github.com/MichiganTechIT/HuskyPrint/issues/34)

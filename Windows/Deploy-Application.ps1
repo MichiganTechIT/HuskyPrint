@@ -121,14 +121,14 @@ Try {
     ## Variables: Application
     [string]$appVendor = ''
     [string]$appName = 'Off-Domain Printer Setup'
-    [string]$appVersion = '2.2.0.0'
-    [string]$papercutVersion = '19.2.3'
+    [string]$appVersion = '2.3.0.0'
+    [string]$papercutVersion = '21.0.1'
     [string]$xdeVersion = '7.192.8.0'
     [string]$appArch = ''
     [string]$appLang = 'EN'
     [string]$appRevision = '01'
     [string]$appScriptVersion = '1.0.0'
-    [string]$appScriptDate = '08/04/2020'
+    [string]$appScriptDate = '08/11/2021'
     [string]$appScriptAuthor = 'Eric Boersma'
     ##*===============================================
     ## Variables: Install Titles (Only set here to override defaults set by the toolkit)
