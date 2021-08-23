@@ -1,6 +1,8 @@
 # Changelog for HuskyPrint
 
-## Unreleased
+## unreleased
+
+## v2.3.0.0
 
 - Updated `PaperCut` to version `21.0.1` for Windows - [Issue 36](https://github.com/MichiganTechIT/HuskyPrint/issues/36)
 
