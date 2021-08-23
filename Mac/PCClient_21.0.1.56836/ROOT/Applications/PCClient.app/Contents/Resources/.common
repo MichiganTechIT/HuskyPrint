@@ -1,0 +1,39 @@
+#!/bin/zsh
+#
+# (c) Copyright 1999-2013 @copyright.owner@
+#
+#  Common functions
+#
+
+# 
+# Required MacOS Version
+#
+VERSION_RELEASE_MIN=10
+VERSION_MAJOR_MIN=7
+
+#
+# Validate the script environment meets the minimum requirements 
+#
+function validateMacOSVer() {
+    client_dir=$1
+    VERSION_RELEASE=`sw_vers -productVersion 2>/dev/null | cut -d. -f1`
+    VERSION_MAJOR=`sw_vers -productVersion 2>/dev/null | cut -d. -f2`
+
+    # Bail out if check cannot be done
+    if [[ -z ${VERSION_RELEASE} ]]; then
+        return 0
+    fi
+    
+    # Locate legacy directory
+    if [ -d "$client_dir"/legacy ]; then
+        legacy_dir="$client_dir"/legacy
+    else
+        legacy_dir=`(cd "$client_dir"/../../../legacy/ 2>/dev/null; pwd)`
+    fi
+    
+    if [[ $VERSION_RELEASE -eq $VERSION_RELEASE_MIN ]] && [[ $VERSION_MAJOR -lt $VERSION_MAJOR_MIN ]]; then
+        echo "This script is not supported on MacOS ${VERSION_RELEASE}.${VERSION_MAJOR}" 2>/dev/null
+        echo "Please run the equivalent script in the legacy folder:" $legacy_dir
+        exit 1
+    fi
+}

@@ -1,0 +1,107 @@
+#!/bin/zsh
+
+#
+# (c) Copyright PaperCut Software International Pty Ltd
+#
+# A simple shell script designed to start the client via a login hook call.
+#
+
+#
+# Client command line arguments are defined here. To force the client to a
+# set user account, use a client_args like:
+#
+#   client_args="--silent --user <username>"
+#
+client_args="--silent"
+
+#
+# As per login hook script documentation, Username is in $1
+#
+user=$1
+
+#
+# Make sure our current working dir is set to the location of this script
+#
+if [ -d /Applications/PCClient.app ]; then
+    cd /Applications/PCClient.app/Contents/Resources
+else
+    cd "${0:h}"
+fi
+
+
+macos_dir=`(cd ../MacOS/; pwd)`
+stub="${macos_dir}/JavaAppLauncher"
+
+#
+# Only one login hook should ever be running at a time.  If we find any
+# zombies, then kill now.
+#
+haskilled=
+ps auxwww | grep "$0" | grep -v grep | awk '{print $2}' | grep -v "$$" | while read zombie_pid
+do
+    kill -9 "${zombie_pid}" 2>/dev/null
+    haskilled=1
+done
+ps auxwww | grep "${stub}" | grep -v grep | awk '{print $2}' | while read zombie_pid
+do
+    kill -9 "${zombie_pid}" 2>/dev/null
+    haskilled=1
+done
+if [ -n "$haskilled" ] ; then
+    sleep 1
+fi
+
+#
+# Source local config if we have the file defined.  This allows
+# us to override $client_args, $user or $stub if required.
+#
+if [ -f local_config ]; then
+    . ./local_config
+fi
+
+#
+# Do pre-authentication if server's shared secret file exists.
+# 
+secret_file=
+loc1="/etc/pc-shared-secret.dat"
+loc2="/Library/PCClient/pc-shared-secret.dat"
+
+for f in ${loc1} ${loc2}; do
+    if [ -e "${f}" -a -O "${f}" ] ; then
+        if [ $(stat -f '%Lp' ${f}) -eq 600 ] ; then
+            secret_file="${f}"
+            break
+        fi
+    fi
+done
+
+if [ -n "${secret_file}" ] ; then
+    PC_CLIENT_ARGS="--pre-authenticate --user \"${user}\" --shared-secret-file \"${secret_file}\"" "${stub}" biz.papercut.pcng.client.uit.UserClient
+    client_args="${client_args} --use-pre-authentication"
+fi
+
+
+#
+# The "who" command truncates the user to 8 char, so
+# we'll save a short version.
+#
+shortuser=`perl -e "print substr(\"${user}\", 0, 8)"`
+
+#
+# Exec the client under the user's account
+#
+(
+    #
+    # Automatically restart the client while the user is logged in
+    #
+    sleep 3
+    loggedin=x
+    while test -n "${loggedin}" ; do 
+        su "${user}" -c "PC_CLIENT_ARGS=\"${client_args}\" \"${stub}\" biz.papercut.pcng.client.uit.UserClient"
+        sleep 8
+        loggedin=`who | grep "${shortuser}.*console"`
+    done
+) >/dev/null 2>&1 &
+
+
+exit 0

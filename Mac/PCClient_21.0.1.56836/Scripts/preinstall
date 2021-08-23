@@ -1,0 +1,27 @@
+#!/bin/sh
+## preinstall
+
+pathToScript=$0
+pathToPackage=$1
+targetLocation=$2
+targetVolume=$3
+
+PID=$(ps ax | grep -v grep | grep "PCClient.app" | awk {'print $1'})
+
+if [ "${PID}" ]; then
+	echo "Closing PCClient..."
+	kill -9 $PID
+fi
+
+
+if [ -d /Applications/PCClient/ ];then
+	echo "Removing old version..."
+	rm -rf /Applications/PCClient/
+fi
+
+if [ -d /Applications/PCClient.app/ ];then
+	echo "Removing old version..."
+	rm -rf /Applications/PCClient.app/
+fi
+
+exit 0		## Success
