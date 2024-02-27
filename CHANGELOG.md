@@ -2,7 +2,13 @@
 
 ## unreleased
 
-## v2.3.0.0
+## v2.5.0.0
+
+- Windows [Issue 43](https://github.com/MichiganTechIT/HuskyPrint/issues/43)
+  - Updated `PaperCut` to `22.1.3`
+  - Updated `PSADT` to `3.9.3`
+  - Updated `Xerox Desktop Print Experience` to `8.110.9.0`
+  - Updated Documentation
 
 ## v2.4.0.0
 

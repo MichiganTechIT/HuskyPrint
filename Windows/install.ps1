@@ -1,3 +1,4 @@
+# Adds the AltaLinkB80xx and AltaLinkC80xx drivers
 function Add-Driver {
     param (
         [Parameter(Mandatory)]
@@ -17,14 +18,18 @@ function Add-Driver {
         FilePath = $UserReportLog
         Append   = $true
     }
+    # Directory = $env:TEMP\<random new guid>
     $driverDirectory = "{0}\{1}" -f $envTemp, [guid]::NewGuid()
 
+    # Create temp folder
     Show-InstallationProgress -StatusMessage "Extracting Driver - $($DriverName)..."
     New-Folder -Path $driverDirectory
 
+    # Unzip driver folder & get inf files
     Expand-Archive -Path $Source -DestinationPath $driverDirectory
     $infFilePath = (Get-childItem -Path $driverDirectory -File *.inf).FullName
 
+    # Uses PnPUtil (https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/pnputil) to add the drivers to the driver store
     $output = Invoke-Command -ScriptBlock {
         param(
             [Parameter()]$Source
@@ -32,11 +37,14 @@ function Add-Driver {
         & C:\Windows\System32\pnputil.exe -a "$Source"
     } -ArgumentList ($infFilePath)
 
+    # Checks if the driver was added to driver store properly
     [regex]$DriverAdded = '(?i)Published Name\s?:\s*(?<Driver>oem\d+\.inf)'
     $successDriverAdd = $DriverAdded.Match($output)
 
     if ($successDriverAdd.Success) {
         "<Br />$($driver.name) - <install style='color:green'>Staged</install>" | Out-File @outFile
+
+        # Attempt to install drivers
         try {
             Show-InstallationProgress -StatusMessage "Installing Driver - $($DriverName)..."
             Add-PrinterDriver -InfPath (Get-WindowsDriver -Driver $successDriverAdd.Groups['Driver'].Value -Online).OriginalFileName[0] -Name $DriverName -ErrorAction Stop
@@ -58,7 +66,7 @@ function Add-Driver {
 [string]$installPhase = 'Pre-Installation'
 
 ## Show Welcome Message, close apps if required, verify there is enough disk space to complete the install, and persist the prompt
-Show-InstallationWelcome -CloseApps 'pc-client' -CheckDiskSpace -PersistPrompt
+Show-InstallationWelcome -CloseApps $appsToClose -CheckDiskSpace -PersistPrompt
 
 ## Show Progress Message (with the default message)
 Show-InstallationProgress
@@ -75,26 +83,30 @@ $outFile = @{
 "<h1>System Changes</h1>Here is a detailed report of what changes where made on your system when you ran this script" | Out-File @outFile
 
 ## <Perform Pre-Installation tasks here>
-#region SoftwareInstall
+
 "<h3>Software Installations</h3>" | Out-File @outFile
+
+# ----------------- PAPERCUT -----------------
 
 $checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
 
-if ($null -ne $checkPaperCutInstalledVersion -and
-            ($checkPaperCutInstalledVersion.DisplayVersion -notcontains "$PaperCutVersion" -or ($checkPaperCutInstalledVersion | measure-object).count -gt 1)) {
-
+# If PaperCut is not installed or if the version installed is lower than the version in the package
+if(-not ($checkPaperCutInstalledVersion) -or -not ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion)) {
     Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
     Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(, , @('DisplayVersion', $paperCutVersion, 'Contains'))
+
     if (Test-Path "$envCommonStartUp\PaperCut MF Client.lnk") {
         Remove-File -Path "$envCommonStartUp\PaperCut MF Client.lnk"
         "<Br />PaperCut AutoStart link - <install style='color:red'>Removed</install>" | Out-File @outFile
-    } # End test-path AutoStart
+    }
+
     ("<Br />PaperCut Agent {0} - <install style='color:red'>Removed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFile
+
 } # End previous version check/uninstall
 
 $checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
 
-if ($checkPaperCutInstalledVersion.DisplayVersion -like "$paperCutVersion*") {
+if ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion) {
             ("<Br />PaperCut MF {0} - <install style='color:green'>Already Installed</install>" -f $checkPaperCutInstalledVersion.DisplayVersion) | Out-File @outFile
 } else {
     Show-InstallationProgress -StatusMessage "Extracting PaperCut Agent..."
@@ -108,6 +120,9 @@ if ($checkPaperCutInstalledVersion.DisplayVersion -like "$paperCutVersion*") {
         Add-Type -assembly "system.io.compression.filesystem"
         [io.compression.zipfile]::ExtractToDirectory("$dirFiles\Papercut.zip", $installerDirectory)
     } # end unzip
+
+    # Use custom Papercut config file
+    Copy-Item -Path $dirSupportFiles\config.properties -Destination $installerDirectory -Force
 
     Show-InstallationProgress -StatusMessage "Installing PaperCut Agent..."
     Execute-MSI -Action 'Install' -Path "$installerDirectory\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
@@ -124,27 +139,29 @@ if ($checkPaperCutInstalledVersion.DisplayVersion -like "$paperCutVersion*") {
     Remove-Folder -Path $installerDirectory
 } # end
 
+# ----------------- XEROX DESKTOP PRINT EXPERIENCE -----------------
+
 $checkXeroxDesktop = Get-InstalledApplication -Name 'Xerox Desktop Print Experience'
-if ($checkXeroxDesktop -and $checkXeroxDesktop.DisplayVersion -eq $xdeVersion) {
+if ($checkXeroxDesktop -and $checkXeroxDesktop.DisplayVersion -ge $xdeVersion) {
     "<Br />Xerox Desktop Experience $($checkXeroxDesktop.DisplayVersion) - <install style='color:green'>Already Installed</install>" | Out-File @outFile
 } else {
     Show-InstallationProgress -StatusMessage "Installing Xerox Desktop Print Experience..."
-    Execute-MSI -Action 'Install' -Path "$dirFiles\XrxSetup_$($xdeVersion)_x64.msi" -Parameters "/qn"
+    Execute-MSI -Action 'Install' -Path "$dirFiles\XrxSetup_${xdeVersion}_x64.msi" -Parameters "/qn"
     "<Br />Xerox Desktop Experience - <install style='color:green'>Installed</install>" | Out-File @outFile
 }
-#endregion SoftwareInstall
 
-#region Drivers
+# ----------------- DRIVERS -----------------
+
 "<h3>Drivers</h3>" | Out-File @outFile
 $drivers = @(
     @{
         Name    = "Xerox AltaLink B8065 V4 PCL6" # husky-bw
-        Version = "7.76.0.0"
-        Source  = "$dirFiles\Drivers\AltaLinkB80xx_7.76.0.0_PCL6_x64.zip"
+        Version = $b8065DriverVersion
+        Source  = "$dirFiles\Drivers\AltaLinkB80xx_${b8065DriverVersion}_PCL6_x64.zip"
     }, @{
         Name    = "Xerox AltaLink C8055 V4 PCL6" # husky-color
-        Version = "7.76.0.0"
-        Source  = "$dirFiles\Drivers\AltaLinkC80xx_7.76.0.0_PCL6_x64.zip"
+        Version = $c8055DriverVersion
+        Source  = "$dirFiles\Drivers\AltaLinkC80xx_${c8055DriverVersion}_PCL6_x64.zip"
     }
 )
 Show-InstallationProgress -StatusMessage "Checking Printer Drivers..."
@@ -153,9 +170,9 @@ foreach ($driver in $drivers) {
         $installedPrintDriver = Get-PrinterDriver -Name $driver.Name -ErrorAction Stop
         $installedDriverVersion = (Get-WindowsDriver -Online -Verbose:$false -Driver $installedPrintDriver.InfPath)[0].Version
 
-        if ($installedDriverVersion -ne $driver.Version) {
+        if ($installedDriverVersion -lt $driver.Version) {
             "<Br />$($driver.name) - <install style='color:orange'>Needs to be Updated</install>" | Out-File @outFile
-            # The driver does not match the desired version, it needs to be upgraded
+            # The driver is older than the current version, it needs to be upgraded
             Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
         } else {
             "<Br />$($driver.name) - <install style='color:green'>OK</install>" | Out-File @outFile
@@ -165,7 +182,7 @@ foreach ($driver in $drivers) {
         Add-Driver -DriverName $driver.Name -UserReportLog $userReportLog -Source $driver.Source
     }
 } # end foreach printer
-#endregion Drivers
+
 ##*===============================================
 ##* INSTALLATION
 ##*===============================================
@@ -187,12 +204,13 @@ $printers = @(
             "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
             "Config:InstallableOutputDeliveryUnitActual" = "OfficeFinisher" # Finisher Option
         }
-    }, @{
+    }
+    @{
         Name              = "husky-color"
         Driver            = "Xerox AltaLink C8055 V4 PCL6"
         Address           = "print.mtu.edu"
         InstalledFeatures = @{
-            "Config:InstallableHolePunchUnitActual"      = "Punch_2And_3HoleStack" # hole punch
+            "Config:InstallableHolePunchUnitActual"      = "Punch_2And_3HoleStack" # Hole punch
             "Config:InstallableInputPaperTraysActual"    = "6TraysHighCapacityTandemTray" # Tray Configuration
             "Config:InstallableOutputDeliveryUnitActual" = "TypeSb" # Finisher Option
         }
@@ -229,6 +247,7 @@ foreach ($printer in $printers) {
         $newPrinterPort = @{
             Name = $printer.Name
         } # End newPrinterPort
+
         # printer port name is already used. Need to validate the settings are in a desired state.
         Show-InstallationProgress -StatusMessage "Validating pre-existing port settings for $($printer.name)..."
         $wmiPrinterQuery = Get-WmiObject -Query "SELECT * FROM Win32_TCPIpPrinterPort WHERE Name='$($Printer.Name)'"
