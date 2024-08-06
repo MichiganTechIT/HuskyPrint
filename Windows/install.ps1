@@ -91,7 +91,7 @@ $outFile = @{
 $checkPaperCutInstalledVersion = Get-InstalledApplication -Name 'PaperCut'
 
 # If PaperCut is not installed or if the version installed is lower than the version in the package
-if(-not ($checkPaperCutInstalledVersion) -or -not ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion)) {
+if (-not ($checkPaperCutInstalledVersion) -or -not ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion)) {
     Show-InstallationProgress -StatusMessage "Removing previous PaperCut Agent versions..."
     Remove-MSIApplications -Name "PaperCut" -ExcludeFromUninstall @(, , @('DisplayVersion', $paperCutVersion, 'Contains'))
 
@@ -115,10 +115,10 @@ if ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion) {
     New-Folder -Path $installerDirectory
 
     if (Get-Command -Name Expand-Archive -ErrorAction SilentlyContinue) {
-        Expand-Archive -Path "$dirFiles\Papercut.zip" -DestinationPath $installerDirectory -Force
+        Expand-Archive -Path "$dirFiles\Papercut_$papercutVersion.zip" -DestinationPath $installerDirectory -Force
     } else {
         Add-Type -assembly "system.io.compression.filesystem"
-        [io.compression.zipfile]::ExtractToDirectory("$dirFiles\Papercut.zip", $installerDirectory)
+        [io.compression.zipfile]::ExtractToDirectory("$dirFiles\Papercut_$papercutVersion.zip", $installerDirectory)
     } # end unzip
 
     # Use custom Papercut config file
@@ -128,12 +128,8 @@ if ($checkPaperCutInstalledVersion.DisplayVersion -ge $paperCutVersion) {
     Execute-MSI -Action 'Install' -Path "$installerDirectory\pc-client-admin-deploy.msi" -Parameters "/qn /norestart ALLUSERS=1"
     "<Br />PaperCut MF $paperCutVersion - <install style='color:green'>Installed</install>" | Out-File @outFile
 
-    $StartupShortcut = Show-InstallationPrompt -Title 'Papercut AutoRun' -Message "Would you like PaperCut to run on startup?`nOtherwise you'll have to manually start it when you want to print." -ButtonRightText 'Yes' -ButtonLeftText 'No' -Icon Exclamation -PersistPrompt
-
-    if ($StartupShortcut -eq 'yes') {
-        New-Shortcut -Path "$envCommonStartUp\PaperCut MF Client.lnk" -TargetPath "$envProgramFiles\PaperCut MF Client\pc-client.exe" -IconLocation "$envProgramFiles\PaperCut MF Client\pc-client.exe" -Description 'PaperCut MF Client' -WorkingDirectory "$envProgramFiles\PaperCut MF Client"
-        "<Br />PaperCut MF $paperCutVersion AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File @outFile
-    } # end if Autostart
+    New-Shortcut -Path "$envCommonStartUp\PaperCut MF Client.lnk" -TargetPath "$envProgramFiles\PaperCut MF Client\pc-client.exe" -IconLocation "$envProgramFiles\PaperCut MF Client\pc-client.exe" -Description 'PaperCut MF Client' -WorkingDirectory "$envProgramFiles\PaperCut MF Client"
+    "<Br />PaperCut MF $paperCutVersion AutoStart - <install style='color:green'>Created</install> - Created link at $envCommonStartUp\PaperCut MF Client.lnk" | Out-File @outFile
 
     Show-InstallationProgress -StatusMessage "Cleaning up installation files..."
     Remove-Folder -Path $installerDirectory
@@ -268,6 +264,8 @@ foreach ($printer in $printers) {
             Get-WmiObject -Query ("Select * FROM Win32_TCPIpPrinterPort WHERE Name = '{0}'" -f $printer.name ) | Set-WmiInstance -Arguments $newPrinterPort -PutType UpdateOnly | Out-Null
         } # End If newPrinterPort.Count
     }
+
+    # Now check if the printer is already configured. If not we'll add it
     try {
         $existingPrinter = Get-Printer -Name $Printer.Name -ErrorAction 'Stop'
     } catch {

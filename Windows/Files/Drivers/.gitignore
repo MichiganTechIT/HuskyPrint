@@ -1,6 +1,2 @@
 # Ignore everything
 *
-
-# Track these files
-!*.zip
-!.gitignore
